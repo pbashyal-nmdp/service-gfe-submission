@@ -1,7 +1,7 @@
 # service-gfe-submission
 RESTful Service getting GFE results from raw sequence data
 
-Further documentation is available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/stable/index.html)
+Further documentation is available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html)
 
 ## Curl
 
