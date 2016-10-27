@@ -1,0 +1,47 @@
+# This is the main configuration file of your Dancer app
+# env-related settings should go to environments/$env.yml.
+# All the settings in this file will be loaded at Dancer's startup.
+
+# Your application's name
+appname: "GFE_Submission"
+
+# The default layout to use for your application (located in
+# views/layouts/main.tt)
+layout: "main"
+
+# When the charset is set to UTF-8 Dancer will handle for you
+# all the magic of encoding and decoding. You should not care
+# about unicode within your app when this setting is set (recommended).
+charset: "UTF-8"
+
+# template engine
+# simple: default and very basic template engine
+# template_toolkit: TT
+
+template: "simple"
+
+engines:
+    JSON:
+        canonical: 1
+
+plugins:
+    Swagger:
+        validate_response: 1
+        strict_validation: 1
+        version: "1.0.0"
+        title: GFE Submission Service
+        contact:
+          name: apiteam@swagger.io
+        license:
+          name: Apache 2.0
+          url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# template: "template_toolkit"
+# engines:
+#   template_toolkit:
+#     start_tag: '[%'
+#     end_tag:   '%]'
+
+# For session support enable the following line and see Dancer::Session
+# session: "YAML"
+

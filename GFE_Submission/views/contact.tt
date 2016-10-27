@@ -1,0 +1,26 @@
+  
+<!-- 
+    Credit goes to the Ruby on Rails team for this page which
+    has been heavily based on the default Rails page that is
+    built with a scaffolded application.
+
+    Thanks a lot to them for their work.
+
+    See Ruby on Rails if you want a kickass framework in Ruby:
+    http://www.rubyonrails.org/
+-->
+
+<!-- Jumbotron Header -->
+
+<address style="margin-top:85px;">
+  <strong>Mike Halagan</strong><br>
+  Bioinformatics Scientist<br>
+  3001 Broadway Stree NE<br>
+  Minneapolis, MN 55413<br>
+  <abbr title="Phone">P:</abbr> 612-884-8225
+</address>
+
+<address>
+  <strong>Email Address</strong><br>
+  <a href="mailto:#">mhalagan@nmdp.org</a>
+</address>

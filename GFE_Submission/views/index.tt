@@ -1,0 +1,138 @@
+  
+<!-- 
+    Credit goes to the Ruby on Rails team for this page which
+    has been heavily based on the default Rails page that is
+    built with a scaffolded application.
+
+    Thanks a lot to them for their work.
+
+    See Ruby on Rails if you want a kickass framework in Ruby:
+    http://www.rubyonrails.org/
+-->
+
+<!-- Jumbotron Header -->
+ <div style="border-style:solid;border-width:1px;border-color:black;margin-bottom:35px;margin-top:105px;box-shadow: 0px 0px 5px 0px grey;">
+          <header class="jumbotron  col-center-block" style="margin-bottom: 0px;width:100%;border-style:solid;">
+              <div class="center_div" style="font-family:Lobster;font-size: 2vw;margin-top:-30px;margin-bottom:0px;width:65%;text-align:center;">
+                  <h2 class="col-center-block" style="margin-bottom:0px;">GFE Submission Service</h2>
+              </div>
+              <div class="h-divider center_div"></div>
+              <form id="gfeForm" enctype="multipart/form-data" action="<% gfe_url %>" method="GET">
+                  <div class="center_div" style="width:80%;">
+                      <div class="row" style="margin-bottom:10px;">
+                          <div class="col-md-5" style="width:25%">
+                              <div class="input-group input-group-md">
+                                  <span class="input-group-addon" style="background-color:#f9f6f6;">HLA Locus</span>
+                                  <select class="form-control" class="selectpicker" data-max-options="1" name="locus">
+                                      <option>HLA-A</option>
+                                      <option>HLA-C</option>
+                                      <option>HLA-B</option>
+                                      <option>HLA-DRB1</option>
+                                      <option>HLA-DQB1</option>
+                                      <option>HLA-DPB1</option>
+                                  </select>
+                              </div>
+                              <!-- /input-group -->
+                          </div>
+                          <!-- /.col--6 -->
+                          <div class="col-md-5" style="width:40%;">
+                              <div class="input-group input-group-md">
+                                  <span class="input-group-addon" style="background-color:#f9f6f6;">GFE Url</span>
+                                  <input type="text" class="form-control" name="url" placeholder="http://feature.nmdp-bioinformatics.org" aria-describedby="sizing-addon3">
+                              </div>
+                              <!-- /input-group -->
+                          </div>
+                       
+    
+                      </div>
+                      <!-- /.row -->
+                      <div class="input-group input-group-md col-md-5" style="margin-bottom:10px;width:100%;">
+                          <span class="input-group-addon" style="background-color:#f9f6f6;" id="sizing-addon3">Sequence</span>
+                          <input type="text" class="form-control" name="sequence" aria-describedby="sizing-addon3">
+                      </div>
+                      <div id="Demo-BS">
+                          <input type="submit" id="form_button" class="btn btn-primary btn-md" onclick="<% gfe_url %>"></input>
+                          <div>
+                              <input style="margin-left:83px;margin-top:-27px;" id="myFile" type="file" name="filename"></input>
+                          </div>
+                          <div style="float:right;margin-left:265px;margin-top:-20px;">
+                              <% IF download.defined %>
+                                <a id="download" style="margin-right:10px;"class="btn btn-primary btn-large" href="<% request.uri_base %>/downloads/<% download %>" download="<% download %>">Download</a>
+                              <% END %>
+                          </div>
+                         
+                      </div>
+
+
+                  </div>
+              </form>
+          </header>
+      </div>
+
+
+<% IF error.defined %>
+  <ul class="list-group">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><% error %></h3>
+     </div>
+      <div class="panel-body">
+        <% error_glstring %>
+      </div>
+    </div>
+  </ul>
+<% ELSIF structures.defined %>
+
+
+  <div class="center_div" style="width:98%;margin-bottom:100px;">
+
+    <div class="table-responsive" >
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>GFE</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td><% gfe %></td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive" >
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Locus&nbsp </th>
+            <th>Term </th>
+            <th>Rank </th>
+            <th>Accession </th>
+            <th>Sequence </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% FOREACH structure IN structures %>
+            <tr>
+              <td><% structure.locus %></td>
+              <td><% structure.term %></td>
+              <td><% structure.rank %></td> 
+              <td><% structure.accession %></td>
+              <td><% structure.sequence %></td>
+            </tr>
+          <% END %>
+        </tbody>
+        </table>
+    </div>
+
+  </div>
+
+<% END %>
+
+
+
+
+
+
