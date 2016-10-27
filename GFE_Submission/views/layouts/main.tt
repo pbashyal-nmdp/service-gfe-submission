@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mike Halagan">
+    <title>GFE Submission</title>
+    <link href="<% request.uri_base %>/css/font-awesome.css" rel="stylesheet">
+    <link rel="icon" href="http://hgtr.b12x.org/favicon.ico" type="image/gif">
+    <!-- Bootstrap Core CSS -->
+    <link href="<% request.uri_base %>/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="<% request.uri_base %>/css/heroic-features.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="<% request.uri_base %>/css/bootstrap-social.css" rel="stylesheet">
+    <link href="<% request.uri_base %>/css/bootstrap-select.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="<% request.uri_base %>/javascripts/bootstrap-select.js"></script>
+    <script src="<% request.uri_base %>/javascripts/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="<% request.uri_base %>/javascripts/bootstrap.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="<% request.uri_base %>/javascripts/jquitelight.min.js"></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script>
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    </script>
+    <script>
+    $(document).ready(function() {
+        $("#Demo-BS .btn").click(function() {
+            $(this).button('loading').delay(2000).queue(function() {
+                $(this).button('reset');
+                $(this).dequeue();
+            });
+        });
+    });
+    </script>
+    <script>
+    function highlightArsGroups() {
+        $('.highlightGroup').each(function(i) {
+
+            if (this.style.backgroundColor !== "yellow") {
+                this.style.backgroundColor = "yellow";
+            } else {
+                this.style.backgroundColor = "";
+            }
+        });
+    }
+    </script>
+    <script>
+    function getAction(){
+        var x = document.getElementById("myFile");
+
+        var txt = "";
+        if (x.files.length == 0) {
+          var redux = document.getElementById("gfeForm");
+           //window.print("File exitst" + redux)
+          redux.action = "<% gfe_url %>";
+          redux.method = "GET";
+        }else{
+          var redux = document.getElementById("gfeForm");
+          redux.action = "<% gfe_url %>";
+          redux.method = "GET";
+          //window.print("Action" + redux.action)
+        }   
+    }
+
+    function downloadClient() {
+        document.getElementById('submit_modal').submit();
+    }
+
+    function more(obj) {
+        var content = document.getElementById("showMore");
+
+        if (content.style.display == "none") {
+            content.style.display = "";
+            obj.innerHTML = "less options";
+        } else {
+            content.style.display = "none";
+            obj.innerHTML = "more options";
+        }
+    }
+    </script>
+    <style>
+    .footer {
+        bottom: 0;
+        position: absolute;
+    }
+    
+    .marked-text {
+        background-color: rgb(252, 248, 227);
+    }
+    
+    .col-center-block {
+        float: none;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .center_div {
+        margin: 0 auto;
+        width: 80%
+    }
+    
+    #cloud-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        z-index: -1;
+        /* Remove this line if it's not going to be a background! */
+    }
+    </style>
+</head>
+
+<body style="height:100%;">
+    <!-- Navigation -->
+    <div id='header'>
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-fixed-top" style="font-family:Lobster;">
+            <div class="container" style="width:75%;">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header" style="padding-bottom: 15px;">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="margin-top:10px;font-size:15px;">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="<% request.uri_base %>">Home</a></li>
+                        <li>
+                            <a href="<% request.uri_base %>/doc">API</a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/nmdp-bioinformatics/service-ars">Github</a>
+                        </li>
+                        <li>
+                            <a href="<% request.uri_base %>/contact">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+    </div>
+    <style>
+    .navbar-header {
+        padding-top: 0;
+        padding-bottom: 60;
+    }
+    
+    .h-divider {
+        margin-top: 5px;
+        margin-bottom: 20px;
+        height: 1px;
+        width: 80%;
+        border-top: 1px solid gray;
+    }
+    
+    @font-face {
+        font-family: 'Glyphicons Halflings';
+        src: url('<% request.uri_base %>/fonts/glyphicons-halflings-regular.eot');
+        src: url('<% request.uri_base %>/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('<% request.uri_base %>/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('<% request.uri_base %>/fonts/glyphicons-halflings-regular.woff') format('woff'), url('<% request.uri_base %>/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('<% request.uri_base %>/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+    }
+    </style>
+    <!-- Page Content -->
+    <div class="center_div" style="height:100%;width:75%;">
+
+        <% content %>
+
+
+    </div>
+
+
+     <div style="width:100%; bottom: 0px; position: fixed;">
+        <link href="<% request.uri_base %>/css/nmdp.css" rel="stylesheet">
+        <!-- footer pulled from elsewhere -->
+        <footer id="page-foot" class="page-foot center_div" style="text-align: center;width:75%;height:100%;font-size:.6vw;background-color: white;">
+            <div  style="border-style:solid;border-top-width:1px;border-color:#eeeeee;padding-top: 10px;padding-bottom: 0px;">
+                <div  style="margin-bottom: 25px;text-align: center;font-size: 1.0vw;margin-top:5px;">
+                    <div style="text-align: left;float: left;margin-top:10px;"><a href="http://bethematch.org/Terms-of-use/">Home &nbsp;&nbsp;&nbsp;&nbsp;</a> <a href="http://bethematch.org/Privacy/">About &nbsp;&nbsp;&nbsp;&nbsp;</a><a href="http://bethematch.org/Privacy/">Github </a></div>
+                    <div class="center_div" style="text-align: center;"><span class="glyphicon glyphicon-flash" style="" aria-hidden="true"></span></div>
+                    <div style="text-align: right;margin-top:-10px;"><a href="http://bethematch.org/Terms-of-use/">Terms &nbsp;&nbsp;&nbsp;&nbsp;</a><a href="http://bethematch.org/Privacy/">Privacy &nbsp;&nbsp;&nbsp;&nbsp;</a><a href="http://bethematch.org/Privacy/">Contact </a></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- /.container -->
+</body>
+<style>
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+</style>
+
+</html>
