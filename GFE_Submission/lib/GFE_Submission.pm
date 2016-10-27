@@ -159,7 +159,7 @@ get '/gfe' => sub {
 	    my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
 
 	    push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{gfe});
-	    push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure};
+	    push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure});
 
 		template 'index', {
 		    'gfe'        => $$rh_gfe{gfe},
