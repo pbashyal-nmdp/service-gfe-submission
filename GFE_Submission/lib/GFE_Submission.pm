@@ -187,7 +187,7 @@ sub deleteOldFiles{
     my $g_csv1    = $o_gfe->annotate->directory."/*.csv";
     my $g_csv2    = $o_gfe->annotate->directory."/GFE/parsed-local/*.csv";
 
-    foreach my $s_file (glob("$g_fasta $g_csv")){
+    foreach my $s_file (glob("$g_fasta $g_csv1 g_csv2")){
         my @a_file = [$s_file, (stat $s_file)[9]];
         my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
         if($s_file_created ne $date){
