@@ -223,6 +223,7 @@ around BUILDARGS=>sub
   $s_hap1_dir =~ s/\/$//;
 
   my $working      = "$FindBin::Bin/..";
+  $working         = $working =~ /GFE_Submission/ ? $working =~ s/gfe_submission/GFE_Submission/ : $working;
   my $outdir       = $working."/public/downloads";
 
   my %h_ids = ( 0 => 1 );

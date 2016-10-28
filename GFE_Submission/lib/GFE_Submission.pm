@@ -155,11 +155,11 @@ get '/gfe' => sub {
 
 	}else{
 
-		$o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
-	    my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
+        $o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
+        my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
 
-	    push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{gfe});
-	    push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure});
+        push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{gfe});
+        push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure});
 
 		template 'index', {
 		    'gfe'        => $$rh_gfe{gfe},
@@ -175,22 +175,39 @@ get '/gfe' => sub {
 =head2 deleteOldFiles
 
         Title:    deleteOldFiles
-        Usage:    stripInvalid($glstring);
+        Usage:    
         Function: 
   
 =cut
 sub deleteOldFiles{
 
-  # my $date      = strftime "%m-%d-%Y", localtime;
-  # my $g_fasta   = $self->outdir."/*.fasta";
-  # my $g_csv     = $self->directory."/GFE/parsed-local/*.csv";
-  # foreach my $s_file (glob("$g_fasta $g_csv")){
-  #   my @a_file = [$s_file, (stat $s_file)[9]];
-  #   my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
-  #   if($s_file_created ne $date){
-  #     system("rm $s_file");
-  #   }
-  # }
+    my $date      = strftime "%m-%d-%Y", localtime;
+    my @a_loci    = ("HLA_A", "HLA_B", "HLA_C"); 
+    my $g_fasta   = $o_gfe->annotate->outdir."/*.fasta";
+    my $g_csv1    = $o_gfe->annotate->directory."/*.csv";
+    my $g_csv2    = $o_gfe->annotate->directory."/GFE/parsed-local/*.csv";
+
+    foreach my $s_file (glob("$g_fasta $g_csv")){
+        my @a_file = [$s_file, (stat $s_file)[9]];
+        my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
+        if($s_file_created ne $date){
+            system("rm $s_file");
+        }
+    }
+
+    foreach my $s_loc  (@a_loci){
+        my $s_clu_dir     = $o_gfe->annotate->directory."/output/clu/".$s_loc."/*.clu";
+        my $s_exon_dir    = $o_gfe->annotate->directory."/output/exon/".$s_loc."/*.txt";
+        my $s_fasta_dir   = $o_gfe->annotate->directory."/output/fasta/".$s_loc."/*.fasta";
+        my $s_protein_dir = $o_gfe->annotate->directory."/output/protein/".$s_loc."/*.fasta";
+        foreach my $s_file (glob("$s_clu_dir $s_exon_dir $s_fasta_dir $s_protein_dir")){
+            my @a_file = [$s_file, (stat $s_file)[9]];
+            my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
+            if($s_file_created ne $date){
+                system("rm $s_file");
+            }
+        }
+    }
 
 }
 
