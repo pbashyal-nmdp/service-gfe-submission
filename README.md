@@ -53,34 +53,34 @@ Further documentation is available at [service-gfe-submission.readthedocs.io](ht
 
 ```perl
 
-	#!/usr/bin/env perl
-	use strict;
-	use warnings;
-	use Getopt::Long;
-	use FindBin;
-	use lib "$FindBin::Bin/../lib";
-	use GFE;
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Getopt::Long;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use GFE;
 
-	our($s_locus,$s_seq,$s_url,$b_verbose,$help) = (undef,undef,undef,undef,undef);
+our($s_locus,$s_seq,$s_url,$b_verbose,$help) = (undef,undef,undef,undef,undef);
 
-	&GetOptions('locus|l=s'      => \$s_locus,
-				'seq|s=s'        => \$s_seq,
-				'url|u=s'        => \$s_url,
-				'verbose|v'      => \$b_verbose,
-	            'help|h'         => \$help,
-	            );
+&GetOptions('locus|l=s'      => \$s_locus,
+			'seq|s=s'        => \$s_seq,
+			'url|u=s'        => \$s_url,
+			'verbose|v'      => \$b_verbose,
+            'help|h'         => \$help,
+            );
 
-	my $o_gfe = GFE->new();
+my $o_gfe = GFE->new();
 
-	# Defaults to http://feature.nmdp-bioinformatics.org
-	$o_gfe->client(url => $s_url) if defined $s_url;
+# Defaults to http://feature.nmdp-bioinformatics.org
+$o_gfe->client(url => $s_url) if defined $s_url;
 
-	# Does alignment of sequence and submission of aligned
-	# sequence to the GFE service.
-	my $rh_gfe = $o_gfe->getGfe($s_locus,$s_seq);
+# Does alignment of sequence and submission of aligned
+# sequence to the GFE service.
+my $rh_gfe = $o_gfe->getGfe($s_locus,$s_seq);
 
-	# Print out GFE
-	print $$rh_gfe{gfe},"\n";
+# Print out GFE
+print $$rh_gfe{gfe},"\n";
 
 ```
 
