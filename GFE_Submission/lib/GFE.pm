@@ -185,6 +185,14 @@ CONFIG
 
     # Make fasta file from sequence
     my $s_fasta_file = $o_annotate->makeFasta($s_locus,$s_seq);
+    print STDERR "------ FASTA FILE ------\n";
+    open(my $fh_fasta,"<",$s_fasta_file) or die "CANT OPEN FASTA FILE $! $0";
+    while(<$fh_fasta>){
+        chomp;
+        print STDERR "FASTA - ".$_,"\n";
+    }
+    close $fh_fasta;
+
     if(!-e $s_fasta_file){
         $logger->error("Failed to create fasta file!");
         $logger->error($s_fasta_file);
@@ -204,6 +212,8 @@ CONFIG
 
     # Running java -jar hap1.0.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->align();
+
+    print STDERR "Exit status of alingnment $b_exit_status\n";
     if($b_exit_status != 0){
         $logger->error("Failed to run annotation!");
         $logger->error($s_locus);

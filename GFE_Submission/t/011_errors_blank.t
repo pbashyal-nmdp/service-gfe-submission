@@ -11,6 +11,8 @@ use GFE_Submission::API;
 
 
 my $r_sequence_blank = dancer_response POST => '/api/v1/gfe?locus=HLA-A&sequence=';
+print STDERR "Dumper sequence_blank\n",Dumper($r_sequence_blank),"\n";
+
 ok(defined $r_sequence_blank->{content},"r_sequence_blank->{content} defined");
 ok(defined $r_sequence_blank->{content}->{type},"r_sequence_blank->{content}->{type} defined");
 ok($r_sequence_blank->{content}->{type} eq "Sequence","r_sequence_blank->{content}->{type} eq Sequence");

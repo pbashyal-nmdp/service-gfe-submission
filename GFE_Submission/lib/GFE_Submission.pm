@@ -169,7 +169,7 @@ get '/gfe' => sub {
         $o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
         my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
         if(defined  $$rh_gfe{Error}){
-            template 'index', 404, {
+            template 'index', {
                 'Error'        => $$rh_gfe{Error}
             };
         }else{

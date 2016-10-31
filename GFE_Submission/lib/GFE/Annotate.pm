@@ -172,6 +172,8 @@ sub align{
   my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.0.jar";
   my @args = ($s_hap1_cmd, " -g ".$self->order->{$s_loc}, " -i $s_fasta_file");
 
+  print STDERR "CMD: ".join("",@args)."\n";
+  
   my $exit_value = system(join("",@args));
 
   if($exit_value != 0){
@@ -281,13 +283,7 @@ around BUILDARGS=>sub
   my $working      = "$FindBin::Bin/..";
   $working         = $working =~ /gfe_Submission/ ? $working =~ s/gfe_submission/GFE_Submission/ : $working;
   my $outdir       = $working."/public/downloads";
-
-  my $s_path = `echo \$PATH`;chomp($s_path);
-
-  print STDERR Dumper(@INC),"\n";
-  print STDERR "WORKING - $working\n";
-  print STDERR "OUTDIR  - $outdir\n";
-  print STDERR "HAPDIR  - $s_hap1_dir\n";
+  my $s_path       = `echo \$PATH`;chomp($s_path);
 
   # Die if the require programs aren't installed
   die "hap1.0.jar is not installed!\n hap1.jar == $s_hap1 \n PATH == $s_path"
