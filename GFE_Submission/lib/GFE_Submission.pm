@@ -54,12 +54,12 @@ GFE_Submission - Service for getting a GFE from raw sequence data.
 
 =cut
 package GFE_Submission;
+use Dancer ':syntax';
 use strict;
 use warnings;
 
 use Dancer::Plugin::Swagger;
 use Data::Dumper;
-use Dancer ':syntax';
 use POSIX qw(strftime);
 use GFE_Submission::Definitions;
 use GFE_Submission::API;
@@ -73,13 +73,20 @@ our $VERSION = '0.0.1';
 
 prefix undef;
 
+=head2 after hook
+
+
+=cut
+hook 'after' => sub {
+    $o_gfe = GFE->new();
+    deleteOldFiles();
+};
 
 =head2 index
 
 
 =cut
 get '/' => sub {
-	deleteOldFiles();
     template 'index';
 };
 
@@ -137,6 +144,11 @@ get '/download' => sub {
 
 =head2 gfe
 
+    Route for displaying the webpage and UI. For the Swagger
+    interface refer to the GFE_Submission::API module and click
+    API from the main UI to see the Swagger UI.
+
+    ** Not the RESTful API - Refer to GFE_Submission::API **
 
 =cut
 get '/gfe' => sub {
@@ -144,7 +156,6 @@ get '/gfe' => sub {
 	my $url          = params->{'url'};
 	my $s_locus      = params->{'locus'};
 	my $s_sequence   = params->{'sequence'};
-
 
 	if(defined $h_cache{$s_locus}{$s_sequence}[0]){
 
@@ -154,18 +165,23 @@ get '/gfe' => sub {
 		};
 
 	}else{
-
+        $o_gfe->verbose(1);
         $o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
         my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
+        if(defined  $$rh_gfe{Error}){
+            template 'index', {
+                'Error'        => $$rh_gfe{Error}
+            };
+        }else{
+            push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{gfe});
+            push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure});
 
-        push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{gfe});
-        push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure});
-
-		template 'index', {
-		    'gfe'        => $$rh_gfe{gfe},
-		    'structures' => $$rh_gfe{structure}
-		};
-
+    		template 'index', {
+    		    'gfe'        => $$rh_gfe{gfe},
+    		    'structures' => $$rh_gfe{structure},
+                'log'        => $$rh_gfe{log}
+    		};
+        }
 	}
 	
 
@@ -174,9 +190,8 @@ get '/gfe' => sub {
 
 =head2 deleteOldFiles
 
-        Title:    deleteOldFiles
-        Usage:    
-        Function: 
+    Called in order to clear and old files that may have 
+    been generated
   
 =cut
 sub deleteOldFiles{
@@ -187,10 +202,10 @@ sub deleteOldFiles{
     my $g_csv1    = $o_gfe->annotate->directory."/*.csv";
     my $g_csv2    = $o_gfe->annotate->directory."/GFE/parsed-local/*.csv";
 
-    foreach my $s_file (glob("$g_fasta $g_csv1 g_csv2")){
+    foreach my $s_file (glob("$g_fasta $g_csv1 $g_csv2")){
         my @a_file = [$s_file, (stat $s_file)[9]];
         my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
-        if($s_file_created ne $date){
+        if($s_file_created eq $date){
             system("rm $s_file");
         }
     }
@@ -203,7 +218,7 @@ sub deleteOldFiles{
         foreach my $s_file (glob("$s_clu_dir $s_exon_dir $s_fasta_dir $s_protein_dir")){
             my @a_file = [$s_file, (stat $s_file)[9]];
             my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
-            if($s_file_created ne $date){
+            if($s_file_created eq $date){
                 system("rm $s_file");
             }
         }
@@ -212,4 +227,4 @@ sub deleteOldFiles{
 }
 
 
-1;
+true;

@@ -62,6 +62,7 @@ use warnings;
 use REST::Client;
 use JSON;
 
+use Log::Log4perl;
 use Data::Dumper;
 use Moose;
 
@@ -88,6 +89,7 @@ sub getAccesion{
     my($self,$s_locus,$s_term,$n_rank,$s_seq) = @_;
 
     my $n_retry = 0;
+    my $logger  = Log::Log4perl->get_logger();
 
     RETRY:
 
@@ -110,14 +112,19 @@ sub getAccesion{
     $client->POST('/features', $json_request, {});
 
     my $json_response = $client->responseContent;
-    my $response  = JSON::from_json($json_response);
+    my $response      = JSON::from_json($json_response);
 
     if(!defined $$response{accession}){
         if($n_retry < 6){ 
             $n_retry++;
+            $logger->info("Retrying submission to GFE service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank));
             goto RETRY;
         }else{
-            warn "No accession number could be assigned! $!\n";
+            $logger->error("No accession number could be assigned! $!");
+            $logger->error("LOCUS     $s_locus");
+            $logger->error("TERM      $s_term");
+            $logger->error("RANK      $n_rank");
+            $logger->error("SEQUENCE  $s_seq");
         }
     }
 

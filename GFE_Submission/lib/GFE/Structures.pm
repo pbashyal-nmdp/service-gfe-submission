@@ -61,8 +61,8 @@ use strict;
 use warnings;
 use FindBin;
 use Moose;
- 
 
+use Log::Log4perl;
 
 has 'hla' => (
     isa=>'HashRef[ArrayRef[Str]]',

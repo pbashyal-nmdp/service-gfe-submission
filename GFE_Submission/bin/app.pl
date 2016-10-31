@@ -56,5 +56,5 @@ hook before_template => sub {
        $tokens->{'ars_reduxfile_url'} = uri_for('/gfe');
 };
 
-start;
+dance;
 

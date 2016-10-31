@@ -70,17 +70,44 @@
       </div>
 
 
-<% IF error.defined %>
+<% IF Error.defined %>
   <ul class="list-group">
     <div class="panel panel-danger">
       <div class="panel-heading">
         <h3 class="panel-title"><% error %></h3>
      </div>
-      <div class="panel-body">
-        <% error_glstring %>
-      </div>
+     <% IF Error.$Message.defined %>
+        <div class="panel-body">
+          <% Error.$Message %>
+        </div>
+      <% END %>
     </div>
   </ul>
+
+    <div class="table-responsive" >
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Locus&nbsp </th>
+            <th>Term </th>
+            <th>Rank </th>
+            <th>Accession </th>
+            <th>Sequence </th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr class="panel panel-danger"> 
+              <td><% structure.locus %></td>
+              <td><% structure.term %></td>
+              <td><% structure.rank %></td> 
+              <td><% structure.accession %></td>
+              <td><% structure.sequence %></td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
 <% ELSIF structures.defined %>
 
 

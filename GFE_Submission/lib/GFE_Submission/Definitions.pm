@@ -13,6 +13,7 @@ use Dancer ':syntax';
 use Dancer::Plugin::Swagger;
 
 
+
 =head2 SubjectARS
 
 
@@ -23,7 +24,8 @@ swagger_definition 'GfeSubmission' => {
     properties => {
         locus => { type => 'string' },
     	sequence => { type => 'string' },
-    	url => { type => 'string' }
+    	url => { type => 'string' },
+        verbose => {type => 'boolean'}
     },
     example => {
         locus   => 'HLA-A',
@@ -41,6 +43,9 @@ swagger_definition 'Gfe' => {
     required   => [ 'gfe','structure' ],
     properties => {
         gfe => { type => 'string' },
+        log => { type => 'array',
+            items => { type => 'string' }
+        },
         structure => { type => 'array',
             items => {'$ref' => "#/definitions/Structure" }
         },
@@ -64,6 +69,29 @@ swagger_definition 'Gfe' => {
           }
         ]
     }
+};
+
+
+=head2 SubjectARS
+
+                locus    => $s_locus,
+                sequence => $s_seq,
+                type     => "GFE",
+                file     => $s_aligned_file,
+                log      => \@a_log
+=cut
+swagger_definition 'Error' => {
+    type => 'object',
+    required   => [ 'Message' ],
+    properties => {
+        Message => { type => 'string' },
+        sequence => { type => 'string' },
+        type => { type => 'string' },
+        file => { type => 'string' },
+        log => { type => 'array',
+            items => { type => 'string' }
+        },
+    },
 };
 
 =head2 Structure

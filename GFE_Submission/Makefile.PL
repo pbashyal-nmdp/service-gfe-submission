@@ -1,4 +1,3 @@
-#!/usr/bin/env perl
 =head1 NAME
  
 Makefile
@@ -55,7 +54,9 @@ WriteMakefile(
         'Moose'      => 0,
         'Dancer'     => 1.3142,
         'JSON'       => 0,
-        'Dancer::Plugin::Swagger' => 0
+        'Dancer::Plugin::Swagger' => 0,
+        'Log::Log4perl' => 0
+
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'GFE_Submission-*' },

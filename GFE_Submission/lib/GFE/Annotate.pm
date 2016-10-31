@@ -56,6 +56,7 @@ use warnings;
 use Math::Round;
 use Data::Dumper;
 use POSIX qw(strftime);
+use Log::Log4perl;
 use FindBin;
 use Moose;
 
@@ -115,17 +116,22 @@ has 'order' =>(
 sub makeFasta{
 
   my($self,$s_locus,$s_seq) = @_;
+
+  my $logger = Log::Log4perl->get_logger();
   $self->locus($s_locus);
   $self->fileid($self->getId());
 
   # Making fasta files to pass to hap1.jar
-  open(my $fh_fasta,">",$self->fasta) or die "CANT OPEN FILE $! $0";
+  open(my $fh_fasta,">",$self->fasta) or die $logger->error("CANT OPEN FILE $! $0");
+
+  # ** clustalo requires there to be at least 2 sequences ** #
   print $fh_fasta ">$s_locus 1\n";
   print $fh_fasta $s_seq."\n";
   print $fh_fasta ">$s_locus 2\n";
   print $fh_fasta $s_seq."\n";
   close $fh_fasta;
 
+  return $self->fasta;
 }
 
 
@@ -138,13 +144,12 @@ sub makeFasta{
     Args:      
 
 =cut
-sub alignment_fh{
+sub alignment_file{
   my ( $self )       = @_;
   my $s_loc = $self->locus;
   $s_loc =~ s/HLA-//g;
   my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."HLA_".$s_loc."_reformat.csv";
-  open(my $fh_align,"<",$s_aligned_file) or die "CANT OPEN FILE $! $0";
-  return $fh_align;
+  return $s_aligned_file;
 }
 
 =head2 align
@@ -159,6 +164,8 @@ sub alignment_fh{
 sub align{
 
   my ( $self )       = @_;
+
+  my $logger       = Log::Log4perl->get_logger();
   my $s_locus      = $self->locus;
   my $s_fasta_file = $self->fasta;
   my $s_loc = $s_locus !~ /HLA-/ ? "HLA-".$s_locus : $s_locus;
@@ -168,9 +175,9 @@ sub align{
   my $exit_value = system(join("",@args));
 
   if($exit_value != 0){
-    print STDERR "system @args failed: $?\n";
+    $logger->error("system @args failed: $?");
   }
-  
+
   return $exit_value;
 }
 
@@ -199,6 +206,52 @@ sub getId{
 
 }
 
+=head2 cleanup
+
+    Title:     cleanup
+    Usage:     deletes files after finished executing
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub cleanup{
+
+  my ( $self )       = @_;
+
+  # $self->fasta
+
+  # my $date      = strftime "%m-%d-%Y", localtime;
+  # my @a_loci    = ("HLA_A", "HLA_B", "HLA_C"); 
+  # my $g_fasta   = $o_gfe->annotate->outdir."/*.fasta";
+  # my $g_csv1    = $o_gfe->annotate->directory."/*.csv";
+  # my $g_csv2    = $o_gfe->annotate->directory."/GFE/parsed-local/*.csv";
+
+  # foreach my $s_file (glob("$g_fasta $g_csv1 $g_csv2")){
+  #     my @a_file = [$s_file, (stat $s_file)[9]];
+  #     my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
+  #     if($s_file_created eq $date){
+  #         system("rm $s_file");
+  #     }
+  # }
+
+  # foreach my $s_loc  (@a_loci){
+  #     my $s_clu_dir     = $o_gfe->annotate->directory."/output/clu/".$s_loc."/*.clu";
+  #     my $s_exon_dir    = $o_gfe->annotate->directory."/output/exon/".$s_loc."/*.txt";
+  #     my $s_fasta_dir   = $o_gfe->annotate->directory."/output/fasta/".$s_loc."/*.fasta";
+  #     my $s_protein_dir = $o_gfe->annotate->directory."/output/protein/".$s_loc."/*.fasta";
+  #     foreach my $s_file (glob("$s_clu_dir $s_exon_dir $s_fasta_dir $s_protein_dir")){
+  #         my @a_file = [$s_file, (stat $s_file)[9]];
+  #         my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
+  #         if($s_file_created eq $date){
+  #             system("rm $s_file");
+  #         }
+  #     }
+  # }
+
+
+}
+
 =head2 BUILDARGS
 
 
@@ -210,28 +263,43 @@ around BUILDARGS=>sub
   my $args=shift; #other arguments passed in (if any).
 
   my %h_loci_order = (
-    "HLA-A" => 0,
-    "HLA-B" => 1,
-    "HLA-C" => 2,
+    "HLA-A"    => 0,
+    "HLA-B"    => 1,
+    "HLA-C"    => 2,
     "HLA-DRB1" => 3,
     "HLA-DPB1" => 4,
     "HLA-DQB1" => 5
   );
 
-  my $s_hap1_dir=`which hap1.0.jar`;chomp($s_hap1_dir);
-  $s_hap1_dir =~ s/hap1\.0\.jar//;
-  $s_hap1_dir =~ s/\/$//;
+  my $s_hap1     =`which hap1.0.jar`;chomp($s_hap1);
+  my $s_clustalo =`which clustalo`;chomp($s_clustalo);
+
+  my $s_hap1_dir = $s_hap1;
+  $s_hap1_dir    =~ s/hap1\.0\.jar//;
+  $s_hap1_dir    =~ s/\/$//;
 
   my $working      = "$FindBin::Bin/..";
-  $working         = $working =~ /GFE_Submission/ ? $working =~ s/gfe_submission/GFE_Submission/ : $working;
+  $working         = $working =~ /gfe_Submission/ ? $working =~ s/gfe_submission/GFE_Submission/ : $working;
   my $outdir       = $working."/public/downloads";
 
-  my %h_ids = ( 0 => 1 );
+  # Die if the require programs aren't installed
+  die "hap1.0.jar is not installed!\n" 
+    if(!defined $s_hap1 || !-x $s_hap1);
 
-  $args->{outdir}=$outdir;
-  $args->{directory}=$s_hap1_dir;
-  $args->{order}=\%h_loci_order;
-  $args->{ids}=\%h_ids;
+  die "clustalo is not installed!\n" 
+    if(!defined $s_clustalo || !-x $s_clustalo);
+
+  die "Ouput directory doesn't exists! $outdir \n" 
+    if(!-d $outdir);
+
+  die "Working directory doesn't exists! $working \n" 
+    if(!-d $working);
+
+  my %h_ids = ( 0 => 1 );
+  $args->{outdir}    = $outdir;
+  $args->{directory} = $s_hap1_dir;
+  $args->{order}     = \%h_loci_order;
+  $args->{ids}       = \%h_ids;
   return $class->$orig($args);
 };
 
