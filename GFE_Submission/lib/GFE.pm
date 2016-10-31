@@ -185,14 +185,6 @@ CONFIG
 
     # Make fasta file from sequence
     my $s_fasta_file = $o_annotate->makeFasta($s_locus,$s_seq);
-    print STDERR "------ FASTA FILE ------\n";
-    open(my $fh_fasta,"<",$s_fasta_file) or die "CANT OPEN FASTA FILE $! $0";
-    while(<$fh_fasta>){
-        chomp;
-        print STDERR "FASTA - ".$_,"\n";
-    }
-    close $fh_fasta;
-
     if(!-e $s_fasta_file){
         $logger->error("Failed to create fasta file!");
         $logger->error($s_fasta_file);

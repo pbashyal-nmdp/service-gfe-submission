@@ -55,8 +55,20 @@ WriteMakefile(
         'Dancer'     => 1.3142,
         'JSON'       => 0,
         'Dancer::Plugin::Swagger' => 0,
-        'Log::Log4perl' => 0
-
+        'Log::Log4perl' => 0,
+        'JSON::Schema::AsType' => 0,
+        'Plack::Handler::Starman' => 0,
+        'Plack'       => 0,
+        'Template'      => 0,
+        'Getopt::Long'     => 1.3142,
+        'LWP::UserAgent'       => 0,
+        'Dancer::Plugin::Swagger' => 0,
+        'Net::SSLeay' => 0,
+        'JSON::Schema::AsType' => 0,
+        'IO::Socket::SSL' => 0,
+        'REST::Client' => 0,
+        'Math::Round' => 0,
+        'File::Spec' => 0
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'GFE_Submission-*' },

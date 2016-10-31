@@ -1,12 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
- 
-ARS_App - Service for doing ARS reduction
- 
-Version 1.0.0
-VERSION 1231
 
-=cut
+    GFE_Client
 
 =head1 SYNOPSIS
 
@@ -20,13 +15,15 @@ VERSION 1231
 
 =head1 DESCRIPTION
 
-
+    This script takes in the output of ngs-validate-interp and the observed file and generates
+    a static HTML website report.
 
 =head1 CAVEATS
-	
+    
 
 =head1 LICENSE
 
+    pipeline  Consensus assembly and allele interpretation pipeline.
     Copyright (c) 2015 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
@@ -46,85 +43,56 @@ VERSION 1231
     > http://www.gnu.org/licenses/lgpl.html
 
 =head1 VERSIONS
-	
-    Version    		Description             	Date
+    
+    Version    Description              Date
 
 
 =head1 TODO
-	
+    
 
 =head1 SUBROUTINES
 
 =cut
-package GFE::Client;
+package GFE_Client;
 use strict;
 use warnings;
+use Data::Dumper;
 use REST::Client;
 use JSON;
 
-use Data::Dumper;
-use Moose;
+our $VERSION = '0.1';
 
+=head2 redux
 
-has 'url' => (
-    is => 'rw',
-    isa => 'Str',
-    default => "http://feature.nmdp-bioinformatics.org",
-    required => 1
-);
-
-
-=head2 gfe_post
-
-    Title:     gfe_post
-    Usage:     
-    Function:  
-    Returns:  
-    Args:      
-
-=cut
-sub getAccesion{
     
-    my($self,$s_locus,$s_term,$n_rank,$s_seq) = @_;
+=cut
+sub getGfe{
 
-    my $n_retry = 0;
+    my($s_loc,$s_seq,$s_url) = @_;
 
-    RETRY:
-
-    my $s_url        = $self->url;
     my $request = {
-        "locus"    => $s_locus,
-        "term"     => $s_term,
-        "rank"     => $n_rank,
-        "sequence" => $s_seq
+        locus => $s_loc,
+        sequence => $s_seq
     };
     my $json_request = JSON::to_json($request);
-
     my $client = REST::Client->new({
-            host    => $self->url,
+            host    => $s_url,
         });
     $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
     $client->addHeader('Accept', 'application/json');
 
     # List of haplotypes based on the first population
-    $client->POST('/features', $json_request, {});
+    $client->POST('/api/v1/gfe', $json_request, {});
 
     my $json_response = $client->responseContent;
-    my $response  = JSON::from_json($json_response);
+    my $response = JSON::from_json($json_response);
 
-    if(!defined $$response{accession}){
-        if($n_retry < 6){ 
-            $n_retry++;
-            goto RETRY;
-        }else{
-            warn "No accession number could be assigned! $!\n";
-        }
-    }
-
-    return defined $$response{accession} ? $$response{accession} : 0;
+    return $response;
 
 }
 
 
-__PACKAGE__->meta->make_immutable;
+
+
+
 1;

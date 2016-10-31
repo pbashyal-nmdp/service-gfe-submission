@@ -49,19 +49,58 @@ http://localhost:5000/api/v1/gfe
 
 ```
 
-## Perl example
+## Perl client example
 
 ```perl
 
 #!/usr/bin/env perl
 =head1 NAME
  
- 	seq2gfe.pl
+ 	examples/ex1-client.pl
 	
 =head1 SYNOPSIS
 	
 	Simple perl script for turning raw sequence data
 	into GFE annotation. 
+ 
+=cut
+use strict;
+use warnings;
+use GFE_Client;
+
+our($s_locus,$s_seq,$s_url) = (undef,undef,undef);
+&GetOptions('locus|l=s'     => \$s_locus,
+			'seq|s=s'       => \$s_seq,
+			'url|u=s'       => \$s_url
+            );
+
+# Does alignment of sequence and submission of aligned
+# sequence to the GFE service.
+my $rh_gfe = GFE_Client::getGfe($s_locus,$s_seq,$s_url,$s_feature_url);;
+
+# Print out GFE
+print $$rh_gfe{gfe},"\n";
+
+```
+
+## Perl local example
+
+```perl
+
+#!/usr/bin/env perl
+=head1 NAME
+ 
+ 	examples/ex2-localgfe.pl
+	
+=head1 SYNOPSIS
+	
+	Simple perl script for turning raw sequence data
+	into GFE annotation. 
+
+	*************************************************
+	** This requires clustalo and hap1.0.jar to be **
+	** locally installed. ***************************
+	*************************************************
  
 =cut
 use strict;
@@ -94,12 +133,14 @@ print $$rh_gfe{gfe},"\n";
 ### Tools
 
 ```bash
-./gfe-submission-fasta [--uri] [--fasta] [--verbose] [--help]
-    -u/--uri
-    -v/--verbose
-    -h/--help
+./gfe-submission [--fasta] [--uri] [--verbose] [--help]
+            -f/--fasta      Fasta file
+            -u/--uri        URI of feature service
+            -l/--locus      HLA-Locus
+            -v/--verbose    Flag for running in verbose
+            -h/--help
 
-gfe-submission-fasta --fasta t/resources/A.test1.fasta -v > test1.gfe.csv
+gfe-submission --fasta t/resources/A.test1.fasta -l HLA-A -v 2> test1.gfe.log > test1.gfe.csv
 
 ```
 
@@ -108,6 +149,7 @@ gfe-submission-fasta --fasta t/resources/A.test1.fasta -v > test1.gfe.csv
 
 ```bash
 perl Makefile.PL
+make
 make test
 make install
 plackup -E deployment -s Starman --workers=10 -p 5050 -a bin/app.pl
@@ -131,12 +173,11 @@ plackup -E deployment -s Starman --workers=10 -p 5050 -a bin/app.pl
  * Dancer
  * Getopt::Long 
  * LWP::UserAgent 
- * Test::More Dancer
+ * Test::More
  * Dancer::Plugin::Swagger
-
-### Related Pages
-
- * [docker-ars](https://github.com/nmdp-bioinformatics/docker-ars)
- * [dockerhub](https://hub.docker.com/r/nmdpbioinformatics/docker-ars/)
-
-
+ * Log::Log4perl
+ * Net::SSLeay
+ * JSON::Schema::AsType
+ * IO::Socket::SSL
+ * REST::Client
+ * Math::Round

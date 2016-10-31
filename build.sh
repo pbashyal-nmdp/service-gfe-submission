@@ -19,13 +19,8 @@
 # 	> http://www.gnu.org/licenses/lgpl.html
 #################################################################################
 
-git clone https://github.com/mhalagan-nmdp/service-feature
-cd service-feature
-mvn install
-java -jar dropwizard/target/feature-dropwizard-1.0.6-SNAPSHOT.jar server
 
-cd ..
-cp GFE_Submission/public/downloads/hap1.0.tar.gz .
+cp docker/hap1.0.tar.gz .
 tar -xzf hap1.0.tar.gz
 sudo chmod a+x hap1.0/hap1.0.jar
 wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64
@@ -35,8 +30,11 @@ sudo chmod a+x hap1.0/clustalo
 working=`pwd`
 export PATH=$PATH:${working}/hap1.0
 
+# Something odd with hap1.0.jar renaming
+mv -i GFE_Submission gfe_submission
+
 # Install GFE_Submission and launch
-cd GFE_Submission
+cd gfe_submission
 sudo perl Makefile.PL
 sudo make test
 sudo make install

@@ -149,7 +149,7 @@
                             <a href="<% request.uri_base %>/doc">API</a>
                         </li>
                         <li>
-                            <a href="https://github.com/nmdp-bioinformatics/service-ars">Github</a>
+                            <a href="https://github.com/nmdp-bioinformatics/service-gfe-submission">Github</a>
                         </li>
                         <li>
                             <a href="<% request.uri_base %>/contact">Contact</a>
