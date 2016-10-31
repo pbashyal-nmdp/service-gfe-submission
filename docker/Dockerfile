@@ -17,7 +17,7 @@ RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && mv clustalo-1.2.3-Ubuntu-x86_64 /opt/hap1.0/clustalo \
     && chmod a+x /opt/hap1.0/clustalo \
     && export PATH=/opt/hap1.0:$PATH
-    && cd /opt && git clone --branch 0.0.4 https://github.com/mhalagan-nmdp/service-gfe-submission \
+    && cd /opt && git clone https://github.com/nmdp-bioinformatics/service-gfe-submission \
     && cd service-gfe-submission && mv -i GFE_Submission gfe_submission && cd gfe_submission \
     && perl Makefile.PL && make && make test && make install
 
