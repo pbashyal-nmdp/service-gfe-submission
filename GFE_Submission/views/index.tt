@@ -11,45 +11,49 @@
 -->
 
 <!-- Jumbotron Header -->
- <div style="border-style:solid;border-width:1px;border-color:black;margin-bottom:35px;margin-top:105px;box-shadow: 0px 0px 5px 0px grey;">
+
+<div class="center_div" style="font-family:Lobster;font-size: 2vw;margin-top:100px;margin-bottom:10px;width:65%;text-align:center;">
+    GFE Submission Service
+</div>
+ 
+ <div style="border-style:solid;border-width:1px;border-color:black;margin-bottom:35px;margin-top:0px;box-shadow: 0px 0px 5px 0px grey;">
+
           <header class="jumbotron  col-center-block" style="margin-bottom: 0px;width:100%;border-style:solid;">
-              <div class="center_div" style="font-family:Lobster;font-size: 2vw;margin-top:-30px;margin-bottom:0px;width:65%;text-align:center;">
-                  <h2 class="col-center-block" style="margin-bottom:0px;">GFE Submission Service</h2>
-              </div>
-              <div class="h-divider center_div"></div>
+
               <form id="gfeForm" enctype="multipart/form-data" action="<% gfe_url %>" method="GET">
                   <div class="center_div" style="width:80%;">
-                      <div class="row" style="margin-bottom:10px;">
-                          <div class="col-md-5" style="width:25%">
-                              <div class="input-group input-group-md">
-                                  <span class="input-group-addon" style="background-color:#f9f6f6;">HLA Locus</span>
-                                  <select class="form-control" class="selectpicker" data-max-options="1" name="locus">
-                                      <option>HLA-A</option>
-                                      <option>HLA-C</option>
-                                      <option>HLA-B</option>
-                                      <option>HLA-DRB1</option>
-                                      <option>HLA-DQB1</option>
-                                      <option>HLA-DPB1</option>
-                                  </select>
-                              </div>
-                              <!-- /input-group -->
-                          </div>
-                          <!-- /.col--6 -->
-                          <div class="col-md-5" style="width:40%;">
-                              <div class="input-group input-group-md">
-                                  <span class="input-group-addon" style="background-color:#f9f6f6;">GFE Url</span>
-                                  <input type="text" class="form-control" name="url" placeholder="http://feature.nmdp-bioinformatics.org" aria-describedby="sizing-addon3">
-                              </div>
-                              <!-- /input-group -->
-                          </div>
-                       
-    
+
+
+
+                    <div class="row" style="margin-top:0px;margin-bottom:10px;">
+     
+                      <div class="col-md-5" style="width:30%">
+                        <div class="form-group" style="margin-bottom:10px;">
+                          <label for="locus">Locus</label>
+                            <select class="form-control" class="selectpicker" data-max-options="1" name="locus">
+                                <option>HLA-A</option>
+                                <option>HLA-C</option>
+                                <option>HLA-B</option>
+                                <option>HLA-DRB1</option>
+                                <option>HLA-DQB1</option>
+                                <option>HLA-DPB1</option>
+                            </select>
+                        </div>
                       </div>
-                      <!-- /.row -->
-                      <div class="input-group input-group-md col-md-5" style="margin-bottom:10px;width:100%;">
-                          <span class="input-group-addon" style="background-color:#f9f6f6;" id="sizing-addon3">Sequence</span>
-                          <input type="text" class="form-control" name="sequence" aria-describedby="sizing-addon3">
+
+                      <div class="col-md-5" style="width:70%">
+                        <div class="form-group" style="margin-bottom:10px;">
+                          <label for="url">Feature Service URL</label>
+                          <textarea class="form-control" name="url" rows="1"></textarea>
+                        </div>
                       </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:10px;width:100%;">
+                      <label for="sequence">Sequence</label>
+                      <textarea class="form-control" name="sequence" rows="3"></textarea>
+                    </div>
+
                       <div id="Demo-BS">
                           <input type="submit" id="form_button" class="btn btn-primary btn-md" onclick="<% gfe_url %>"></input>
                           <div>
@@ -70,17 +74,59 @@
       </div>
 
 
-<% IF error.defined %>
-  <ul class="list-group">
-    <div class="panel panel-danger">
-      <div class="panel-heading">
-        <h3 class="panel-title"><% error %></h3>
-     </div>
-      <div class="panel-body">
-        <% error_glstring %>
-      </div>
+<% IF Error.defined %>
+
+
+    <div class="table-responsive" >
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <% FOREACH key IN Error.keys %>
+              <% IF key != 'log' %>
+                <th><% key %></th>
+              <% END %>
+            <% END %>
+          </tr>
+        </thead>
+        <tbody>
+            <tr > 
+            <% FOREACH key IN Error.keys %>
+              <% IF key != 'log' %>
+                <td><% Error.$key %></td>
+              <% END %>
+            <% END %>
+            </tr>
+        </tbody>
+        </table>
     </div>
-  </ul>
+
+    <div class="table-responsive" >
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <% FOREACH key IN Error.keys %>
+              <% IF key == 'log' %>
+                <th>Logs</th>
+              <% END %>
+            <% END %>
+          </tr>
+        </thead>
+        <tbody>
+            
+            <% FOREACH key IN Error.keys %>
+              <% IF key == 'log' %>
+                <% FOREACH log IN Error.$key %>
+                  <tr> <td><% log %></td></tr>
+                <% END %>
+              <% END %>
+            <% END %>
+            
+        </tbody>
+        </table>
+    </div>
+
+
 <% ELSIF structures.defined %>
 
 

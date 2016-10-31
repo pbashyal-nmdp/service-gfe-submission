@@ -8,10 +8,10 @@ my $eumm_version = $ExtUtils::MakeMaker::VERSION;
 $eumm_version =~ s/_//;
 
 WriteMakefile(
-    NAME                => 'GFE',
+    NAME                => 'GFE_Client',
     AUTHOR              => q{Mike Halagan <mhalagan@nmdp.org>},
-    VERSION_FROM        => 'lib/GFE.pm',
-    ABSTRACT            => 'GFE',
+    VERSION_FROM        => 'lib/GFE_Client.pm',
+    ABSTRACT            => 'GFE_Client',
     ($eumm_version >= 6.3001
       ? ('LICENSE'=> 'perl')
       : ()),

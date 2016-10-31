@@ -56,8 +56,11 @@ use warnings;
 use Math::Round;
 use Data::Dumper;
 use POSIX qw(strftime);
+use Log::Log4perl;
 use FindBin;
 use Moose;
+use Cwd;
+    
 
 has 'directory' => (
     is => 'rw',
@@ -115,17 +118,22 @@ has 'order' =>(
 sub makeFasta{
 
   my($self,$s_locus,$s_seq) = @_;
+
+  my $logger = Log::Log4perl->get_logger();
   $self->locus($s_locus);
   $self->fileid($self->getId());
 
   # Making fasta files to pass to hap1.jar
-  open(my $fh_fasta,">",$self->fasta) or die "CANT OPEN FILE $! $0";
+  open(my $fh_fasta,">",$self->fasta) or die $logger->error("CANT OPEN FILE $! $0");
+
+  # ** clustalo requires there to be at least 2 sequences ** #
   print $fh_fasta ">$s_locus 1\n";
   print $fh_fasta $s_seq."\n";
   print $fh_fasta ">$s_locus 2\n";
   print $fh_fasta $s_seq."\n";
   close $fh_fasta;
 
+  return $self->fasta;
 }
 
 
@@ -138,13 +146,12 @@ sub makeFasta{
     Args:      
 
 =cut
-sub alignment_fh{
+sub alignment_file{
   my ( $self )       = @_;
   my $s_loc = $self->locus;
   $s_loc =~ s/HLA-//g;
   my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."HLA_".$s_loc."_reformat.csv";
-  open(my $fh_align,"<",$s_aligned_file) or die "CANT OPEN FILE $! $0";
-  return $fh_align;
+  return $s_aligned_file;
 }
 
 =head2 align
@@ -159,18 +166,22 @@ sub alignment_fh{
 sub align{
 
   my ( $self )       = @_;
+
+  my $logger       = Log::Log4perl->get_logger();
   my $s_locus      = $self->locus;
   my $s_fasta_file = $self->fasta;
   my $s_loc = $s_locus !~ /HLA-/ ? "HLA-".$s_locus : $s_locus;
   my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.0.jar";
   my @args = ($s_hap1_cmd, " -g ".$self->order->{$s_loc}, " -i $s_fasta_file");
 
+  print STDERR "CMD: ".join("",@args)."\n";
+
   my $exit_value = system(join("",@args));
 
   if($exit_value != 0){
-    print STDERR "system @args failed: $?\n";
+    $logger->error("system @args failed: $?");
   }
-  
+
   return $exit_value;
 }
 
@@ -199,6 +210,22 @@ sub getId{
 
 }
 
+=head2 cleanup
+
+    Title:     cleanup
+    Usage:     deletes files after finished executing
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub cleanup{
+
+  my ( $self )       = @_;
+
+
+}
+
 =head2 BUILDARGS
 
 
@@ -210,27 +237,43 @@ around BUILDARGS=>sub
   my $args=shift; #other arguments passed in (if any).
 
   my %h_loci_order = (
-    "HLA-A" => 0,
-    "HLA-B" => 1,
-    "HLA-C" => 2,
+    "HLA-A"    => 0,
+    "HLA-B"    => 1,
+    "HLA-C"    => 2,
     "HLA-DRB1" => 3,
     "HLA-DPB1" => 4,
     "HLA-DQB1" => 5
   );
 
-  my $s_hap1_dir=`which hap1.0.jar`;chomp($s_hap1_dir);
-  $s_hap1_dir =~ s/hap1\.0\.jar//;
-  $s_hap1_dir =~ s/\/$//;
+  my $s_hap1     =`which hap1.0.jar`;chomp($s_hap1);
+  my $s_clustalo =`which clustalo`;chomp($s_clustalo);
 
-  my $working      = "$FindBin::Bin/..";
+  my $s_hap1_dir = $s_hap1;
+  $s_hap1_dir    =~ s/hap1\.0\.jar//;
+  $s_hap1_dir    =~ s/\/$//;
+
+  my $working      = getcwd;
   my $outdir       = $working."/public/downloads";
+  my $s_path       = `echo \$PATH`;chomp($s_path);
+
+  # Die if the require programs aren't installed
+  die "hap1.0.jar is not installed!\n hap1.jar == $s_hap1 \n PATH == $s_path"
+    if(!defined $s_hap1 || !-x $s_hap1);
+
+  die "clustalo is not installed!\n" 
+    if(!defined $s_clustalo || !-x $s_clustalo);
+
+  die "Ouput directory doesn't exists! $outdir \n" 
+    if(!-d $outdir);
+
+  die "Working directory doesn't exists! $working \n" 
+    if(!-d $working);
 
   my %h_ids = ( 0 => 1 );
-
-  $args->{outdir}=$outdir;
-  $args->{directory}=$s_hap1_dir;
-  $args->{order}=\%h_loci_order;
-  $args->{ids}=\%h_ids;
+  $args->{outdir}    = $outdir;
+  $args->{directory} = $s_hap1_dir;
+  $args->{order}     = \%h_loci_order;
+  $args->{ids}       = \%h_ids;
   return $class->$orig($args);
 };
 

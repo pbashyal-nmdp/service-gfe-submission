@@ -30,11 +30,6 @@ plugins:
         strict_validation: 1
         version: "1.0.0"
         title: GFE Submission Service
-        contact:
-          name: apiteam@swagger.io
-        license:
-          name: Apache 2.0
-          url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 # template: "template_toolkit"
 # engines:

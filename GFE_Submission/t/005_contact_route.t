@@ -10,5 +10,5 @@ use GFE_Submission::Definitions;
 use GFE_Submission::API;
 
 
-route_exists [GET => '/'], 'a route handler is defined for /';
-response_status_is [GET => '/'], 200, 'response status is 200 for /';
+route_exists [GET => '/contact'], 'a route handler is defined for /';
+response_status_is [GET => '/contact'], 200, 'response status is 200 for /';

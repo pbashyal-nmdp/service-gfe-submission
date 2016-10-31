@@ -49,7 +49,7 @@ use Test::More;
 use Data::Dumper;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
-use ARS_Client;
+use GFE_Client;
 my $number_of_tests_run = 0; # Number of tests run
 
 is(1,1);$number_of_tests_run++;
