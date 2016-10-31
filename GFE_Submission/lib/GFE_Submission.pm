@@ -169,7 +169,7 @@ get '/gfe' => sub {
         $o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
         my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
         if(defined  $$rh_gfe{Error}){
-            template 'index', {
+            template 'index', 404, {
                 'Error'        => $$rh_gfe{Error}
             };
         }else{
@@ -205,7 +205,7 @@ sub deleteOldFiles{
     foreach my $s_file (glob("$g_fasta $g_csv1 $g_csv2")){
         my @a_file = [$s_file, (stat $s_file)[9]];
         my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
-        if($s_file_created eq $date){
+        if($s_file_created ne $date){
             system("rm $s_file");
         }
     }
@@ -218,7 +218,7 @@ sub deleteOldFiles{
         foreach my $s_file (glob("$s_clu_dir $s_exon_dir $s_fasta_dir $s_protein_dir")){
             my @a_file = [$s_file, (stat $s_file)[9]];
             my $s_file_created = strftime("%m-%d-%Y", localtime $a_file[0]->[1]);
-            if($s_file_created eq $date){
+            if($s_file_created ne $date){
                 system("rm $s_file");
             }
         }
