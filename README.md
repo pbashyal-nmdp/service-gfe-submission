@@ -1,7 +1,8 @@
 # service-gfe-submission
-RESTful Service getting GFE results from raw sequence data
 
-[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)
+[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)[![](https://images.microbadger.com/badges/image/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own image badge on microbadger.com")[![](https://images.microbadger.com/badges/version/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own version badge on microbadger.com")
+
+RESTful Service getting GFE results from raw sequence data
 
 Further documentation is available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html)
 
@@ -157,12 +158,24 @@ make install
 plackup -E deployment -s Starman --workers=10 -p 5050 -a bin/app.pl
 ```
 
+
+## Docker
+
+```perl
+docker pull nmdpbioinformatics/service-gfe-submission
+docker run -d --name service-gfe-submission -p 80:8080 -p 81:8081 service-gfe-submission:latest
+```
+
 ### Required Software
 
  * Git, http://git.org
  * clustalo, http://www.clustal.org/omega
  * hap1.0, https://github.com/wwang-nmdp/HSA/tree/SeqAnn
  * perl 5.18 or later, http://perl.org
+
+### Dockerhub
+
+[hub.docker.com/](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission/)
 
 ### Perl Modules
 
