@@ -1,6 +1,8 @@
 # service-gfe-submission
 RESTful Service getting GFE results from raw sequence data
 
+[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)
+
 Further documentation is available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html)
 
 ## REST Calls
