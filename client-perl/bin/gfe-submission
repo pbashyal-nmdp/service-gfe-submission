@@ -4,7 +4,7 @@
     hla-typing-resolution
 
 =head1 SYNOPSIS
-	
+    
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
     
@@ -40,12 +40,12 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =head1 VERSIONS
-	
+    
     Version    Description              Date
 
 
 =head1 TODO
-	
+    
 
 =head1 SUBROUTINES
 
@@ -67,7 +67,7 @@ BEGIN{
             -h/--help
         };
 
-}
+}   
 use Getopt::Long;
 use lib "$FindBin::Bin/../lib";
 use GFE_Client;
@@ -79,13 +79,13 @@ our($s_fasta,$s_locus,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,und
             'url|u=s'        => \$s_url,
             'feature|f=s'    => \$s_feature_url,
             'locus|l=s'      => \$s_locus,
-			'verbose|v'      => \$b_verbose,
+            'verbose|v'      => \$b_verbose,
             'help|h'         => \$help,
             );
 # --help
 if($help){
-	exec('perldoc',$0);
-	die;
+    exec('perldoc',$0);
+    die;
 }
 
 my $rh_seq;
@@ -99,7 +99,7 @@ foreach my $s_seq (keys %$rh_seq){
     if(!defined $$rh_gfe{gfe}){
         print STDERR Dumper($$rh_gfe{Error}),"\n";
     }else{
-        print join("\t",$$rh_gfe{gfe},$s_seq),"\n";
+        print join("\t",$s_seq,$$rh_gfe{gfe}),"\n";
     }
 }
 
@@ -113,7 +113,6 @@ sub read_fasta_file {
     open (my $fh_seq,"<", $fasta_file) or die "can't open $fasta_file: $!\n";
     while (<$fh_seq>) {
         chomp;
-        print STDERR $_,"\n";
         if ($_ =~ />/) {
             if ($seq) {    
                 $seqs{$header} = $seq;

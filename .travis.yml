@@ -1,13 +1,27 @@
 sudo: required
 dist: trusty
 
-before_install:
-  - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
-  - sudo cpan YAML Plack Plack::Handler::Starman Template JSON Getopt::Long Data::Dumper LWP::UserAgent REST::Client Test::More Dancer
-  - sudo JSON::Schema::AsType Moose Math::Round File::Spec IO::Socket::SSL Net::SSLeay Dancer::Plugin::Swagger Log::Log4perl
+cache:
+  directories:
+  - perl_modules
+  - hap1.0
 
 env:
   global:
     - PERL_MM_USE_DEFAULT=1
+    - "PATH=$PATH:/hap1.0"
+
+before_install:
+  - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
+  - cp docker/hap1.0.tar.gz .
+  - tar -xvzf hap1.0.tar.gz
+  - chmod a+x hap1.0/hap1.0.jar
+  - wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64
+  - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.0/clustalo
+  - chmod a+x hap1.0/clustalo
+  - cd GFE_Submission
+  - curl -LO http://xrl.us/cpanm
+  - sudo perl cpanm --installdeps .
+  - cd ..
 
 script: "./build.sh"
