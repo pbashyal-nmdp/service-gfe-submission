@@ -1,6 +1,6 @@
 =head1 NAME
  
-Makefile
+Makefile.PL
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
     

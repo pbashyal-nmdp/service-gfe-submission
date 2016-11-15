@@ -4,21 +4,21 @@ dist: trusty
 cache:
   directories:
   - perl_modules
-  - hap1.0
+  - hap1.1
 
 env:
   global:
     - PERL_MM_USE_DEFAULT=1
-    - "PATH=$PATH:/hap1.0"
+    - "PATH=$PATH:/hap1.1"
 
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
-  - cp docker/hap1.0.tar.gz .
-  - tar -xvzf hap1.0.tar.gz
-  - chmod a+x hap1.0/hap1.0.jar
+  - cp docker/hap1.1.tar.gz .
+  - tar -xvzf hap1.1.tar.gz
+  - chmod a+x hap1.1/hap1.1.jar
   - wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64
-  - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.0/clustalo
-  - chmod a+x hap1.0/clustalo
+  - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.1/clustalo
+  - chmod a+x hap1.1/clustalo
   - cd GFE_Submission
   - curl -LO http://xrl.us/cpanm
   - sudo perl cpanm --installdeps .

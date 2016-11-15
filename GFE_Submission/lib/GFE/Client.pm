@@ -1,12 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
-ARS_App - Service for doing ARS reduction
- 
-Version 1.0.0
-VERSION 1231
-
-=cut
+Client
 
 =head1 SYNOPSIS
 
@@ -67,13 +62,17 @@ use Data::Dumper;
 use Moose;
 
 
-has 'url' => (
+has 'feature_url' => (
     is => 'rw',
     isa => 'Str',
-    default => "http://feature.nmdp-bioinformatics.org",
     required => 1
 );
 
+has 'retry' => (
+    is => 'rw',
+    isa => 'Int',
+    required => 1
+);
 
 =head2 gfe_post
 
@@ -93,7 +92,6 @@ sub getAccesion{
 
     RETRY:
 
-    my $s_url        = $self->url;
     my $request = {
         "locus"    => $s_locus,
         "term"     => $s_term,
@@ -103,7 +101,7 @@ sub getAccesion{
     my $json_request = JSON::to_json($request);
 
     my $client = REST::Client->new({
-            host    => $self->url,
+            host    => $self->feature_url,
         });
     $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
     $client->addHeader('Accept', 'application/json');
@@ -113,14 +111,13 @@ sub getAccesion{
 
     my $json_response = $client->responseContent;
     my $response      = JSON::from_json($json_response);
-
     if(!defined $$response{accession}){
-        if($n_retry < 6){ 
+        if($n_retry < $self->retry){ 
             $n_retry++;
             $logger->info("Retrying submission to GFE service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank));
             goto RETRY;
         }else{
-            $logger->error("No accession number could be assigned! $!");
+            $logger->error("No accession number could be assigned!");
             $logger->error("LOCUS     $s_locus");
             $logger->error("TERM      $s_term");
             $logger->error("RANK      $n_rank");
@@ -132,6 +129,79 @@ sub getAccesion{
 
 }
 
+=head2 gfe_post
+
+    Title:     gfe_post
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub getSequence{
+    
+    my($self,$s_locus,$s_term,$n_rank,$s_accesion) = @_;
+
+    my $n_retry = 0;
+    my $logger  = Log::Log4perl->get_logger();
+
+    RETRY:
+
+    my $request = {
+        "locus"     => $s_locus,
+        "term"      => $s_term,
+        "rank"      => $n_rank,
+        "accession" => $s_accesion
+    };
+    my $json_request = JSON::to_json($request);
+
+    my $client = REST::Client->new({
+            host    => $self->feature_url,
+        });
+    $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
+    $client->addHeader('Accept', 'application/json');
+
+    my $s_get_request = "/$s_locus/$s_term/$n_rank/$s_accesion";
+    # List of haplotypes based on the first population
+    $client->GET('/features'.$s_get_request);
+
+    my $json_response = $client->responseContent;
+    return if(!defined $json_response || $json_response !~ /\D/);
+
+    my $response      = JSON::from_json($json_response);
+    if(!defined $$response{sequence}){
+        if($n_retry < $self->retry){ 
+            $n_retry++;
+            $logger->info("Retrying accession submission to feature service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank,$s_accesion));
+            goto RETRY;
+        }else{
+            $logger->error("No sequence could be found!");
+            $logger->error("LOCUS      $s_locus");
+            $logger->error("TERM       $s_term");
+            $logger->error("RANK       $n_rank");
+            $logger->error("ACCESSION  $s_accesion");
+        }
+    }
+
+    return defined $$response{sequence} ? $$response{sequence} : '';
+
+}
+
+
+=head2 BUILDARGS
+
+
+=cut
+around BUILDARGS=>sub
+{
+  my $orig=shift;
+  my $class=shift;
+  my $args=shift; 
+
+  $args->{feature_url}    = "http://feature.nmdp-bioinformatics.org";
+  $args->{retry}          = 6;
+  return $class->$orig($args);
+};
 
 __PACKAGE__->meta->make_immutable;
 1;

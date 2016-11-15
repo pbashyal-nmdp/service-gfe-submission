@@ -1,12 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
-ARS_App - Service for doing ARS reduction
- 
-Version 1.0.0
-VERSION 1231
-
-=cut
+Structures
 
 =head1 SYNOPSIS
 
@@ -66,9 +61,16 @@ use Log::Log4perl;
 
 has 'hla' => (
     isa=>'HashRef[ArrayRef[Str]]',
-    is=>'rw',
+    is=>'ro',
     required => 1
 );
+
+has 'gfe_length' => (
+    isa=>'HashRef[Str]',
+    is=>'ro',
+    required => 1
+);
+
 
 =head2 getStruct
 
@@ -76,9 +78,24 @@ has 'hla' => (
 =cut
 sub getStruct{
   my($self,$s_locus) = @_;
-  $s_locus = $s_locus !~ /HLA-/ ? "HLA-".$s_locus : $s_locus;
   return $self->{hla}->{$s_locus};
 }
+
+=head2 invalidGfe
+
+
+=cut
+sub invalidGfe{
+  my($self,$s_loc,$s_gfe) = @_;
+
+  my $logger  = Log::Log4perl->get_logger();
+
+  return 0 if $self->{gfe_length}->{$s_loc} == (scalar split(/-/,$s_gfe));
+
+  $logger->error((scalar split(/-/,$s_gfe))." != ".$self->{gfe_length}->{$s_loc});
+  return 1;
+}
+
 
 =head2 BUILDARGS
 
@@ -91,9 +108,9 @@ around BUILDARGS=>sub
   my $args=shift; #other arguments passed in (if any).
 
   my %config_hash;
-  my @loci = ("HLA-A", "HLA-B", "HLA-C","HLA-DPB1","HLA-DQB1","HLA-DRB1"); 
+  my @a_loci = ("HLA-A", "HLA-B", "HLA-C","HLA-DPB1","HLA-DQB1","HLA-DRB1","KIR3DL2"); 
   # load structures
-  foreach my $s_locus (@loci) {
+  foreach my $s_locus (@a_loci) {
     my $s_loc = $s_locus;
     $s_loc =~ s/HLA-//g;
     my $structure_file = "$FindBin::Bin/../lib/files/$s_loc.structure";
@@ -106,7 +123,13 @@ around BUILDARGS=>sub
     close $fh_struct;
   }
 
+  my %h_gfe_l;
+  foreach my $s_loc (@a_loci){
+    $h_gfe_l{$s_loc} = $#{$config_hash{$s_loc}} + 2;
+  }
+
   $args->{hla}=\%config_hash;
+  $args->{gfe_length}=\%h_gfe_l;
 
   return $class->$orig($args);
 };

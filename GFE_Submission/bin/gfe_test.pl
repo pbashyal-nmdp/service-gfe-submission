@@ -6,128 +6,39 @@ use Getopt::Long;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use GFE;
+use GFE::Client;
+use GFE::Annotate;
 
+my $o_client = GFE::Client->new();
+
+my $s_seq = $o_client->getSequence("HLA-A","exon",1,1);
+print STDERR $s_seq,"\n";
 
 my $o_gfe  = GFE->new();
 
 $o_gfe->verbose(1);
+$o_gfe->return_structure(1);
 my $rh_gfe = $o_gfe->getGfe("HLA-A","TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG");
 
-print Dumper($$rh_gfe{log}),"\n";
-
-# my $o_client = GFE::Client->new();
-
-# my($self,$s_locus,$s_term,$n_rank,$s_seq) = @_;
-
-# my $n_accession = $o_client->getAccesion("HLA-A","exon","1","ATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGG");
-
-# print STDERR "Accession: ",$n_accession,"\n";
-# use REST::Client;
-# use JSON;
-
-# our($s_locus,$s_fasta,$b_verbose,$help) = (undef,undef,undef,undef);
-
-# &GetOptions('locus|l=s'      => \$s_locus,
-# 			'fasta|f=s'	     => \$s_fasta,
-# 			'verbose|v'      => \$b_verbose,
-#             'help|h'         => \$help,
-#             );
-
-# if($help){
-# 	exec('perldoc',$0);
-# 	die;
-# }
-
-# my %h_loci = (
-# 	"A" => 0,
-# 	"B" => 1,
-# 	"C" => 2,
-# 	"DRB1" => 3,
-# 	"DPB1" => 4,
-# 	"DQB1" => 5
-# );
+print Dumper($rh_gfe),"\n";
 
 
-# $s_locus     =~ s/HLA-//g;
-# my $s_loc    = $h_loci{$s_locus}; 
-# my $tmp_file = $s_locus.".gfe.fasta";
-# system("cp $s_fasta $tmp_file");
+my $s_fasta_file = "/Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-submission/GFE_Submission/Tmp.fasta";
 
-# my $hap1  = "java -jar $FindBin::Bin/../../hap1.0/hap1.0.jar";
-# my $cmd   = $hap1." -g $s_loc -i $tmp_file";
-# system($cmd);
-# system("rm $tmp_file");
-
-# my $lc_loc    = lc $s_locus;
-# my $out_dir   = "$FindBin::Bin/../../hap1.0/GFE/parsed-local";
-
-# my %h_gfe;
-# my $s_url        = "http://feature.nmdp-bioinformatics.org/";
-# my $hap1_file    = $out_dir."/".$lc_loc."HLA_".$s_locus."_reformat.csv";
-# open(my $fh_in,"<",$hap1_file) or die "CANT OPEN FILE $! $0";
-# while(<$fh_in>) {
-# 	chomp;
-# 	tr/\r//d;
-# 	my ($id, $allele, $anum, $term, $rank, $seq) = split /\,/;
-# 	my ($locus) = (split /\*/, $allele)[0];
-# 	$locus = defined $locus ? $locus : $s_locus;
-# 	$term = "five_prime_UTR"  if $term eq "Five_prime-UTR";
-# 	$term = "three_prime_UTR" if $term eq "Three_prime-UTR";
-
-# 	$locus = $locus !~ /HLA-/ ? "HLA-".$locus : $locus;
-# 	my %h_params = (
-# 	  "locus"    => $locus,
-# 	  "term"     => $term,
-# 	  "rank"     => $rank,
-# 	  "sequence" => $seq
-# 	);
-# 	my $rh_gfe_reponse = gfe_post(\%h_params);
+my $rh_gfe2 = $o_gfe->getGfeFasta("HLA-A",$s_fasta_file);
+print Dumper($rh_gfe2),"\n";
 
 
-# }
-# close $fh_in;
+my $o_annotate = GFE::Annotate->new();
+$o_annotate->setFasta("HLA-A",$s_fasta_file);
 
 
-# # my $s_output     = $s_loc.".features.txt";
-# # my $feature_tool = "/Users/mhalagan/research/service-feature/tools/target/appassembler/bin/feature-tools";
+my $s_file = (split(/\//,$s_fasta_file))[  scalar( @{[ $s_fasta_file=~/\//gi ]} ) ];
+my $s_pref = (split(/\//,$s_file))[0];
+$o_annotate->fasta($s_fasta_file);
+$o_annotate->fileId($s_pref);
 
-# # my $feature_cmd  = $feature_tool." -u $s_url -i $request_file -o $s_output";
-
-# # print STDERR $feature_cmd,"\n";
-# # #system($feature_cmd);
-
-
-
-# # print Dumper(%$rh_gfe_reponse),"\n";
-
-# sub gfe_post{
-
-# 	my($rh_params) = @_;
-
-# 	my $s_url        = "http://feature.nmdp-bioinformatics.org/";
-# 	my $request = {
-# 		%$rh_params
-# 	};
-# 	my $json_request = JSON::to_json($request);
-
-# 	my $client = REST::Client->new({
-# 			host    => $s_url,
-# 		});
-# 	$client->addHeader('Content-Type', 'application/json;charset=UTF-8');
-# 	$client->addHeader('Accept', 'application/json');
-
-# 	# List of haplotypes based on the first population
-# 	$client->POST('/features', $json_request, {});
-
-# 	my $json_response = $client->responseContent;
-# 	my $response = JSON::from_json($json_response);
-
-# 	return $response;
-
-# }
-
-
-
-
+print Dumper($o_annotate),"\n";
+ 
 
 
