@@ -76,7 +76,7 @@ has 'outdir' => (
 
 has 'fileid' => (
     is => 'rw',
-    isa => 'Int',
+    isa => 'Str',
     predicate => 'has_fileid',
 );
 
@@ -136,10 +136,35 @@ sub makeFasta{
   return $self->fasta;
 }
 
+=head2 setFasta
 
-=head2 alignment_fh
+    Title:     setFasta
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
 
-    Title:     alignment_fh
+=cut
+sub setFasta{
+
+  my($self,$s_locus,$s_fasta_file) = @_;
+
+  my $logger = Log::Log4perl->get_logger();
+  my $s_file = (split(/\//,$s_fasta_file))[  scalar( @{[ $s_fasta_file=~/\//gi ]} ) ];
+  my $s_pref = (split(/\./,$s_file))[0];
+
+  $self->fasta($s_fasta_file);
+  $self->fileid($s_pref);
+  $self->locus($s_locus);
+
+  $logger->info("Fasta file: $s_fasta_file");
+
+}
+
+
+=head2 alignment_file
+
+    Title:     alignment_file
     Usage:     
     Function:  
     Returns:  
@@ -148,9 +173,12 @@ sub makeFasta{
 =cut
 sub alignment_file{
   my ( $self )       = @_;
-  my $s_loc = $self->locus;
-  $s_loc =~ s/HLA-//g;
-  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."HLA_".$s_loc."_reformat.csv";
+
+  my $logger         = Log::Log4perl->get_logger();
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+
+  $logger->info("Alignment file: $s_aligned_file");
+
   return $s_aligned_file;
 }
 
@@ -170,11 +198,9 @@ sub align{
   my $logger       = Log::Log4perl->get_logger();
   my $s_locus      = $self->locus;
   my $s_fasta_file = $self->fasta;
-  my $s_loc = $s_locus !~ /HLA-/ ? "HLA-".$s_locus : $s_locus;
-  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.0.jar";
-  my @args = ($s_hap1_cmd, " -g ".$self->order->{$s_loc}, " -i $s_fasta_file");
-
-  print STDERR "CMD: ".join("",@args)."\n";
+  my $s_loc = $s_locus !~ /HLA-/ && $s_locus !~ /KIR/ ? "HLA-".$s_locus : $s_locus;
+  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.1.jar";
+  my @args = ($s_hap1_cmd, " -g ".$self->order->{$s_loc}, " -i $s_fasta_file"," -o ".$self->directory."/GFE/parsed-local/");
 
   my $exit_value = system(join("",@args));
 
@@ -198,7 +224,7 @@ sub getId{
 
   my ( $self )       = @_;
   my $n_randid     = round(rand(1000));
-  my $s_fasta_file = $self->outdir."/".$n_randid.".gfe.fasta";
+  my $s_fasta_file = $self->outdir."/".$n_randid.".fasta";
 
   if(defined $self->ids->{$n_randid} && !-e $s_fasta_file){
     return $self->getId();
@@ -237,19 +263,36 @@ around BUILDARGS=>sub
   my $args=shift; #other arguments passed in (if any).
 
   my %h_loci_order = (
-    "HLA-A"    => 0,
-    "HLA-B"    => 1,
-    "HLA-C"    => 2,
+    "HLA-A" => 0,
+    "HLA-B" => 1,
+    "HLA-C" => 2,
     "HLA-DRB1" => 3,
     "HLA-DPB1" => 4,
-    "HLA-DQB1" => 5
+    "HLA-DQB1" => 5,
+    "PB-DRB1" => 6,
+    "PB-DPB1" => 7,
+    "PB-DQB1" => 8,
+    "KIR3DP1" => 9,
+    "KIR2DL4" => 10,
+    "KIR2DL5A" => 11,
+    "KIR2DL5B" => 12,
+    "KIR2DS1" => 13,
+    "KIR2DS2" => 14,
+    "KIR2DS3" => 15,
+    "KIR2DS4" => 16,
+    "KIR2DS5" => 17,
+    "KIR3DL3" => 18,
+    "KIR3DL1" => 19,
+    "KIR3DL2" => 20,
+    "KIR2DP1" => 21,
+    "KIR3DS1" => 22
   );
 
-  my $s_hap1     =`which hap1.0.jar`;chomp($s_hap1);
+  my $s_hap1     =`which hap1.1.jar`;chomp($s_hap1);
   my $s_clustalo =`which clustalo`;chomp($s_clustalo);
 
   my $s_hap1_dir = $s_hap1;
-  $s_hap1_dir    =~ s/hap1\.0\.jar//;
+  $s_hap1_dir    =~ s/hap1\.1\.jar//;
   $s_hap1_dir    =~ s/\/$//;
 
   my $working      = getcwd;
@@ -257,7 +300,7 @@ around BUILDARGS=>sub
   my $s_path       = `echo \$PATH`;chomp($s_path);
 
   # Die if the require programs aren't installed
-  die "hap1.0.jar is not installed!\n hap1.jar == $s_hap1 \n PATH == $s_path"
+  die "hap1.1.jar is not installed!\n hap1.1.jar == $s_hap1 \n PATH == $s_path"
     if(!defined $s_hap1 || !-x $s_hap1);
 
   die "clustalo is not installed!\n" 

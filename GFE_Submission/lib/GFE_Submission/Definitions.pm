@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
-MyApp - Dancing Web Service
+GFE_Submission::Definitions
  
 =cut
 
@@ -14,7 +14,7 @@ use Dancer::Plugin::Swagger;
 
 
 
-=head2 SubjectARS
+=head2 GfeSubmission
 
 
 =cut
@@ -22,10 +22,12 @@ swagger_definition 'GfeSubmission' => {
     type => 'object',
     required   => [ 'locus','sequence'],
     properties => {
-        locus => { type => 'string' },
-    	sequence => { type => 'string' },
-    	url => { type => 'string' },
-        verbose => {type => 'boolean'}
+        locus      => { type => 'string'  },
+        retry      => { type => 'integer' },
+    	sequence   => { type => 'string'  },
+    	url        => { type => 'string'  },
+        verbose    => { type => 'boolean' },
+        structures => { type => 'boolean' }
     },
     example => {
         locus   => 'HLA-A',
@@ -34,15 +36,100 @@ swagger_definition 'GfeSubmission' => {
 };
 
 
-=head2 SubjectARS
+=head2 SequenceSubmission
+
+
+=cut
+swagger_definition 'SequenceSubmission' => {
+    type => 'object',
+    required   => [ 'gfe','locus'],
+    properties => {
+        locus      => { type => 'string'  },
+        gfe        => { type => 'string'  },
+        retry      => { type => 'integer' },
+        url        => { type => 'string'  },
+        verbose    => { type => 'boolean' },
+        structures => { type => 'boolean' }
+    },
+    example => {
+        locus   => 'HLA-A',
+        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
+        verbose => 1
+    }
+};
+
+=head2 FastaSubmission
+
+
+=cut
+swagger_definition 'FastaSubmission' => {
+    type => 'object',
+    required   => [ 'locus','fastafile'],
+    properties => {
+        locus      => { type => 'string'  },
+        retry      => { type => 'integer' },
+        fasta      => { type => 'file'  },
+        url        => { type => 'string'  },
+        verbose    => { type => 'boolean' },
+        structures => { type => 'boolean' }
+    },
+    example => {
+        locus   => 'HLA-A',
+        fasta   => 'public/downloads/FastaTest.fasta',
+        verbose => 1,
+        structures => 1
+    }
+};
+
+=head2 Sequence
+
+
+=cut
+swagger_definition 'Sequence' => {
+    type => 'object',
+    required   => [ 'sequence','version' ],
+    properties => {
+        sequence => { type => 'string' },
+        log => { type => 'array',
+            items => { type => 'string' }
+        },
+        structure => { type => 'array',
+            items => {'$ref' => "#/definitions/Structure" }
+        },
+        version => { type => 'string' },
+    },
+    example => {
+        sequence   => 'TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG',
+        version => '1.0.0',
+        structure  => [
+            {
+            term   => 'exon',
+            rank   => 1,
+            accession => 1,
+            sequence => "ACTGACTG",
+            locus => "HLA-A"
+         },
+         {  
+            term   => 'exon',
+            rank   => 2,
+            accession => 23,
+            sequence => "ACTGACTG",
+            locus => "HLA-A"
+          }
+        ]
+    }
+};
+
+=head2 Gfe
 
 
 =cut
 swagger_definition 'Gfe' => {
     type => 'object',
-    required   => [ 'gfe','structure' ],
+    required   => [ 'gfe','version' ],
     properties => {
-        gfe => { type => 'string' },
+        gfe     => { type => 'string' },
+        version => { type => 'string' },
         log => { type => 'array',
             items => { type => 'string' }
         },
@@ -51,7 +138,87 @@ swagger_definition 'Gfe' => {
         },
     },
     example => {
-        gfe   => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
+        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
+        version => '1.0.0',
+        structure  => [
+            {
+            term   => 'exon',
+            rank   => 1,
+            accession => 1,
+            sequence => "ACTGACTG",
+            locus => "HLA-A"
+         },
+         {  
+            term   => 'exon',
+            rank   => 2,
+            accession => 23,
+            sequence => "ACTGACTG",
+            locus => "HLA-A"
+          }
+        ]
+    }
+};
+
+=head2 Fasta
+
+
+=cut
+swagger_definition 'Fasta' => {
+    type => 'object',
+    required   => [ 'subjects','version' ],
+    properties => {
+        version => { type => 'string' },
+        log => { type => 'array',
+            items => { type => 'string' }
+        },
+        subjects => { type => 'array',
+            items => {'$ref' => "#/definitions/Subject" }
+        },
+    },
+};
+
+
+
+=head2 Structure
+
+
+=cut
+swagger_definition 'Structure' => {
+    type => 'object',
+    required   => [ 'term','rank','accession','sequence','locus' ],
+    properties => {
+        term => { type => 'string' },
+        sequence => { type => 'string' },
+        locus => { type => 'string' },
+        rank => { type => 'integer' },
+        accession => { type => 'integer' },
+    },
+    example => {
+        term   => 'exon',
+        rank   => 1,
+        accession => 1,
+        sequence => "ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG",
+        locus => "HLA-A"
+    },
+};
+
+=head2 Subject
+
+
+=cut
+swagger_definition 'Subject' => {
+    type => 'object',
+    required   => [ 'id','gfe' ],
+    properties => {
+        gfe       => { type => 'string' },
+        id        => { type => 'string' },
+        structure => { type => 'array',
+            items => {'$ref' => "#/definitions/Structure" }
+        }
+    },
+    example => {
+        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
+        id      => '012312A',
         structure  => [
             {
             term   => 'exon',
@@ -72,52 +239,27 @@ swagger_definition 'Gfe' => {
 };
 
 
-=head2 SubjectARS
+=head2 Error
 
-                locus    => $s_locus,
-                sequence => $s_seq,
-                type     => "GFE",
-                file     => $s_aligned_file,
-                log      => \@a_log
+
 =cut
 swagger_definition 'Error' => {
     type => 'object',
-    required   => [ 'Message' ],
+    required   => [ 'Message','version' ],
     properties => {
-        Message => { type => 'string' },
-        sequence => { type => 'string' },
-        type => { type => 'string' },
-        file => { type => 'string' },
-        log => { type => 'array',
+        Message   => { type => 'string' },
+        sequence  => { type => 'string' },
+        type      => { type => 'string' },
+        accession => { type => 'string' },
+        file      => { type => 'string' },
+        gfe       => { type => 'string' },
+        term      => { type => 'string' },
+        rank      => { type => 'integer' },
+        version   => { type => 'string' },
+        log       => { type => 'array',
             items => { type => 'string' }
         },
     },
 };
-
-=head2 Structure
-
-
-=cut
-swagger_definition 'Structure' => {
-    type => 'object',
-    required   => [ 'term','rank','accession','sequence','locus' ],
-    properties => {
-        term => { type => 'string' },
-        sequence => { type => 'string' },
-        locus => { type => 'string' },
-        rank => { type => 'integer' },
-        accession => { type => 'integer' }
-    },
-    example => {
-        term   => 'exon',
-        rank   => 1,
-        accession => 1,
-        sequence => "ACTGACTG",
-        locus => "HLA-A"
-    },
-};
-
-
-
 
 1;

@@ -71,7 +71,7 @@ sub getGfe{
     my($s_loc,$s_seq,$s_url) = @_;
 
     my $request = {
-        locus => $s_loc,
+        locus    => $s_loc,
         sequence => $s_seq
     };
     my $json_request = JSON::to_json($request);
@@ -83,6 +83,35 @@ sub getGfe{
 
     # List of haplotypes based on the first population
     $client->POST('/api/v1/gfe', $json_request, {});
+
+    my $json_response = $client->responseContent;
+    my $response = JSON::from_json($json_response);
+
+    return $response;
+
+}
+
+=head2 redux
+
+    
+=cut
+sub getGfeFasta{
+
+    my($s_loc,$s_fasta,$s_url) = @_;
+
+    my $request = {
+        locus => $s_loc,
+        fasta => $s_fasta
+    };
+    my $json_request = JSON::to_json($request);
+    my $client = REST::Client->new({
+            host    => $s_url,
+        });
+    $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
+    $client->addHeader('Accept', 'application/json');
+
+    # List of haplotypes based on the first population
+    $client->POST('/api/v1/fasta', $json_request, {});
 
     my $json_response = $client->responseContent;
     my $response = JSON::from_json($json_response);

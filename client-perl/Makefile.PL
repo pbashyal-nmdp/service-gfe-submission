@@ -22,5 +22,5 @@ WriteMakefile(
         'Dancer'     => 1.3134,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'ARS_Clients-*' },
+    clean               => { FILES => 'GFE_Client-*' },
 );
