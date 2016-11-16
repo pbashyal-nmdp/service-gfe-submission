@@ -130,7 +130,9 @@ our($s_locus,$s_seq,$s_url) = (undef,undef,undef);
 
 # Does alignment of sequence and submission of aligned
 # sequence to the GFE service.
-my $rh_gfe = GFE_Client::getGfe($s_locus,$s_seq,$s_url);
+my $o_client = GFE_Client->new();
+$o_client->gfe_url($s_url) if defined $s_url;
+my $rh_gfe   = $o_client->getGfe($s_locus,$s_seq);
 
 # Print out GFE
 print $$rh_gfe{gfe},"\n";
