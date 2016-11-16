@@ -59,8 +59,27 @@ use warnings;
 use Data::Dumper;
 use REST::Client;
 use JSON;
+use Moose;
 
-our $VERSION = '0.1';
+our $VERSION = '1.0.2';
+
+has 'gfe_url' => (
+    is => 'rw',
+    isa => 'Str',
+    required => 1
+);
+
+has 'verbose' => (
+    is => 'rw',
+    isa => 'Bool',
+    required => 1
+);
+
+has 'structures' => (
+    is => 'rw',
+    isa => 'Bool',
+    required => 1
+);
 
 =head2 redux
 
@@ -68,7 +87,7 @@ our $VERSION = '0.1';
 =cut
 sub getGfe{
 
-    my($s_loc,$s_seq,$s_url) = @_;
+    my($self,$s_loc,$s_seq) = @_;
 
     my $request = {
         locus    => $s_loc,
@@ -76,7 +95,7 @@ sub getGfe{
     };
     my $json_request = JSON::to_json($request);
     my $client = REST::Client->new({
-            host    => $s_url,
+            host    => $self->gfe_url,
         });
     $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
     $client->addHeader('Accept', 'application/json');
@@ -97,15 +116,15 @@ sub getGfe{
 =cut
 sub getGfeFasta{
 
-    my($s_loc,$s_fasta,$s_url) = @_;
+    my($self,$s_loc,$s_fasta) = @_;
 
     my $request = {
         locus => $s_loc,
-        fasta => $s_fasta
+        file => $s_fasta
     };
     my $json_request = JSON::to_json($request);
     my $client = REST::Client->new({
-            host    => $s_url,
+            host    => $self->gfe_url,
         });
     $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
     $client->addHeader('Accept', 'application/json');
@@ -120,8 +139,23 @@ sub getGfeFasta{
 
 }
 
+=head2 BUILDARGS
 
 
+=cut
+around BUILDARGS=>sub
+{
+  my $orig=shift;
+  my $class=shift;
+  my $args=shift; 
+
+  $args->{gfe_url}    = "http://localhost:5000";
+  $args->{verbose}    = 1;
+  $args->{structures} = 1;
+  return $class->$orig($args);
+};
+
+__PACKAGE__->meta->make_immutable;
 
 
 1;
