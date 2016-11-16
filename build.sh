@@ -20,6 +20,8 @@
 #################################################################################
 set -e
 
+sudo su - root
+
 working=`pwd`
 PATH=$PATH:${working}/hap1.1:hap1.1
 
@@ -42,22 +44,22 @@ mv -i GFE_Submission gfe_submission
 
 # Install GFE_Submission and launch
 cd gfe_submission
-sudo perl Makefile.PL
-sudo make test
+perl Makefile.PL
+make test
 if [ "$?" != "0" ]; then
 	exit $?
 fi
-sudo make install
+make install
 
 # Run service
 plackup -D -E deployment -s Starman -p 5000 -a bin/app.pl
 
 # Install perl clients
 cd ../client-perl
-sudo perl Makefile.PL
-sudo make test
+perl Makefile.PL
+make test
 if [ "$?" != "0" ]; then
 	exit $?
 fi
-sudo make install
+make install
 
