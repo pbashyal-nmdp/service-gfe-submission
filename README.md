@@ -6,7 +6,7 @@ RESTful API and UI for getting GFE results from raw sequence data
 
 [![License](https://img.shields.io/badge/License-GNU%20General%20Public%20License%20v3.0-blue.svg)]()
 
-The Gene Feature Enumeration (GFE) Submission service provides an API for converting raw sequence data to GFE. It provides both a RESTful API and a simple user interface for converting raw sequence data to GFE results. Sequences can be submitted one at a time or as a fasta file. This service uses [nmdp-bioinformatics/service-feature](https://github.com/nmdp-bioinformatics/service-feature) for encoding the raw sequence data and [nmdp-bioinformatics/HSA](https://github.com/nmdp-bioinformatics/HSA) for aligning the raw sequence data. A public version of this service is available for use at gfe.b12x.org. Further documentation and tutorials are available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html).
+The Gene Feature Enumeration (GFE) Submission service provides an API for converting raw sequence data to GFE. It provides both a RESTful API and a simple user interface for converting raw sequence data to GFE results. Sequences can be submitted one at a time or as a fasta file. This service uses [nmdp-bioinformatics/service-feature](https://github.com/nmdp-bioinformatics/service-feature) for encoding the raw sequence data and [nmdp-bioinformatics/HSA](https://github.com/nmdp-bioinformatics/HSA) for aligning the raw sequence data. A public version of this service is available for use at [gfe.b12x.org](http://gfe.b12x.org). Further documentation and tutorials are available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html).
 
 
 
@@ -97,6 +97,11 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 --data '{"fasta":"public/downloads/FastaTest.fasta","locus":"HLA-A","structures": 0,"verbose":0}' 
 http://gfe.b12x.org/api/v1/fasta
 
+# Get GFE from HML file #
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 
+--data '{"fasta":"public/downloads/HmlTest.fasta","locus":"HLA-A","structures": 0,"verbose":0}' 
+http://gfe.b12x.org/api/v1/fasta
+
 # Sequence from GFE #
 curl --header "Content-type: application/json" --request POST
 --data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}'
@@ -113,16 +118,6 @@ curl http://gfe.b12x.org/api/v1/sequence?locus=HLA-A&gfe=HLA-Aw1-1-7-20-10-32-7-
 ```perl
 
 #!/usr/bin/env perl
-=head1 NAME
- 
- 	examples/ex1-client.pl
-	
-=head1 SYNOPSIS
-	
-	Simple perl script for turning raw sequence data
-	into GFE annotation. 
- 
-=cut
 use strict;
 use warnings;
 use GFE_Client;
@@ -181,20 +176,20 @@ docker run -d --name service-gfe-submission -p 5050:8080 service-gfe-submission:
 
 ### Required Software
 
- * Git, http://git.org
- * clustalo, http://www.clustal.org/omega
- * hap1.0, https://github.com/nmdp-bioinformatics/HSA
- * perl 5.18 or later, http://perl.org
+ * [Git](http://git.org)
+ * [clustalo](http://www.clustal.org/omega)
+ * [hap1.0](https://github.com/nmdp-bioinformatics/HSA)
+ * [perl 5.18 or later](http://perl.org)
 
 ### Related Links
 
- * hub.docker.com/r/nmdpbioinformatics/service-gfe-submission
- * service-gfe-submission.readthedocs.io/en/latest/index.html
- * github.com/nmdp-bioinformatics/service-feature 
- * github.com/nmdp-bioinformatics/HSA
- * bioinformatics.bethematchclinical.org
- * feature.nmdp-bioinformatics.org
- * gfe.b12x.org
+ * [hub.docker.com/r/nmdpbioinformatics/service-gfe-submission](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission)
+ * [service-gfe-submission.readthedocs.io](https://service-gfe-submission.readthedocs.io/en/latest/index.html)
+ * [github.com/nmdp-bioinformatics/service-feature](https://github.com/nmdp-bioinformatics/service-feature)
+ * [github.com/nmdp-bioinformatics/HSA](https://github.com/nmdp-bioinformatics/HSA)
+ * [bioinformatics.bethematchclinical.org](https://bioinformatics.bethematchclinical.org)
+ * [feature.nmdp-bioinformatics.org](https://feature.nmdp-bioinformatics.org)
+ * [gfe.b12x.org](http://gfe.b12x.org)
 
 <p align="center">
   <img src="https://bethematch.org/content/site/images/btm_logo.png">

@@ -48,5 +48,5 @@ my $rh_gfe         = $o_gfe->getGfe("HLA-A","TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCC
 
 ok(defined $$rh_gfe{gfe},"getGfe() successfully validated");
 
-my $s_gfe = "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0";
+my $s_gfe = "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1";
 ok($$rh_gfe{gfe} eq $s_gfe,"gfe matched expected");

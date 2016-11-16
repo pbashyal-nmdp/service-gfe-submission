@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 1;
+use Test::More tests => 2;
 use strict;
 use warnings;
 
@@ -41,7 +41,11 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use GFE;
 
-my $o_client       = GFE::Client->new(url => "http://localhost:3000");
+
+my $o_client       = GFE::Client->new();
+$o_client->feature_url("http://localhost:3000");
+ok(defined $o_client,"GFE Client Object created");
+
 my $o_gfe          = GFE->new();
 $o_gfe->client($o_client);
 

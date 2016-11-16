@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 9;
+use Test::More tests => 12;
 use strict;
 use warnings;
 use Data::Dumper;
@@ -61,4 +61,19 @@ my $r_invalid_loc = dancer_response POST => '/api/v1/gfe?locus=HLA-Z&sequence=TC
 ok(defined $r_invalid_loc->{content},"r_invalid_loc->{content} defined");
 ok(defined $r_invalid_loc->{content}->{type},"r_invalid_loc->{content}->{type} defined");
 ok($r_invalid_loc->{content}->{type} eq "Locus","r_invalid_loc->{content}->{type} eq Locus");
+
+
+my $r_invalid_gfe = dancer_response POST => '/api/v1/sequence?locus=HLA-A&gfe=HLA-Aw1-1-7-20-10-32-7-1-1-1';
+ok(defined $r_invalid_gfe->{content},"r_invalid_gfe->{content} defined");
+ok(defined $r_invalid_gfe->{content}->{type},"r_invalid_gfe->{content}->{type} defined");
+ok($r_invalid_gfe->{content}->{type} eq "GFE","r_invalid_gfe->{content}->{type} eq GFE");
+
+
+
+
+
+
+
+
+
 

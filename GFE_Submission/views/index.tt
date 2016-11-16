@@ -37,6 +37,7 @@
                                 <option>HLA-DRB1</option>
                                 <option>HLA-DQB1</option>
                                 <option>HLA-DPB1</option>
+                                <option>KIR3DL2</option>
                             </select>
                         </div>
                       </div>

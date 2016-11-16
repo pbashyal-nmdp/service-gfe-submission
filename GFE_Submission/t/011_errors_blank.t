@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 6;
+use Test::More tests => 9;
 use strict;
 use warnings;
 use Data::Dumper;
@@ -56,5 +56,7 @@ ok(defined $r_locus_blank->{content},"r_locus_blank->{content} defined");
 ok(defined $r_locus_blank->{content}->{type},"r_locus_blank->{content}->{type} defined");
 ok($r_locus_blank->{content}->{type} eq "Locus","r_locus_blank->{content}->{type} eq Locus");
 
-
-
+my $r_invalid_gfe = dancer_response POST => '/api/v1/sequence?locus=HLA-A&gfe=';
+ok(defined $r_invalid_gfe->{content},"r_invalid_gfe->{content} defined");
+ok(defined $r_invalid_gfe->{content}->{type},"r_invalid_gfe->{content}->{type} defined");
+ok($r_invalid_gfe->{content}->{type} eq "GFE","r_invalid_gfe->{content}->{type} eq GFE");

@@ -145,13 +145,13 @@ post '/sequence' => sub {
 
 =cut
 swagger_path {
-    description => 'Get Gene Feature Enumeration (GFE) from fasta file',
+    description => 'Get Gene Feature Enumeration (GFE) from HML file',
     parameters => [
         {
-            name => 'FastaSubmission',
+            name => 'HmlSubmission',
             type => 'object',
-            schema => { '$ref' => "#/definitions/FastaSubmission" },
-            description => 'GFE Submission',
+            schema => { '$ref' => "#/definitions/HmlSubmission" },
+            description => 'HML GFE Submission',
             in => 'body',
          }
     ],
@@ -162,19 +162,18 @@ swagger_path {
         },
 
         200 => {
-            description => 'Gene Feature Enumeration (GFE)',
-            schema  => { '$ref' => "#/definitions/Fasta" },
+            description => 'Gene Feature Enumeration (GFE) from HML file',
+            schema  => { '$ref' => "#/definitions/SubjectData" },
         },
     },
 },
-post '/fasta' => sub {
+post '/hml' => sub {
 
     my $s_url        = params->{'url'};
-    my $s_locus      = params->{'locus'};
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};
     my $b_structures = params->{'structures'};
-    my $s_fasta      = params->{'fasta'};
+    my $s_input_file = params->{'file'};
 
     my $o_gfe = GFE->new();
 
@@ -193,7 +192,69 @@ post '/fasta' => sub {
         $o_gfe->client($o_client);
     }
 
-    my $rh_gfe       = $o_gfe->getGfeFasta($s_locus,$s_fasta);
+    $o_gfe->return_structure(0);
+    my $rh_gfe       = $o_gfe->getGfeHml($s_input_file);
+
+    return defined $$rh_gfe{Error} ? swagger_template 404, $$rh_gfe{Error}
+        : swagger_template 200, $rh_gfe;
+
+};
+
+
+=head2 getGfeFasta API Call
+
+
+=cut
+swagger_path {
+    description => 'Get Gene Feature Enumeration (GFE) from fasta file',
+    parameters => [
+        {
+            name => 'FastaSubmission',
+            type => 'object',
+            schema => { '$ref' => "#/definitions/FastaSubmission" },
+            description => 'GFE Submission',
+            in => 'body',
+         }
+    ],
+    responses => {
+        404 => {
+            description => 'Failed to generate GFE',
+            schema => { '$ref' => "#/definitions/Error" },
+        },
+
+        200 => {
+            description => 'Gene Feature Enumeration (GFE) from fasta file',
+            schema  => { '$ref' => "#/definitions/SubjectData" },
+        },
+    },
+},
+post '/fasta' => sub {
+
+    my $s_url        = params->{'url'};
+    my $s_locus      = params->{'locus'};
+    my $n_retry      = params->{'retry'};
+    my $b_verbose    = params->{'verbose'};
+    my $b_structures = params->{'structures'};
+    my $s_input_file = params->{'file'};
+
+    my $o_gfe = GFE->new();
+
+    $o_gfe->return_structure($b_structures) 
+        if(defined $b_structures && $b_structures =~ /\S/);
+
+    $o_gfe->verbose($b_verbose) 
+        if(defined $b_verbose && $b_verbose =~ /\S/);
+
+    if(defined $s_url || defined $n_retry){
+        my $o_client = GFE::Client->new();
+        $o_client->feature_url($s_url) 
+            if(defined $s_url && $s_url =~ /\S/);
+        $o_client->retry($n_retry) 
+            if(defined $n_retry && $n_retry =~ /\S/);
+        $o_gfe->client($o_client);
+    }
+
+    my $rh_gfe      = $o_gfe->getGfeFasta($s_locus,$s_input_file);
 
     return defined $$rh_gfe{Error} ? swagger_template 404, $$rh_gfe{Error}
         : swagger_template 200, $rh_gfe;
