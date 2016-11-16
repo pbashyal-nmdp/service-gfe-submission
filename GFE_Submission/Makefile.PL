@@ -52,7 +52,7 @@ WriteMakefile(
         'Test::More' => 0,
         'YAML'       => 0,
         'Moose'      => 0,
-        'Dancer'     => 1.3142,
+        'Dancer'     => 1.3301,
         'JSON'       => 0,
         'Dancer::Plugin::Swagger' => 0,
         'Log::Log4perl' => 0,
