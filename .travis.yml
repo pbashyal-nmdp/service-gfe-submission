@@ -13,7 +13,7 @@ before_install:
   - wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64
   - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.1/clustalo
   - chmod a+x hap1.1/clustalo
-  - sudo cpan YAML Plack Plack::Handler::Starman Template JSON Getopt::Long Data::Dumper LWP::UserAgent REST::Client Test::More Dancer
-  - sudo cpan JSON::Schema::AsType Moose Math::Round File::Spec IO::Socket::SSL Net::SSLeay Dancer::Plugin::Swagger Log::Log4perl
+  - sudo cpan YAML Plack Plack::Handler::Starman Template JSON Getopt::Long Data::Dumper LWP::UserAgent REST::Client Test::More 
+  - sudo cpan JSON::Schema::AsType Dancer Moose Math::Round File::Spec IO::Socket::SSL Net::SSLeay Dancer::Plugin::Swagger Log::Log4perl
 
 script: "./build.sh"
