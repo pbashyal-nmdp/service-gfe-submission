@@ -25,16 +25,16 @@ PATH=$PATH:${working}/hap1.1:hap1.1
 
 #  ** Noted issue with hap1.1.jar **   #
 # hard coded config file has to change #
-sudo rm ${working}/hap1.1/config.txt
-echo ${working}/hap1.1/clustalo >> ${working}/hap1.1/config.txt
-echo "Mode,none"      >> ${working}/hap1.1/config.txt
-echo "Expand,false"   >> ${working}/hap1.1/config.txt
-echo "HLA_DRB1,i1,i3" >> ${working}/hap1.1/config.txt
-echo "HLA_DPB1,i1,i3" >> ${working}/hap1.1/config.txt
-echo "HLA_DQB1,i1,i3" >> ${working}/hap1.1/config.txt
-echo "PB_DRB1,i1,i3"  >> ${working}/hap1.1/config.txt
-echo "PB_DPB1,i1,i3"  >> ${working}/hap1.1/config.txt
-echo "PB_DQB1,i1,i3"  >> ${working}/hap1.1/config.txt
+# sudo rm ${working}/hap1.1/config.txt
+# echo ${working}/hap1.1/clustalo >> ${working}/hap1.1/config.txt
+# echo "Mode,none"      >> ${working}/hap1.1/config.txt
+# echo "Expand,false"   >> ${working}/hap1.1/config.txt
+# echo "HLA_DRB1,i1,i3" >> ${working}/hap1.1/config.txt
+# echo "HLA_DPB1,i1,i3" >> ${working}/hap1.1/config.txt
+# echo "HLA_DQB1,i1,i3" >> ${working}/hap1.1/config.txt
+# echo "PB_DRB1,i1,i3"  >> ${working}/hap1.1/config.txt
+# echo "PB_DPB1,i1,i3"  >> ${working}/hap1.1/config.txt
+# echo "PB_DQB1,i1,i3"  >> ${working}/hap1.1/config.txt
 
 #  ** Noted issue with hap1.1.jar **   #
 # Something odd with hap1.1.jar renaming
