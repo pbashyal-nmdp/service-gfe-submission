@@ -1,6 +1,6 @@
 =head1 NAME
  
-   007_gfe_new.t
+   020_file_fasta.t
 
 =head1 SYNOPSIS
 
@@ -33,16 +33,37 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 1;
+use Test::More tests => 6;
 use strict;
 use warnings;
+use Data::Dumper;
+# the order is important
+use Dancer::Test;
+use GFE_Submission;
+use Dancer::Plugin::Swagger;
+use GFE_Submission::Definitions;
+use GFE_Submission::API;
 
-use FindBin;
-use lib "$FindBin::Bin/../lib";
-use GFE;
 
-my $number_of_tests_run = 0; # Number of tests run
-my $o_gfe               = GFE->new();
+my $pwd          = `pwd`;chomp($pwd);
+my $t_file       = $pwd."/t/resources/fastatest1.fasta";
+my $r_fasta_file = dancer_response POST => '/api/v1/fasta?locus=HLA-A', {files => [{name => 'file', filename => $t_file}]};
 
-ok(defined $o_gfe,"GFE Object created");
+ok(defined $r_fasta_file->{content},"API successfully accepted a fasta file");
+ok(defined $r_fasta_file->{content}->{subjects},"API successfully subject GFE results from fasta");
+ok(defined $r_fasta_file->{content}->{subjects}[1],"size subjects > 0");
+ok(defined $r_fasta_file->{content}->{subjects}[0]->{typingData}[0],"Subject typing data returned from fasta input");
+ok(defined $r_fasta_file->{content}->{subjects}[0]->{typingData}[0]->{typing}[0],"Typing data returned from fasta input");
+ok(defined $r_fasta_file->{content}->{subjects}[0]->{typingData}[0]->{typing}[0]->{gfe},"API successfully subject GFE results from fasta");
+
+
+
+
+
+
+
+
+
+
+
 

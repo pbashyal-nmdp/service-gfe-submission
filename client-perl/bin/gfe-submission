@@ -89,51 +89,29 @@ if($help){
 }
 
 my $rh_seq;
-if(defined $s_fasta && -e $s_fasta){
-    $rh_seq = read_fasta_file($s_fasta);
-}else{ die "Fasta file not provided!";}
+if(!defined $s_fasta && !-e $s_fasta){
+    die "Fasta file not provided!";
+}
 
+my $o_client = GFE_Client->new();
+$o_client->gfe_url($s_url) if defined $s_url;
+my $rh_gfe = $o_client->getGfeFasta($s_locus,$s_fasta);
 
-foreach my $s_seq (keys %$rh_seq){
-    my $rh_gfe = GFE_Client::getGfe($s_locus,$s_seq,$s_url,$s_feature_url);
-    if(!defined $$rh_gfe{gfe}){
-        print STDERR Dumper($$rh_gfe{Error}),"\n";
-    }else{
-        print join("\t",$s_seq,$$rh_gfe{gfe}),"\n";
+foreach my $rh_sub (@{$rh_gfe->{subjects}}){
+    my $s_id = $rh_sub->{id};
+    foreach my $rh_typingData (@{$rh_sub->{typingData}}){
+        my $s_locus = $rh_typingData->{locus};
+        foreach my $rh_typing (@{$rh_typingData->{typing}}){
+            my $s_gfe = $rh_typing->{gfe};
+            print join(",",$s_id,$s_locus,$s_gfe),"\n";
+        }
     }
 }
 
 
-sub read_fasta_file {
 
-    my $fasta_file = shift;
-    my %seqs;
-    my $header;
-    my $seq;
-    open (my $fh_seq,"<", $fasta_file) or die "can't open $fasta_file: $!\n";
-    while (<$fh_seq>) {
-        chomp;
-        if ($_ =~ />/) {
-            if ($seq) {    
-                $seqs{$header} = $seq;
-            }              
-            $header = $_;
-            $header =~ s/^>//; # remove ">"
-            $header =~ s/\s+$//; # remove trailing whitespace
-            $seq = ""; # clear out old sequence
-        }else {    
-            s/\s+//g; # remove whitespace
-            $seq .= $_; # add sequence
-        }         
-    }    
-    close $fh_seq; # finished with file
 
-    if ($seq) { # handle last sequence
-        $seqs{$header} = $seq;
-    }    
 
-    return \%seqs;
-}
 
 
 

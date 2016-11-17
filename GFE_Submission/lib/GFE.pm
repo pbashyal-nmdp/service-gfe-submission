@@ -47,7 +47,6 @@ GFE
 
 =head1 TODO
 	
-    - Add error reporting for non nucleotide sequences
     - Add tests for the structures of known genes
     - Add DOM testing
     - Add % unalinged test, so it fails if the majority of the
@@ -73,7 +72,7 @@ use GFE::Structures;
 use GFE::Annotate;
 use GFE::Client;
 
-our $VERSION = "1.0.0";
+our $VERSION = '1.0.2';
 
 has 'structures' => (
     is => 'ro',
@@ -102,6 +101,12 @@ has 'version' => (
 has 'return_structure' => (
     is => 'rw',
     isa => 'Bool'
+);
+
+
+has 'fileTypes' =>(
+  is  => 'rw',
+  required => 1
 );
 
 has 'verbose' => (
@@ -133,8 +138,9 @@ sub getGfe{
     my %h_seq;
     my %h_accesion;
     my @a_structure;
-
-
+    my %h_alignment;
+    my $n_aligned_seq;
+   
     my $s_logfile = $self->getLogfile();
 
 Log::Log4perl->init(\<<CONFIG);
@@ -189,7 +195,6 @@ CONFIG
         };
     }
 
-
     # Return an error if the locus is not valid
     if(!defined $s_locus || $s_locus !~ /\S/ || !defined $o_annotate->order->{$s_locus}){
         $logger->error("Locus not valid: ".$s_locus);
@@ -232,6 +237,7 @@ CONFIG
         $logger->error("Failed to run annotation!");
         $logger->error($s_locus);
         $logger->error($s_seq);
+        $o_annotate->cleanup();
         foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return { 
@@ -251,6 +257,7 @@ CONFIG
     if(!-e $s_aligned_file){
         $logger->error("Failed to create alignment file!");
         $logger->error($s_aligned_file);
+        $o_annotate->cleanup();
         if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return { 
@@ -276,8 +283,14 @@ CONFIG
         $term = "three_prime_UTR" if $term =~ /Three_prime/i;
         $h_accesion{$term}{$rank} = $o_client->getAccesion($s_locus,$term,$rank,uc $seq);
         $h_seq{$term}{$rank}      = $seq;
+        $n_aligned_seq           += length($seq) if !defined $h_alignment{$_};
+        $h_alignment{$_}++;
     }
     close $fh_aligned;
+    %h_alignment = ();
+
+    # Delete alignment and fasta files
+    $o_annotate->cleanup();
 
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
@@ -303,7 +316,6 @@ CONFIG
         $h_accesion{$term}{$rank} = defined $h_accesion{$term}{$rank} ? $h_accesion{$term}{$rank} : '0';
         $h_seq{$term}{$rank}      = defined $h_seq{$term}{$rank}      ? $h_seq{$term}{$rank} : '';
         push @a_structure, {
-              locus => $s_locus, 
               term  => $term,                  
               rank  => $rank,
               accession => $h_accesion{$term}{$rank},
@@ -312,7 +324,23 @@ CONFIG
         push(@a_gfe, $h_accesion{$term}{$rank}); 
     }
 
-    my $s_gfe = join('w',$s_locus, join('-', @a_gfe));
+    my $f_aligned = sprintf("%.3f",$n_aligned_seq / length($s_seq));
+    if($f_aligned < $o_annotate->aligned_cutoff){
+        $logger->error("Aligned sequence did not meet cutoff: ".$f_aligned." < ".$o_annotate->aligned_cutoff);
+        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "Aligned sequence did not meet cutoff: ".$f_aligned." < ".$o_annotate->aligned_cutoff,
+                locus    => $s_locus,
+                type     => "Alignment",
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };  
+    }
+
+    my $s_gfe     = join('w',$s_locus, join('-', @a_gfe));
     if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
         $logger->error("Invalid GFE was generated");
         if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
@@ -329,22 +357,22 @@ CONFIG
             }
         };  
     }else{ $logger->info("Generated GFE: $s_gfe") if $self->verbose; }
-
    
     if($self->verbose){
         foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         $self->return_structure
-            ? return {gfe => $s_gfe, structure => \@a_structure, version => $self->version,log => \@a_log }
-            : return {gfe => $s_gfe, version => $self->version, log => \@a_log };
+            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => \@a_log }
+            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version, log => \@a_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         $self->return_structure
-            ? return {gfe => $s_gfe, structure => \@a_structure, version => $self->version }
-            : return {gfe => $s_gfe, version => $self->version };
+            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version }
+            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version };
     }
    
 }
+
 
 =head2 getGfeFasta
 
@@ -357,12 +385,13 @@ CONFIG
 =cut
 sub getGfeFasta{
 
-    my($self,$s_locus,$s_fasta_file) = @_;
+    my($self,$s_locus,$s_input_file) = @_;
 
     my @a_log;
     my %h_seq;
     my %h_accesion;
     my @a_subjects;
+    
 
     my $s_logfile = $self->getLogfile();
 
@@ -387,16 +416,16 @@ CONFIG
     my $o_structures = $self->structures;
 
     # Return an error if the fasta file is not valid
-    if(!defined $s_fasta_file || $s_fasta_file !~ /\S/ || !-e $s_fasta_file){
-        $s_fasta_file = !defined $s_fasta_file ? '' : $s_fasta_file;
-        $logger->error("Fasta file not defined: ".$s_fasta_file);
+    if(!defined $s_input_file || $s_input_file !~ /\S/ || !-e $s_input_file){
+        $s_input_file = !defined $s_input_file ? '' : $s_input_file;
+        $logger->error("Input file not valid: ".$s_input_file);
         foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {
             Error => { 
                 Message  => "Fasta file not defined",
                 locus    => $s_locus,
-                type     => "Fasta",
+                type     => "File",
                 version  => $self->version,
                 log      => \@a_log
             }
@@ -419,15 +448,43 @@ CONFIG
         };
     }
 
-    # Pass fasta file to the annotation object
-    #print STDERR "FASTA: ",$s_fasta_file,"\n";
-    my @a_head;
-    foreach(`head -100 $s_fasta_file`){
-        chomp($_);
-        push(@a_head,$_);
-    }
-    #print STDERR "FASTA HEAD: ",join("\n",@a_head),"\n";
-    $o_annotate->setFasta($s_locus,$s_fasta_file);
+    # Check to make sure the file type is supported
+    my $s_file = (split(/\//,$s_input_file))[  scalar( @{[ $s_input_file=~/\//gi ]} ) ];
+    my $s_suf  = (split(/\./,$s_file))[ scalar( @{[ $s_file=~/\./gi ]} )];
+    if(!defined $self->fileTypes->{lc $s_suf}){
+        $logger->error("Input file type not valid: ".$s_suf);
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "Input file type not valid! - $s_suf",
+                locus    => $s_locus,
+                type     => "File",
+                file     => $s_input_file,
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }    
+
+    # check that file is valid for it's particular type
+    if($self->fileTypes->{lc $s_suf}->($s_file)){
+        $logger->error("$s_file file is invalid for $s_suf");
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return { 
+            Error => { 
+                Message  => "$s_file file is invalid for $s_suf type",
+                type     => "File",
+                file     => $s_file,
+                version  => $self->version,
+                log      => \@a_log    
+            }
+        };
+    }else{ $logger->info("File is valid for $s_suf type") if $self->verbose; }
+
+    # Pass input file to the annotation object
+    $o_annotate->setFastaFile($s_locus,$s_input_file);
 
     # Running java -jar hap1.1.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->align();
@@ -472,6 +529,7 @@ CONFIG
         chomp;
         tr/\r//d;
         my ($id, $allele, $anum, $term, $rank, $seq) = split /\,/;
+
         $term = "five_prime_UTR"  if $term =~ /Five_prime/i;
         $term = "three_prime_UTR" if $term =~ /Three_prime/i;
         my $s_loc = $s_locus !~ /HLA-/ && $s_locus !~ /KIR/ ? "HLA-".$s_locus : $s_locus;
@@ -479,7 +537,6 @@ CONFIG
         $h_seq{$id}{$term}{$rank}      = $seq;
     }
     close $fh_aligned;
-
 
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
@@ -498,17 +555,20 @@ CONFIG
         };
     }else{ $logger->info("Successfully loaded alignment results") if $self->verbose; }
 
-    # Create the GFE from the known locus structures
+
+    # Loop through each subject.. 
     foreach my $s_id (keys %h_seq){
 
+        # Create the GFE from the known locus structures
         my @a_gfe;
+        my @a_typing;
         my @a_structure;
+        my @a_locus_typing;
         foreach my $term_rank (@{$o_structures->getStruct($s_locus)}) {
             my ($term, $rank) = split /:/, $term_rank;
             $h_accesion{$s_id}{$term}{$rank} = defined $h_accesion{$s_id}{$term}{$rank} ? $h_accesion{$s_id}{$term}{$rank} : '0';
             $h_seq{$s_id}{$term}{$rank}      = defined $h_seq{$s_id}{$term}{$rank}      ? $h_seq{$s_id}{$term}{$rank}      : '';
-            push @a_structure, {
-                  locus => $s_locus, 
+            push @a_structure, { 
                   term  => $term,                  
                   rank  => $rank,
                   accession => $h_accesion{$s_id}{$term}{$rank},
@@ -535,12 +595,242 @@ CONFIG
             }; 
         }else{ $logger->info("Generated GFE for $s_id: $s_gfe") if $self->verbose; }
 
+
         if($self->return_structure){
-            push(@a_subjects,{id => $s_id, gfe => $s_gfe, structure => \@a_structure });
+            push(@a_typing,{ gfe => $s_gfe, structure => \@a_structure });
         }else{
-            push(@a_subjects,{id => $s_id, gfe => $s_gfe }); 
+            push(@a_typing,{ gfe => $s_gfe }); 
         }
 
+        push(@a_locus_typing,{locus => $s_locus, typing => \@a_typing });
+        push(@a_subjects,{id => $s_id, typingData => \@a_locus_typing }); 
+  
+    }
+
+
+    if($self->verbose){
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {subjects => \@a_subjects, version => $self->version,  log => \@a_log };
+    }else{
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {subjects => \@a_subjects, version => $self->version };
+    }
+   
+
+
+   
+}
+
+
+=head2 getGfeFile
+
+    Title:     getGfeFile
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub getGfeHml{
+
+    my($self,$s_input_file) = @_;
+
+    my @a_log;
+    my %h_seq;
+    my %h_imgthla;
+    my %h_accesion;
+    my @a_subjects;
+
+    my $s_logfile = $self->getLogfile();
+
+Log::Log4perl->init(\<<CONFIG);
+log4perl.rootLogger = DEBUG, screen, file
+
+log4perl.appender.screen = Log::Log4perl::Appender::Screen
+log4perl.appender.screen.stderr = 1
+log4perl.appender.screen.layout = PatternLayout
+log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
+
+log4perl.appender.file = Log::Log4perl::Appender::File
+log4perl.appender.file.filename = $s_logfile
+log4perl.appender.file.mode   = append
+log4perl.appender.file.layout = PatternLayout
+log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
+CONFIG
+
+    my $logger       = Log::Log4perl->get_logger();
+    my $o_annotate   = $self->annotate;
+    my $o_client     = $self->client;
+    my $o_structures = $self->structures;
+
+    # Return an error if the fasta file is not valid
+    if(!defined $s_input_file || $s_input_file !~ /\S/ || !-e $s_input_file){
+        $s_input_file = !defined $s_input_file ? '' : $s_input_file;
+        $logger->error("HML file not valid: ".$s_input_file);
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "HML file not defined",
+                file     => $s_input_file,
+                type     => "File",
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }
+
+    # Check to make sure the file type is supported
+    my $s_file = (split(/\//,$s_input_file))[  scalar( @{[ $s_input_file=~/\//gi ]} ) ];
+    my $s_suf  = (split(/\./,$s_file))[ scalar( @{[ $s_file=~/\./gi ]} )];
+    if(!defined $self->fileTypes->{lc $s_suf}){
+        $logger->error("Input file type not valid: ".$s_suf);
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "Input file type not valid! - $s_suf",
+                type     => "File",
+                file     => $s_input_file,
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }else{ $logger->info("HML file is valid") if $self->verbose; }
+
+    # check that file is valid for it's particular type
+    if($self->fileTypes->{lc $s_suf}->($s_file)){
+        $logger->error("$s_file file is invalid for $s_suf");
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return { 
+            Error => { 
+                Message  => "$s_file file is invalid for $s_suf type",
+                type     => "File",
+                file     => $s_file,
+                version  => $self->version,
+                log      => \@a_log    
+            }
+        };
+    }else{ $logger->info("File is valid for $s_suf type") if $self->verbose; }
+
+    # Pass input file to the annotation object
+    $o_annotate->setHmlFile($s_input_file);
+
+    # Running java -jar hap1.1.jar -g locus -i fasta_file
+    my $b_exit_status = $o_annotate->alignHml();
+    if($b_exit_status != 0){
+        $logger->error("Failed to run annotation!");
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return { 
+            Error => { 
+                Message  => "Failed to run annotation",
+                type     => "Annotation",
+                file     => $s_input_file,
+                version  => $self->version,
+                log      => \@a_log    
+            }
+        };
+    }else{ $logger->info("Alignment ran successfully") if $self->verbose; }
+
+    # Get generated alignment file and check to make sure it exists
+    my $s_aligned_file = $o_annotate->alignment_file();
+    if(!-e $s_aligned_file){
+        $logger->error("Failed to create alignment file!");
+        $logger->error($s_aligned_file);
+        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return { 
+            Error => { 
+                Message  => "Failed to create alignment file!",
+                type     => "Alignment",
+                file     => $s_aligned_file,
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }else{ $logger->info("Generated alignment file: $s_aligned_file") if $self->verbose; }
+
+    # Use the alignment results to submit to the GFE service
+    open(my $fh_aligned,"<",$s_aligned_file) or die "CANT OPEN FILE $! $0";
+    while(<$fh_aligned>){
+        chomp;
+        tr/\r//d;
+        my ($id, $allele, $anum, $term, $rank, $seq) = split /\,/;
+        $allele =~ /(HLA-\D+\d{0,1})\*/;my $s_locus = $1;
+        
+        if(!defined $s_locus || $s_locus !~ /\S/ || !defined $o_annotate->order->{$s_locus}){
+            $logger->warn("Locus not valid: ".$s_locus." ID: $id");
+            next;
+        }
+
+        $term = "five_prime_UTR"  if $term =~ /Five_prime/i;
+        $term = "three_prime_UTR" if $term =~ /Three_prime/i;
+        my $s_loc = $s_locus !~ /HLA-/ && $s_locus !~ /KIR/ ? "HLA-".$s_locus : $s_locus;
+        $h_accesion{$id}{$s_loc}{$anum}{$term}{$rank}  = $o_client->getAccesion($s_loc,$term,$rank,uc $seq);
+        $h_seq{$id}{$s_loc}{$anum}{$term}{$rank}       = $seq;
+        $h_imgthla{$id}{$s_loc}{$anum}                 = $allele;
+
+    }
+    close $fh_aligned;
+
+    # If no results are observed..
+    if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
+        $logger->error("Alignment ran but files are empty!");
+        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "Failed to generate fasta file",
+                type     => "Alignment",
+                file     => $s_aligned_file,
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }else{ $logger->info("Successfully loaded alignment results") if $self->verbose; }
+
+    # Loop through each subject.. 
+    foreach my $s_id (keys %h_seq){
+        my @a_locus_typing;
+        foreach my $s_locus (keys %{$h_seq{$s_id}}){
+            my @a_typing;
+            foreach my $anum (keys %{$h_seq{$s_id}{$s_locus}}){
+
+                # Create the GFE from the known locus structures
+                my @a_gfe;
+                my @a_structure;
+                foreach my $term_rank (@{$o_structures->getStruct($s_locus)}) {
+                    my ($term, $rank) = split /:/, $term_rank;
+                    $h_accesion{$s_id}{$s_locus}{$anum}{$term}{$rank} = defined $h_accesion{$s_id}{$s_locus}{$anum}{$term}{$rank} ? $h_accesion{$s_id}{$s_locus}{$anum}{$term}{$rank} : '0';
+                    $h_seq{$s_id}{$s_locus}{$anum}{$term}{$rank}      = defined $h_seq{$s_id}{$s_locus}{$anum}{$term}{$rank}      ? $h_seq{$s_id}{$s_locus}{$anum}{$term}{$rank}      : '';
+                    push @a_structure, {
+                          term  => $term,                  
+                          rank  => $rank,
+                          accession => $h_accesion{$s_id}{$s_locus}{$anum}{$term}{$rank},
+                          sequence  => $h_seq{$s_id}{$s_locus}{$anum}{$term}{$rank}
+                    };
+                    push(@a_gfe, $h_accesion{$s_id}{$s_locus}{$anum}{$term}{$rank}); 
+                }
+
+                my $s_gfe = join('w',$s_locus, join('-', @a_gfe));
+                if($s_gfe eq $s_locus."w0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
+                    $logger->error("Invalid GFE was generated: $s_gfe ID: $s_id Locus: $s_locus");
+                    next;
+                }
+
+                if($self->return_structure){
+                    push(@a_typing,{ imgthla => $h_imgthla{$s_id}{$s_locus}{$anum}, gfe => $s_gfe, structure => \@a_structure });
+                }else{
+                    push(@a_typing,{ imgthla => $h_imgthla{$s_id}{$s_locus}{$anum}, gfe => $s_gfe }); 
+                }
+            }
+            push(@a_locus_typing,{locus => $s_locus, typing => \@a_typing });
+        }
+        $s_id = $s_id."-0";
+        push(@a_subjects,{id => $s_id, typingData => \@a_locus_typing }); 
     }
 
     if($self->verbose){
@@ -790,6 +1080,47 @@ sub deleteOldFiles{
 
 }
 
+=head2 checkHml
+
+    Title:     checkHml
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub checkHml{
+    my ( $s_input_file )  = @_;
+
+    # my $logger      = Log::Log4perl->get_logger();
+    # my $s_cmd       = "ngs-validate-hml -i $s_input_file";
+    # my $exit_value  = system($s_cmd);
+
+    # if($exit_value != 0){
+    #     $logger->error("system $s_cmd failed: $?");
+    #     return 1;
+    # }
+
+    return 0;
+}
+
+
+=head2 checkFasta
+
+    Title:     checkFasta
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub checkFasta{
+    my ( $s_input_file )  = @_;
+    return 0;
+}
+
+
+
 
 =head2 BUILDARGS
 
@@ -801,11 +1132,17 @@ around BUILDARGS=>sub
     my $class=shift;
     my $args=shift;
 
+    my %h_filecheck = (
+        "hml"   => \&checkHml,
+        "fasta" => \&checkFasta
+    );
+
     $args->{delete_logs}      = 1;
     $args->{return_structure} = 1;
     $args->{annotate}         = GFE::Annotate->new();
     $args->{structures}       = GFE::Structures->new();
     $args->{client}           = GFE::Client->new();
+    $args->{fileTypes}        = \%h_filecheck;
     $args->{version}          = $VERSION;
 
     return $class->$orig($args);

@@ -28,7 +28,7 @@ plugins:
     Swagger:
         validate_response: 1
         strict_validation: 1
-        version: "1.0.0"
+        version: "1.0.2"
         title: GFE Submission Service
 
 # template: "template_toolkit"

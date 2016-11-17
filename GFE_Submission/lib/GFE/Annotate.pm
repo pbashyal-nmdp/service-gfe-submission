@@ -94,6 +94,13 @@ has 'fasta' => (
     predicate => 'has_fasta',
 );
 
+has 'hml' => (
+    is => 'rw',
+    isa => 'Str',
+    clearer   => 'clear_hml',
+    predicate => 'has_hml',
+);
+
 has 'ids' =>(
   isa => 'HashRef[Int]',
   is  => 'rw',
@@ -105,6 +112,13 @@ has 'order' =>(
   is  => 'rw',
   required => 1
 );
+
+has 'aligned_cutoff' =>(
+  isa => 'Num',
+  is  => 'rw',
+  required => 1
+);
+
 
 =head2 makeFasta
 
@@ -145,19 +159,44 @@ sub makeFasta{
     Args:      
 
 =cut
-sub setFasta{
+sub setFastaFile{
 
-  my($self,$s_locus,$s_fasta_file) = @_;
+  my($self,$s_locus,$s_input_file) = @_;
 
   my $logger = Log::Log4perl->get_logger();
-  my $s_file = (split(/\//,$s_fasta_file))[  scalar( @{[ $s_fasta_file=~/\//gi ]} ) ];
+  my $s_file = (split(/\//,$s_input_file))[  scalar( @{[ $s_input_file=~/\//gi ]} ) ];
   my $s_pref = (split(/\./,$s_file))[0];
 
-  $self->fasta($s_fasta_file);
+  $self->fasta($s_input_file);
   $self->fileid($s_pref);
   $self->locus($s_locus);
 
-  $logger->info("Fasta file: $s_fasta_file");
+  $logger->info("Input file: $s_input_file");
+
+}
+
+
+=head2 setHmlFile
+
+    Title:     setFasta
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub setHmlFile{
+
+  my($self,$s_hml_file) = @_;
+
+  my $logger = Log::Log4perl->get_logger();
+  my $s_file = (split(/\//,$s_hml_file))[  scalar( @{[ $s_hml_file=~/\//gi ]} ) ];
+  my $s_pref = (split(/\./,$s_file))[0];
+
+  $self->hml($s_hml_file);
+  $self->fileid($s_pref);
+
+  $logger->info("HML file: $s_hml_file");
 
 }
 
@@ -176,10 +215,38 @@ sub alignment_file{
 
   my $logger         = Log::Log4perl->get_logger();
   my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
-
   $logger->info("Alignment file: $s_aligned_file");
 
   return $s_aligned_file;
+}
+
+
+=head2 align
+
+    Title:     align
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub alignHml{
+
+  my ( $self )       = @_;
+
+  my $logger       = Log::Log4perl->get_logger();
+  my $s_hml_file   = $self->hml;
+
+  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.1.jar";
+  my @args = ($s_hap1_cmd, " -i $s_hml_file"," -o ".$self->directory."/GFE/parsed-local/");
+
+  my $exit_value = system(join("",@args));
+
+  if($exit_value != 0){
+    $logger->error("system @args failed: $?");
+  }
+
+  return $exit_value;
 }
 
 =head2 align
@@ -249,6 +316,10 @@ sub cleanup{
 
   my ( $self )       = @_;
 
+  my $s_fasta = $self->fasta;
+  my $s_aligned_file = $self->alignment_file();
+  system("rm $s_fasta")        if(-e $s_fasta);
+  system("rm $s_aligned_file") if(-e $s_aligned_file);
 
 }
 
@@ -313,10 +384,11 @@ around BUILDARGS=>sub
     if(!-d $working);
 
   my %h_ids = ( 0 => 1 );
-  $args->{outdir}    = $outdir;
-  $args->{directory} = $s_hap1_dir;
-  $args->{order}     = \%h_loci_order;
-  $args->{ids}       = \%h_ids;
+  $args->{aligned_cutoff} = .5;
+  $args->{outdir}         = $outdir;
+  $args->{directory}      = $s_hap1_dir;
+  $args->{order}          = \%h_loci_order;
+  $args->{ids}            = \%h_ids;
   return $class->$orig($args);
 };
 

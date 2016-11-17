@@ -66,7 +66,7 @@ use GFE;
 my %h_cache;
 my $o_gfe = GFE->new();
 
-our $VERSION = '0.0.1';
+our $VERSION = '1.0.2';
 
 prefix undef;
 

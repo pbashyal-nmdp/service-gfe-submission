@@ -58,25 +58,47 @@ swagger_definition 'SequenceSubmission' => {
     }
 };
 
+
 =head2 FastaSubmission
 
 
 =cut
 swagger_definition 'FastaSubmission' => {
     type => 'object',
-    required   => [ 'locus','fastafile'],
+    required   => [ 'locus','file'],
     properties => {
         locus      => { type => 'string'  },
         retry      => { type => 'integer' },
-        fasta      => { type => 'file'  },
+        file       => { type => 'file'  },
         url        => { type => 'string'  },
         verbose    => { type => 'boolean' },
         structures => { type => 'boolean' }
     },
     example => {
-        locus   => 'HLA-A',
-        fasta   => 'public/downloads/FastaTest.fasta',
-        verbose => 1,
+        locus      => 'HLA-A',
+        fasta      => 'public/downloads/FastaTest.fasta',
+        verbose    => 1,
+        structures => 1
+    }
+};
+
+=head2 HmlSubmission
+
+
+=cut
+swagger_definition 'HmlSubmission' => {
+    type => 'object',
+    required   => ['file'],
+    properties => {
+        retry      => { type => 'integer' },
+        file       => { type => 'file'  },
+        url        => { type => 'string'  },
+        verbose    => { type => 'boolean' },
+        structures => { type => 'boolean' }
+    },
+    example => {
+        fasta      => 'public/downloads/HmlTest.Hml',
+        verbose    => 1,
         structures => 1
     }
 };
@@ -120,62 +142,6 @@ swagger_definition 'Sequence' => {
     }
 };
 
-=head2 Gfe
-
-
-=cut
-swagger_definition 'Gfe' => {
-    type => 'object',
-    required   => [ 'gfe','version' ],
-    properties => {
-        gfe     => { type => 'string' },
-        version => { type => 'string' },
-        log => { type => 'array',
-            items => { type => 'string' }
-        },
-        structure => { type => 'array',
-            items => {'$ref' => "#/definitions/Structure" }
-        },
-    },
-    example => {
-        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
-        version => '1.0.0',
-        structure  => [
-            {
-            term   => 'exon',
-            rank   => 1,
-            accession => 1,
-            sequence => "ACTGACTG",
-            locus => "HLA-A"
-         },
-         {  
-            term   => 'exon',
-            rank   => 2,
-            accession => 23,
-            sequence => "ACTGACTG",
-            locus => "HLA-A"
-          }
-        ]
-    }
-};
-
-=head2 Fasta
-
-
-=cut
-swagger_definition 'Fasta' => {
-    type => 'object',
-    required   => [ 'subjects','version' ],
-    properties => {
-        version => { type => 'string' },
-        log => { type => 'array',
-            items => { type => 'string' }
-        },
-        subjects => { type => 'array',
-            items => {'$ref' => "#/definitions/Subject" }
-        },
-    },
-};
 
 
 
@@ -185,11 +151,10 @@ swagger_definition 'Fasta' => {
 =cut
 swagger_definition 'Structure' => {
     type => 'object',
-    required   => [ 'term','rank','accession','sequence','locus' ],
+    required   => [ 'term','rank','accession','sequence' ],
     properties => {
         term => { type => 'string' },
         sequence => { type => 'string' },
-        locus => { type => 'string' },
         rank => { type => 'integer' },
         accession => { type => 'integer' },
     },
@@ -202,37 +167,542 @@ swagger_definition 'Structure' => {
     },
 };
 
+
+
+
+=head2 Subject
+
+
+=cut
+swagger_definition 'SubjectData' => {
+    type => 'object',
+    required   => [ 'subjects','version' ],
+    properties => {
+        version => { type => 'string' },
+        log     => { type => 'array',
+            items => { type => 'string' }
+        },
+        subjects => { type => 'array',
+            items => {'$ref' => "#/definitions/Subject" }
+        },
+    },
+    example => {
+        log  => [
+            "2016/11/15 17:37:16 INFO> Annotate.pm:167 GFE::Annotate::setInputFile   - Input file:      t/resources/HmlTest.HML",
+            "2016/11/15 17:37:16 INFO> Annotate.pm:185 GFE::Annotate::alignment_file - Alignment file:  t/resources/HmlTest_reformat.csv"
+            ],
+        version   => '1.0.2',
+        subjects  => [
+            {
+                id          => '111111',
+                typingData  => [
+                    {
+                        locus   => 'HLA-A',
+                        typing  => [
+                            {
+                                gfe     => 'HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "A*01:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+                            {
+                                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "A*01:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+
+                        ]
+                    },
+                    {
+                        locus   => 'HLA-B',
+                        typing  => [
+                            {
+                                gfe     => 'HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "B*04:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+                            {
+                                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "B*05:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+
+                        ]
+                    },            
+                ]
+            },
+            {
+                id          => '222222222',
+                typingData  => [
+                    {
+                        locus   => 'HLA-A',
+                        typing  => [
+                            {
+                                gfe     => 'HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "A*01:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+                            {
+                                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "A*01:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+
+                        ]
+                    },
+                    {
+                        locus   => 'HLA-B',
+                        typing  => [
+                            {
+                                gfe     => 'HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "B*04:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+                            {
+                                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "B*05:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+
+                        ]
+                    },            
+                ]
+            },
+            {
+                id          => '3333333333',
+                typingData  => [
+                    {
+                        locus   => 'HLA-A',
+                        typing  => [
+                            {
+                                gfe     => 'HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "A*01:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+                            {
+                                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "A*01:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+
+                        ]
+                    },
+                    {
+                        locus   => 'HLA-B',
+                        typing  => [
+                            {
+                                gfe     => 'HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "B*04:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+                            {
+                                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                                imgthla => "B*05:01:01:01",
+                                structure  => [
+                                {
+                                    term   => 'exon',
+                                    rank   => 1,
+                                    accession => 1,
+                                    sequence => "ACTGACTG",
+                                 },
+                                 {  
+                                    term   => 'exon',
+                                    rank   => 2,
+                                    accession => 23,
+                                    sequence => "ACTGACTG"
+                                  }
+                                ]
+                            },
+
+                        ]
+                    },            
+                ]
+            },            
+        ]
+    }
+};
+
+
 =head2 Subject
 
 
 =cut
 swagger_definition 'Subject' => {
     type => 'object',
-    required   => [ 'id','gfe' ],
+    required   => [ 'id','typingData' ],
     properties => {
-        gfe       => { type => 'string' },
-        id        => { type => 'string' },
-        structure => { type => 'array',
-            items => {'$ref' => "#/definitions/Structure" }
+        id         => { type => 'string' },
+        typingData => { type => 'array',
+            items  => {'$ref' => "#/definitions/TypingData" }
         }
     },
     example => {
-        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
-        id      => '012312A',
-        structure  => [
+        id          => '012312A',
+        typingData  => [
             {
+                locus   => 'HLA-A',
+                typing  => [
+                    {
+                        gfe     => 'HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                        imgthla => "A*01:01:01:01",
+                        structure  => [
+                        {
+                            term   => 'exon',
+                            rank   => 1,
+                            accession => 1,
+                            sequence => "ACTGACTG",
+                         },
+                         {  
+                            term   => 'exon',
+                            rank   => 2,
+                            accession => 23,
+                            sequence => "ACTGACTG"
+                          }
+                        ]
+                    },
+                    {
+                        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                        imgthla => "A*01:01:01:01",
+                        structure  => [
+                        {
+                            term   => 'exon',
+                            rank   => 1,
+                            accession => 1,
+                            sequence => "ACTGACTG",
+                         },
+                         {  
+                            term   => 'exon',
+                            rank   => 2,
+                            accession => 23,
+                            sequence => "ACTGACTG"
+                          }
+                        ]
+                    },
+
+                ]
+            },
+            {
+                locus   => 'HLA-B',
+                typing  => [
+                    {
+                        gfe     => 'HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                        imgthla => "B*04:01:01:01",
+                        structure  => [
+                        {
+                            term   => 'exon',
+                            rank   => 1,
+                            accession => 1,
+                            sequence => "ACTGACTG",
+                         },
+                         {  
+                            term   => 'exon',
+                            rank   => 2,
+                            accession => 23,
+                            sequence => "ACTGACTG"
+                          }
+                        ]
+                    },
+                    {
+                        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                        imgthla => "B*05:01:01:01",
+                        structure  => [
+                        {
+                            term   => 'exon',
+                            rank   => 1,
+                            accession => 1,
+                            sequence => "ACTGACTG",
+                         },
+                         {  
+                            term   => 'exon',
+                            rank   => 2,
+                            accession => 23,
+                            sequence => "ACTGACTG"
+                          }
+                        ]
+                    },
+
+                ]
+            },            
+        ]
+    }
+};
+
+
+=head2 Subject
+
+
+=cut
+swagger_definition 'TypingData' => {
+    type => 'object',
+    required   => [ 'typing','locus' ],
+    properties => {
+        locus   => { type => 'string' },
+        typing  => { type => 'array',
+            items  => {'$ref' => "#/definitions/Typing" }
+        },
+    },
+    example => {
+        locus   => 'HLA-A',
+        typing  => [
+            {
+                gfe     => 'HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                imgthla => "A*01:01:01:01",
+                structure  => [
+                {
+                    term   => 'exon',
+                    rank   => 1,
+                    accession => 1,
+                    sequence => "ACTGACTG",
+                 },
+                 {  
+                    term   => 'exon',
+                    rank   => 2,
+                    accession => 23,
+                    sequence => "ACTGACTG"
+                  }
+                ]
+            },
+            {
+                gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+                imgthla => "A*02:01:01:01",
+                structure  => [
+                {
+                    term   => 'exon',
+                    rank   => 1,
+                    accession => 1,
+                    sequence => "ACTGACTG",
+                 },
+                 {  
+                    term   => 'exon',
+                    rank   => 2,
+                    accession => 23,
+                    sequence => "ACTGACTG"
+                  }
+                ]
+            },
+
+        ]
+    }
+};
+
+
+=head2 Gfe
+
+
+=cut
+swagger_definition 'Typing' => {
+    type => 'object',
+    required   => [ 'gfe' ],
+    properties => {
+        gfe       => { type => 'string' },
+        imgthla   => { type => 'string' },
+        aligned   => { type => 'number' },
+        structure => { type => 'array',
+            items => {'$ref' => "#/definitions/Structure" }
+        },
+    },
+    example => {
+        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+        version => '1.0.0',
+        aligned => .95,
+        locus   => "HLA-A",
+        imgthla => "A*01:01:01:01",
+        structure  => [
+        {
             term   => 'exon',
             rank   => 1,
             accession => 1,
             sequence => "ACTGACTG",
-            locus => "HLA-A"
          },
          {  
             term   => 'exon',
             rank   => 2,
             accession => 23,
+            sequence => "ACTGACTG"
+          }
+        ]
+    }
+};
+
+
+=head2 Gfe
+
+
+=cut
+swagger_definition 'Gfe' => {
+    type => 'object',
+    required   => [ 'gfe','version' ],
+    properties => {
+        gfe       => { type => 'string' },
+        aligned   => { type => 'number' },
+        version   => { type => 'string' },
+        log       => { type => 'array',
+           items  => { type => 'string' }
+        },
+        structure => { type => 'array',
+            items => {'$ref' => "#/definitions/Structure" }
+        },
+    },
+    example => {
+        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
+        version => '1.0.0',
+        aligned => .95,
+        locus   => "HLA-A",
+        imgthla => "A*01:01:01:01",
+        structure  => [
+        {
+            term   => 'exon',
+            rank   => 1,
+            accession => 1,
             sequence => "ACTGACTG",
-            locus => "HLA-A"
+         },
+         {  
+            term   => 'exon',
+            rank   => 2,
+            accession => 23,
+            sequence => "ACTGACTG"
           }
         ]
     }
