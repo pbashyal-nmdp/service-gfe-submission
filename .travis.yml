@@ -4,6 +4,7 @@ dist: trusty
 env:
   global:
     - PERL_MM_USE_DEFAULT=1
+    - "PATH=$PATH:/hap1.1"
 
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev

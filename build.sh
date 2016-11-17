@@ -43,7 +43,7 @@ mv -i GFE_Submission gfe_submission
 # Install GFE_Submission and launch
 cd gfe_submission
 sudo perl Makefile.PL
-sudo make test
+make test
 if [ "$?" != "0" ]; then
 	exit $?
 fi
@@ -55,7 +55,7 @@ plackup -D -E deployment -s Starman -p 5000 -a bin/app.pl
 # Install perl clients
 cd ../client-perl
 sudo perl Makefile.PL
-sudo make test
+make test
 if [ "$?" != "0" ]; then
 	exit $?
 fi
