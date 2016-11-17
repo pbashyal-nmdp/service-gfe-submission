@@ -45,8 +45,8 @@ use GFE_Submission::Definitions;
 use GFE_Submission::API;
 
 my $pwd     = `pwd`;chomp($pwd);
-my $t_fasta = $pwd."/t/resources/FastaTest.fasta";
-my $t_hml   = $pwd."/t/resources/HmlTest.HML";
+my $t_fasta = $pwd."/t/resources/fastatest1.fasta";
+my $t_hml   = $pwd."/t/resources/hmltest1.HML";
 
 route_exists [POST => '/api/v1/gfe'], 'a POST route handler is defined for /api/v1/gfe';
 route_exists [POST => '/api/v1/sequence'], 'a POST route handler is defined for /api/v1/sequence';
