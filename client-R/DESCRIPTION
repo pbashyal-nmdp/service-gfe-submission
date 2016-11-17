@@ -1,0 +1,10 @@
+Package: gfeClient
+Type: Package
+Title: Get GFE from raw sequence data
+Version: 1.0.0
+Date: 2016-11-17
+Author: Mike Halagan <mhalagan@nmdp.org>
+Maintainer: Mike Halagan <mhalagan@nmdp.org>
+Description: Get GFE from raw sequence data
+License: GNU GENERAL PUBLIC LICENSE
+RoxygenNote: 5.0.1
