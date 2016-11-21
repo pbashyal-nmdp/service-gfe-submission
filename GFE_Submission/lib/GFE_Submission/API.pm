@@ -174,10 +174,16 @@ post '/hml' => sub {
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};
     my $b_structures = params->{'structures'};
-    my $s_input_file = request->upload('file');
+    my $s_input_file = defined params->{'file'} ? request->upload('file') : undef;
 
-    $s_input_file->copy_to("public/downloads/".$s_input_file->filename);
-    $s_input_file = "public/downloads/".$s_input_file->filename;
+    if(defined $s_input_file && $s_input_file =~ /\S/){
+        if(-e $s_input_file->filename){       
+           $s_input_file = $s_input_file->filename;
+        }else{
+            $s_input_file->copy_to("public/downloads/".$s_input_file->basename);
+            $s_input_file = "public/downloads/".$s_input_file->basename;
+        }
+    }
 
     my $o_gfe = GFE->new();
 
@@ -241,11 +247,17 @@ post '/fasta' => sub {
     my $b_structures = params->{'structures'};
     my $s_input_file = request->upload('file');
 
-    $s_input_file->copy_to("public/downloads/".$s_input_file->filename);
-    $s_input_file = "public/downloads/".$s_input_file->filename;
+    
+    if(defined $s_input_file && $s_input_file =~ /\S/){
+        if(-e $s_input_file->filename){       
+           $s_input_file = $s_input_file->filename;
+        }else{
+            $s_input_file->copy_to("public/downloads/".$s_input_file->basename);
+            $s_input_file = "public/downloads/".$s_input_file->basename;
+        }
+    }
 
     my $o_gfe = GFE->new();
-
     $o_gfe->return_structure($b_structures) 
         if(defined $b_structures && $b_structures =~ /\S/);
 
