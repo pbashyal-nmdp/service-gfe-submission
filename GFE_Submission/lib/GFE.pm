@@ -1134,7 +1134,9 @@ around BUILDARGS=>sub
 
     my %h_filecheck = (
         "hml"   => \&checkHml,
-        "fasta" => \&checkFasta
+        "fasta" => \&checkFasta,
+        "fas"   => \&checkFasta,
+        "fa"    => \&checkFasta
     );
 
     $args->{delete_logs}      = 1;

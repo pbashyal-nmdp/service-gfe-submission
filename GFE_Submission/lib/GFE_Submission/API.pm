@@ -12,6 +12,7 @@ use GFE;
 use GFE::Client;
 use Dancer ':syntax';
 use POSIX qw(strftime);
+use Dancer::Request::Upload;
 use Dancer::Plugin::Swagger;
 use GFE_Submission::Definitions;
 use Data::Dumper;
@@ -173,7 +174,10 @@ post '/hml' => sub {
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};
     my $b_structures = params->{'structures'};
-    my $s_input_file = params->{'file'};
+    my $s_input_file = request->upload('file');
+
+    $s_input_file->copy_to("public/downloads/".$s_input_file->filename);
+    $s_input_file = "public/downloads/".$s_input_file->filename;
 
     my $o_gfe = GFE->new();
 
@@ -235,7 +239,10 @@ post '/fasta' => sub {
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};
     my $b_structures = params->{'structures'};
-    my $s_input_file = params->{'file'};
+    my $s_input_file = request->upload('file');
+
+    $s_input_file->copy_to("public/downloads/".$s_input_file->filename);
+    $s_input_file = "public/downloads/".$s_input_file->filename;
 
     my $o_gfe = GFE->new();
 
