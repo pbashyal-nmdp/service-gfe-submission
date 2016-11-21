@@ -72,7 +72,7 @@ use GFE::Structures;
 use GFE::Annotate;
 use GFE::Client;
 
-our $VERSION = '1.0.2';
+our $VERSION = '1.0.3';
 
 has 'structures' => (
     is => 'ro',
@@ -1134,7 +1134,9 @@ around BUILDARGS=>sub
 
     my %h_filecheck = (
         "hml"   => \&checkHml,
-        "fasta" => \&checkFasta
+        "fasta" => \&checkFasta,
+        "fas"   => \&checkFasta,
+        "fa"    => \&checkFasta
     );
 
     $args->{delete_logs}      = 1;

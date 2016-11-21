@@ -4,7 +4,7 @@
 \alias{fasta2gfe}
 \title{fasta2gfe}
 \usage{
-fasta2gfe(host, locus, fastaFile)
+fasta2gfe(host, locus, fastaFile, verbose = 0, structures = 0)
 }
 \description{
 fasta2gfe

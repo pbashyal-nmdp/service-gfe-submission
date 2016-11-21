@@ -23,7 +23,6 @@
 
 =head1 LICENSE
 
-    pipeline  Consensus assembly and allele interpretation pipeline.
     Copyright (c) 2015 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
@@ -56,10 +55,15 @@
 package GFE_Client;
 use strict;
 use warnings;
-use Data::Dumper;
-use REST::Client;
+
 use JSON;
 use Moose;
+use Data::Dumper;
+use REST::Client;
+use LWP::UserAgent;
+use HTTP::Request::Common;
+
+
 
 our $VERSION = '1.0.2';
 
@@ -110,7 +114,7 @@ sub getGfe{
 
 }
 
-=head2 redux
+=head2 getGfeFasta
 
     
 =cut
@@ -118,24 +122,44 @@ sub getGfeFasta{
 
     my($self,$s_loc,$s_fasta) = @_;
 
-    my $request = {
-        locus => $s_loc,
-        file => $s_fasta
-    };
-    my $json_request = JSON::to_json($request);
-    my $client = REST::Client->new({
-            host    => $self->gfe_url,
-        });
-    $client->addHeader('Content-Type', 'application/json;charset=UTF-8');
-    $client->addHeader('Accept', 'application/json');
+    my $ua = LWP::UserAgent->new;
+    my $response = $ua->request(
+        POST $self->{gfe_url}."/api/v1/fasta",
+            Content_Type => 'form-data',
+            Content => [
+                file => [ $s_fasta ],
+                locus      => $s_loc,
+                structures => $self->{structures},
+                verbose    => $self->{verbose},
+            ]
+    );
 
-    # List of haplotypes based on the first population
-    $client->POST('/api/v1/fasta', $json_request, {});
+    return $response->content;
 
-    my $json_response = $client->responseContent;
-    my $response = JSON::from_json($json_response);
+}
 
-    return $response;
+
+=head2 getGfeHml
+
+    
+=cut
+sub getGfeHml{
+
+    my($self,$s_loc,$s_fasta) = @_;
+
+    my $ua = LWP::UserAgent->new;
+    my $response = $ua->request(
+        POST $self->{gfe_url}."/api/v1/hml",
+            Content_Type => 'form-data',
+            Content => [
+                file       => [ $s_fasta ],
+                locus      => $s_loc,
+                structures => $self->{structures},
+                verbose    => $self->{verbose},
+            ]
+    );
+
+    return $response->content;
 
 }
 

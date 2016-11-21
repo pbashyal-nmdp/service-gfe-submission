@@ -73,7 +73,7 @@ use lib "$FindBin::Bin/../lib";
 use GFE_Client;
 use Data::Dumper;
 
-our($s_fasta,$s_locus,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,"http://localhost:5000","http://feature.nmdp-bioinformatics.org");
+our($s_fasta,$s_locus,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,"http://gfe.b12x.org","http://feature.nmdp-bioinformatics.org");
 
 &GetOptions('fasta|i=s'      => \$s_fasta,
             'url|u=s'        => \$s_url,
