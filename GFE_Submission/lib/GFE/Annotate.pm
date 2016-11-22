@@ -140,12 +140,17 @@ sub makeFasta{
   # Making fasta files to pass to hap1.jar
   open(my $fh_fasta,">",$self->fasta) or die $logger->error("CANT OPEN FILE $! $0");
 
+  print STDERR "FASTA FILE: ".$self->fasta."\n";
+
   # ** clustalo requires there to be at least 2 sequences ** #
   print $fh_fasta ">$s_locus 1\n";
   print $fh_fasta $s_seq."\n";
   print $fh_fasta ">$s_locus 2\n";
   print $fh_fasta $s_seq."\n";
   close $fh_fasta;
+
+  print STDERR "FASTA SEQ: ".$s_seq."\n";
+  print STDERR "FASTA LOCUS: ".$s_locus."\n";
 
   return $self->fasta;
 }
@@ -367,7 +372,7 @@ around BUILDARGS=>sub
   $s_hap1_dir    =~ s/\/$//;
 
   my $working      = getcwd;
-  my $outdir       = $working."/public/downloads";
+  my $outdir       = $working;
   my $s_path       = `echo \$PATH`;chomp($s_path);
 
   # Die if the require programs aren't installed
