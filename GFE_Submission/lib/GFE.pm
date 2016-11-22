@@ -845,6 +845,104 @@ CONFIG
 }
 
 
+=head2 getGfeFile
+
+    Title:     getGfeFile
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub getGfeHmlNextflow{
+
+    my($self,$s_input_file) = @_;
+
+    my @a_log;
+    my %h_seq;
+    my %h_imgthla;
+    my %h_accesion;
+    my @a_subjects;
+
+    my $s_logfile = $self->getLogfile();
+
+Log::Log4perl->init(\<<CONFIG);
+log4perl.rootLogger = DEBUG, screen, file
+
+log4perl.appender.screen = Log::Log4perl::Appender::Screen
+log4perl.appender.screen.stderr = 1
+log4perl.appender.screen.layout = PatternLayout
+log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
+
+log4perl.appender.file = Log::Log4perl::Appender::File
+log4perl.appender.file.filename = $s_logfile
+log4perl.appender.file.mode   = append
+log4perl.appender.file.layout = PatternLayout
+log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
+CONFIG
+
+    my $logger       = Log::Log4perl->get_logger();
+    my $o_annotate   = $self->annotate;
+    my $o_client     = $self->client;
+    my $o_structures = $self->structures;
+
+    # Return an error if the fasta file is not valid
+    if(!defined $s_input_file || $s_input_file !~ /\S/ || !-e $s_input_file){
+        $s_input_file = !defined $s_input_file ? '' : $s_input_file;
+        $logger->error("HML file not valid: ".$s_input_file);
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "HML file not defined",
+                file     => $s_input_file,
+                type     => "File",
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }
+
+    # Check to make sure the file type is supported
+    my $s_file = (split(/\//,$s_input_file))[  scalar( @{[ $s_input_file=~/\//gi ]} ) ];
+    my $s_suf  = (split(/\./,$s_file))[ scalar( @{[ $s_file=~/\./gi ]} )];
+    if(!defined $self->fileTypes->{lc $s_suf}){
+        $logger->error("Input file type not valid: ".$s_suf);
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return {
+            Error => { 
+                Message  => "Input file type not valid! - $s_suf",
+                type     => "File",
+                file     => $s_input_file,
+                version  => $self->version,
+                log      => \@a_log
+            }
+        };
+    }else{ $logger->info("HML file is valid") if $self->verbose; }
+
+    # check that file is valid for it's particular type
+    if($self->fileTypes->{lc $s_suf}->($s_file)){
+        $logger->error("$s_file file is invalid for $s_suf");
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        return { 
+            Error => { 
+                Message  => "$s_file file is invalid for $s_suf type",
+                type     => "File",
+                file     => $s_file,
+                version  => $self->version,
+                log      => \@a_log    
+            }
+        };
+    }else{ $logger->info("File is valid for $s_suf type") if $self->verbose; }
+
+    ## Pass input file to the annotation object
+    ## $o_annotate->setHmlFile($s_input_file);
+
+    
+}
+
 
 =head2 getSequence
 

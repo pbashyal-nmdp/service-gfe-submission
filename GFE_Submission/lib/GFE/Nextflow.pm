@@ -50,7 +50,7 @@
 =head1 SUBROUTINES
 
 =cut
-package GFE::Annotate;
+package GFE::Nextflow;
 use strict;
 use warnings;
 use Math::Round;
@@ -333,41 +333,10 @@ around BUILDARGS=>sub
   my $class=shift;
   my $args=shift; #other arguments passed in (if any).
 
-  my %h_loci_order = (
-    "HLA-A" => 0,
-    "HLA-B" => 1,
-    "HLA-C" => 2,
-    "HLA-DRB1" => 3,
-    "HLA-DPB1" => 4,
-    "HLA-DQB1" => 5,
-    "PB-DRB1" => 6,
-    "PB-DPB1" => 7,
-    "PB-DQB1" => 8,
-    "KIR3DP1" => 9,
-    "KIR2DL4" => 10,
-    "KIR2DL5A" => 11,
-    "KIR2DL5B" => 12,
-    "KIR2DS1" => 13,
-    "KIR2DS2" => 14,
-    "KIR2DS3" => 15,
-    "KIR2DS4" => 16,
-    "KIR2DS5" => 17,
-    "KIR3DL3" => 18,
-    "KIR3DL1" => 19,
-    "KIR3DL2" => 20,
-    "KIR2DP1" => 21,
-    "KIR3DS1" => 22
-  );
-
-  my $s_hap1     =`which hap1.1.jar`;chomp($s_hap1);
-  my $s_clustalo =`which clustalo`;chomp($s_clustalo);
-
-  my $s_hap1_dir = $s_hap1;
-  $s_hap1_dir    =~ s/hap1\.1\.jar//;
-  $s_hap1_dir    =~ s/\/$//;
+  my $s_nextflow   =`which nextflow`;chomp($s_nextflow);
 
   my $working      = getcwd;
-  my $outdir       = $working."/public/downloads";
+  my $outdir       = $working;
   my $s_path       = `echo \$PATH`;chomp($s_path);
 
   # Die if the require programs aren't installed

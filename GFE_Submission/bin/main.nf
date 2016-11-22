@@ -34,10 +34,10 @@ process getGFE{
     set subject, file(subjectFastq), file(hmlFailed) from subjectIdFiles
 
   output:
-    set file {"${subject}.ld.txt"}  into gfeResults mode flatten
+    set file {"${subject}.txt"}  into gfeResults mode flatten
 
   """
-    gzcat ${subjectFastq} | /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-submission/GFE_Submission/bin/fasta2gfe -s ${subject} 2> ${subject}.ld.txt > /dev/null
+    gzcat ${subjectFastq} | /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-submission/GFE_Submission/bin/fasta2gfe -s ${subject} 
   """
 }
 
