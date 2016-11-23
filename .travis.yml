@@ -7,17 +7,13 @@ perl:
 env:
   global:
     - PERL_MM_USE_DEFAULT=1
-    - "PATH=$PATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/hap1.1:ngs-tools/bin:$TRAVIS_BUILD_DIR/ngs-tools/bin:$TRAVIS_BUILD_DIR/gfe_submission/bin"
+    - "PATH=$PATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/hap1.1:/opt/ngs-tools/bin:$TRAVIS_BUILD_DIR/gfe_submission/bin"
 
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
   - export RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1 HARNESS_OPTIONS=c HARNESS_TIMER=1
   - cp docker/hap1.1.tar.gz docker/ngs-tools_1.9.deb .
   - sudo dpkg --install ngs-tools_1.9.deb
-  - ls $TRAVIS_BUILD_DIR
-  - ls $TRAVIS_BUILD_DIR/ngs-tools
-  - ls $TRAVIS_BUILD_DIR/ngs-tools/bin
-  - echo $PATH
   - curl -fsSL get.nextflow.io | bash
   - tar -xvzf hap1.1.tar.gz
   - chmod a+x hap1.1/hap1.1.jar
