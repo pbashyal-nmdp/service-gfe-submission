@@ -53,10 +53,12 @@ route_exists [POST => '/api/v1/sequence'], 'a POST route handler is defined for 
 route_exists [POST => '/api/v1/fasta'], 'a POST route handler is defined for /api/v1/fasta';
 route_exists [POST => '/api/v1/hml'], 'a POST route handler is defined for /api/v1/hml';
 
+
 response_status_is [POST => '/api/v1/gfe?'], 404, 'POST response status is 404 for /gfe';
 response_status_is [POST => '/api/v1/sequence?'], 404, 'POST response status is 404 for /sequence';
 response_status_is [POST => '/api/v1/fasta?'], 404, 'POST response status is 404 for /fasta';
 response_status_is [POST => '/api/v1/hml?'], 404, 'POST response status is 404 for /hml';
+
 
 response_status_is [POST => '/api/v1/fasta?locus=HLA-A', {files => [{name => 'file', filename => $t_fasta}]}], 200, 'response status is 200 for /fasta';
 response_status_is [POST => '/api/v1/hml', {files => [{name => 'file', filename => $t_hml}]}], 200, 'response status is 200 for /hml';

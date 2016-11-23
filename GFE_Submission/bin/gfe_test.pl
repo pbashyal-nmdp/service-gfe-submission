@@ -65,6 +65,9 @@ my $o_gfe  = GFE->new();
 $o_gfe->verbose(1);
 $o_gfe->return_structure(0);
 
+# my $s_hml   = "$FindBin::Bin/../t/resources/hmltest1.HML";
+# my $rh_gfe  = $o_gfe->getGfeHml($s_hml);
+#print Dumper($rh_gfe),"\n";
 my %h_seqs;
 my $s_header;
 my $s_seq;

@@ -1,20 +1,35 @@
 sudo: required
-dist: trusty
+language: perl
+perl:
+  - "5.14"
+  - "5.20"
 
 env:
   global:
     - PERL_MM_USE_DEFAULT=1
-    - "PATH=$PATH:/hap1.1"
+    - "PATH=$PATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/hap1.1:$TRAVIS_BUILD_DIR/ngs-tools/bin:$TRAVIS_BUILD_DIR/gfe_submission/bin"
 
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
-  - cp docker/hap1.1.tar.gz .
+  - export RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1 HARNESS_OPTIONS=c HARNESS_TIMER=1
+  - cp docker/hap1.1.tar.gz docker/ngs-tools_1.9.deb .
+  - dpkg --install ngs-tools_1.9.deb
+  - curl -fsSL get.nextflow.io | bash
   - tar -xvzf hap1.1.tar.gz
   - chmod a+x hap1.1/hap1.1.jar
   - wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64
   - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.1/clustalo
   - chmod a+x hap1.1/clustalo
-  - sudo cpan YAML Plack Plack::Handler::Starman Template JSON Getopt::Long Data::Dumper LWP::UserAgent REST::Client Test::More 
-  - sudo cpan JSON::Schema::AsType Dancer Moose Math::Round File::Spec IO::Socket::SSL Net::SSLeay Dancer::Plugin::Swagger Log::Log4perl
+  - cd GFE_Submission
+  - cpanm --quiet --notest --installdeps .
+  - cpanm --quiet --notest Devel::Cover::Report::Coveralls
+  - cd ..
+  - mv -i GFE_Submission gfe_submission
+  - cd gfe_submission
 
-script: "./build.sh"
+script:
+    - PERL5OPT=-MDevel::Cover=-coverage,statement,branch,condition,path,subroutine prove -lrsv t
+    - cover
+
+after_success:
+    - cover -report coveralls

@@ -101,6 +101,25 @@ has 'hml' => (
     predicate => 'has_hml',
 );
 
+has 'fastanf' => (
+    is => 'ro',
+    isa => 'Str',
+    required => 1
+);
+
+has 'hmlnf' => (
+    is => 'ro',
+    isa => 'Str',
+    required => 1
+);
+
+has 'nextflow_file' => (
+    is => 'rw',
+    isa => 'Str',
+    clearer   => 'clear_nextflow',
+    predicate => 'has_nextflow',
+);
+
 has 'ids' =>(
   isa => 'HashRef[Int]',
   is  => 'rw',
@@ -249,6 +268,55 @@ sub alignHml{
   return $exit_value;
 }
 
+
+=head2 alignNextflow
+
+    Title:     alignNextflow
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub alignNextflow{
+
+  my ( $self )       = @_;
+
+  my $logger       = Log::Log4perl->get_logger();
+  my $s_hml_file   = $self->hml;
+
+  $self->fileid($self->getId());
+  $self->nextflow_file($self->outdir."/".$self->fileid.".txt");
+  my $s_nextflow_log = $self->fileid.".flow.log";
+  my $s_flow_glob    = ".nextflow.lo*";
+  my $s_flow_log     = ".nextflow.log";
+  my $s_hap1_cmd     = "nextflow run ".$self->hmlnf;
+  my @args = ($s_hap1_cmd, " --hml $s_hml_file"," --output ".$self->outdir," --name ".$self->fileid," &> ".$s_nextflow_log);
+  my $exit_value = system(join("",@args));
+
+  if($exit_value != 0){
+    $logger->error("system @args failed: $?");
+    foreach my $s_log_flow (`cat $s_nextflow_log`){
+      chomp($s_log_flow);
+      $logger->error($s_log_flow);
+    }
+  }else{
+    if(defined $s_nextflow_log && -e $s_nextflow_log){
+      foreach my $s_log_dir (`cat $s_nextflow_log | grep '/' | cut -f1 -d ' ' | sed 's/\\[//g' | cut -f1 -d '/'`){
+        chomp($s_log_dir);
+        my $s_work_dir = "work/".$s_log_dir;
+        system("rm -rf $s_work_dir") if(-d $s_work_dir);
+      }
+    }
+  }
+  
+  system("rm -rf $s_flow_glob") if(-e $s_flow_log);
+  system("rm $s_nextflow_log")  if(-e $s_nextflow_log);
+
+  return $exit_value;
+}
+
+
 =head2 align
 
     Title:     align
@@ -316,10 +384,19 @@ sub cleanup{
 
   my ( $self )       = @_;
 
-  my $s_fasta = $self->fasta;
+  my $s_nextflow     = $self->outdir."/".$self->fileid.".txt";
+  my $s_fasta        = $self->fasta;
   my $s_aligned_file = $self->alignment_file();
-  system("rm $s_fasta")        if(-e $s_fasta);
-  system("rm $s_aligned_file") if(-e $s_aligned_file);
+
+  system("rm $s_fasta")        if($self->has_fasta && defined $s_fasta 
+                                    && $s_fasta !~ /t\/resources/ && -e $s_fasta);
+  system("rm $s_aligned_file") if(defined $s_aligned_file && -e $s_aligned_file);
+  system("rm $s_nextflow")     if(defined $s_nextflow && -e $s_nextflow);
+  system("rm -rf .nextflow")   if(-d ".nexflow");
+
+  $self->clear_nextflow;
+  $self->clear_hml;
+  $self->clear_fasta;
 
 }
 
@@ -359,8 +436,10 @@ around BUILDARGS=>sub
     "KIR3DS1" => 22
   );
 
-  my $s_hap1     =`which hap1.1.jar`;chomp($s_hap1);
-  my $s_clustalo =`which clustalo`;chomp($s_clustalo);
+  my $s_hap1       =`which hap1.1.jar`;chomp($s_hap1);
+  my $s_clustalo   =`which clustalo`;chomp($s_clustalo);
+  my $s_hml_flow   = "$FindBin::Bin/../bin/hml.nf";
+  my $s_fasta_flow = "$FindBin::Bin/../bin/fasta.nf";
 
   my $s_hap1_dir = $s_hap1;
   $s_hap1_dir    =~ s/hap1\.1\.jar//;
@@ -377,14 +456,15 @@ around BUILDARGS=>sub
   die "clustalo is not installed!\n" 
     if(!defined $s_clustalo || !-x $s_clustalo);
 
-  die "Ouput directory doesn't exists! $outdir \n" 
-    if(!-d $outdir);
+  $outdir    = $working if(!-d $outdir);
 
   die "Working directory doesn't exists! $working \n" 
     if(!-d $working);
 
   my %h_ids = ( 0 => 1 );
   $args->{aligned_cutoff} = .5;
+  $args->{hmlnf}          = $s_hml_flow;
+  $args->{fastanf}        = $s_fasta_flow;
   $args->{outdir}         = $outdir;
   $args->{directory}      = $s_hap1_dir;
   $args->{order}          = \%h_loci_order;

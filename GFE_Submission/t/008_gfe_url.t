@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 2;
+use Test::More tests => 5;
 use strict;
 use warnings;
 
@@ -41,12 +41,22 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use GFE;
 
-
+# Create client object
 my $o_client       = GFE::Client->new();
-$o_client->feature_url("http://localhost:3000");
 ok(defined $o_client,"GFE Client Object created");
+
+$o_client->feature_url("http://localhost:3000");
+ok($o_client->feature_url eq "http://localhost:3000","GFE Client feature url works");
+
+ok($o_client->retry == 6,"GFE Client retry number correctly set to default");
+$o_client->retry(2);
+ok($o_client->retry == 2,"GFE Client retry number correctly changed");
 
 my $o_gfe          = GFE->new();
 $o_gfe->client($o_client);
-
 ok(defined $o_gfe,"GFE Object created with new client url");
+
+
+
+
+
