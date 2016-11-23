@@ -38,7 +38,7 @@ process getGFE{
     set file {"${subject}.txt"}  into gfeResults mode flatten
 
   """
-    gzcat ${subjectFastq} | /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-submission/GFE_Submission/bin/fasta2gfe -s ${subject} 
+    gzcat ${subjectFastq} | fasta2gfe -s ${subject} 
   """
 }
 
