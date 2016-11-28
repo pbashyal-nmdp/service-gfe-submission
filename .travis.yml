@@ -8,6 +8,8 @@ env:
   global:
     - PERL_MM_USE_DEFAULT=1
     - "PATH=$PATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/hap1.1:/opt/ngs-tools/bin:$TRAVIS_BUILD_DIR/gfe_submission/bin"
+    - NXF_VER='0.22.4'
+    - NXF_OPTS='-Xms512M -Xmx2G'
 
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev

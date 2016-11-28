@@ -1,11 +1,9 @@
 #!/usr/bin/env nextflow
 
-params.hml           = "${baseDir}/tutorial/ex00_ngsp_expected.xml"
-params.output        = "${baseDir}/tutorial/output"
+params.hml           = ""
+params.output        = ""
 params.name          = ""
-
 outputDir            = file("${params.output}")
-expectedFile         = file("${params.hml}")
 
 // Extracting consensus sequences
 process extractConsensus{
@@ -25,7 +23,7 @@ subjectIdFiles = fastqFiles.map{ hml, fileIn ->
   tuple(subjectId(fileIn), fileIn, hml ) 
 }
 
-//Running the LD validation on the mugs
+//Get GFE For each sequence
 process getGFE{
   errorStrategy 'ignore'
 
@@ -38,7 +36,7 @@ process getGFE{
     set file {"${subject}.txt"}  into gfeResults mode flatten
 
   """
-    gzcat ${subjectFastq} | fasta2gfe -s ${subject} 
+    zcat ${subjectFastq} | fasta2gfe -s ${subject} 
   """
 }
 
@@ -53,6 +51,13 @@ gfeResults
 def copyToFailedDir (file) { 
   log.info "Copying ${file.name} into: $outputDir"
   file.copyTo(outputDir)
+  def copiedFile = new File( "${params.output}/${file.name}" )
+  log.info copiedFile.name
+  if( !copiedFile.exists() ) {
+    log.info "Failed to copy file copiedFile.name ${file.name} into: $outputDir"
+  }else{
+    log.info "Copied $copiedFile ${file.name} into: $outputDir"
+  }
 }
 
 //Get subject id from fasta file

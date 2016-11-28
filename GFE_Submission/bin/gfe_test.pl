@@ -65,41 +65,46 @@ my $o_gfe  = GFE->new();
 $o_gfe->verbose(1);
 $o_gfe->return_structure(0);
 
-# my $s_hml   = "$FindBin::Bin/../t/resources/hmltest1.HML";
-# my $rh_gfe  = $o_gfe->getGfeHml($s_hml);
-#print Dumper($rh_gfe),"\n";
-my %h_seqs;
-my $s_header;
-my $s_seq;
-while (<>) {
-    chomp;
-    if ($_ =~ />/) {
-        if ($s_seq) {    
-            $h_seqs{$s_header} = $s_seq;
-        }              
-        $s_header = $_;
-        $s_header =~ s/^>//; # remove ">"
-        $s_header =~ s/\s+$//; # remove trailing whitespace
-        $s_seq = ""; # clear out old sequence
-    }else {    
-        s/\s+//g; # remove whitespace
-        $s_seq .= $_; # add sequence
-    }
+my $s_path = `echo \$PATH`;chomp($s_path);
+foreach my $s_p (split(/:/,$s_path)){
+    print STDERR "PATH: ".$s_p,"\n";
 }
 
-if ($s_seq) { # handle last sequence
-    $h_seqs{$s_header} = $s_seq;
-}
+my $s_hml   = "$FindBin::Bin/../t/resources/hmltest1.HML";
+my $rh_gfe  = $o_gfe->getGfeHmlNextflow($s_hml);
+print STDERR "gfe_test.pl output:",Dumper($rh_gfe),"\n";
+# my %h_seqs;
+# my $s_header;
+# my $s_seq;
+# while (<>) {
+#     chomp;
+#     if ($_ =~ />/) {
+#         if ($s_seq) {    
+#             $h_seqs{$s_header} = $s_seq;
+#         }              
+#         $s_header = $_;
+#         $s_header =~ s/^>//; # remove ">"
+#         $s_header =~ s/\s+$//; # remove trailing whitespace
+#         $s_seq = ""; # clear out old sequence
+#     }else {    
+#         s/\s+//g; # remove whitespace
+#         $s_seq .= $_; # add sequence
+#     }
+# }
 
-foreach my $s_typing (keys %h_seqs){
-	$s_typing =~ /(HLA-\D+\d{0,1})\*/;
-	my $s_locus = $1;
-	next if(!defined $s_locus || $s_locus !~ /\S/);
-	my $rh_gfe = $o_gfe->getGfe($s_locus,$h_seqs{$s_typing});
-	my $s_gfe  = defined $$rh_gfe{gfe} ? $$rh_gfe{gfe} : '';
-	my $n_seq  = length($h_seqs{$s_typing});
-	print join(",",$s_locus,$s_typing,$n_seq,$s_gfe),"\n";
-}
+# if ($s_seq) { # handle last sequence
+#     $h_seqs{$s_header} = $s_seq;
+# }
+
+# foreach my $s_typing (keys %h_seqs){
+#   $s_typing =~ /(HLA-\D+\d{0,1})\*/;
+#   my $s_locus = $1;
+#   next if(!defined $s_locus || $s_locus !~ /\S/);
+#   my $rh_gfe = $o_gfe->getGfe($s_locus,$h_seqs{$s_typing});
+#   my $s_gfe  = defined $$rh_gfe{gfe} ? $$rh_gfe{gfe} : '';
+#   my $n_seq  = length($h_seqs{$s_typing});
+#   print join(",",$s_locus,$s_typing,$n_seq,$s_gfe),"\n";
+# }
 
 
 

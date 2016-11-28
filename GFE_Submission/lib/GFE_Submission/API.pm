@@ -27,10 +27,10 @@ prefix '/api/v1';
 swagger_path {
     description => 'Get Gene Feature Enumeration (GFE) from sequence and locus',
     parameters => [
-     	{
-    	    name => 'GfeSubmission',
-    		type => 'object',
-    		schema => { '$ref' => "#/definitions/GfeSubmission" },
+        {
+            name => 'GfeSubmission',
+            type => 'object',
+            schema => { '$ref' => "#/definitions/GfeSubmission" },
             description => 'GFE Submission',
             in => 'body',
          }
@@ -49,11 +49,11 @@ swagger_path {
 },
 post '/gfe' => sub {
 
-	my $s_url        = params->{'url'};
-	my $s_locus      = params->{'locus'};
+    my $s_url        = params->{'url'};
+    my $s_locus      = params->{'locus'};
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};
-	my $s_sequence   = params->{'sequence'};
+    my $s_sequence   = params->{'sequence'};
     my $b_structures = params->{'structures'};
 
     my $o_gfe = GFE->new();
@@ -73,7 +73,7 @@ post '/gfe' => sub {
         $o_gfe->client($o_client);
     }
 
-	my $rh_gfe       = $o_gfe->getGfe($s_locus,$s_sequence);
+    my $rh_gfe       = $o_gfe->getGfe($s_locus,$s_sequence);
 
     return defined $$rh_gfe{Error} ? swagger_template 404, $$rh_gfe{Error}
         : swagger_template 200, $rh_gfe;

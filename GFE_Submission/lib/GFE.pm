@@ -18,7 +18,7 @@ GFE
 
 
 =head1 CAVEATS
-	
+    
 
 =head1 LICENSE
 
@@ -41,12 +41,12 @@ GFE
     > http://www.gnu.org/licenses/lgpl.html
 
 =head1 VERSIONS
-	
-    Version    		Description             	Date
+    
+    Version         Description                 Date
 
 
 =head1 TODO
-	
+    
     - Add tests for the structures of known genes
     - Add DOM testing
     - Add % unalinged test, so it fails if the majority of the
@@ -266,7 +266,7 @@ CONFIG
         $logger->error("Failed to create alignment file!");
         $logger->error($s_aligned_file);
         $o_annotate->cleanup();
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return { 
             Error => { 
@@ -303,7 +303,7 @@ CONFIG
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {
             Error => { 
@@ -335,7 +335,7 @@ CONFIG
     my $f_aligned = sprintf("%.3f",$n_aligned_seq / length($s_seq));
     if($f_aligned < $o_annotate->aligned_cutoff){
         $logger->error("Aligned sequence did not meet cutoff: ".$f_aligned." < ".$o_annotate->aligned_cutoff);
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {
             Error => { 
@@ -489,7 +489,7 @@ CONFIG
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {
             Error => { 
@@ -528,7 +528,7 @@ CONFIG
         my $s_gfe = join('w',$s_locus, join('-', @a_gfe));
         if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
             $logger->error("Invalid GFE was generated");
-            if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+            foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
             system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
             return {
                 Error => { 
@@ -639,7 +639,7 @@ CONFIG
     if(!defined $s_aligned_file || !-e $s_aligned_file){
         $logger->error("Failed to create alignment file!");
         $logger->error($s_aligned_file);
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return { 
             Error => { 
@@ -681,7 +681,7 @@ CONFIG
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {
             Error => { 
@@ -802,7 +802,7 @@ CONFIG
     my $s_nextflow_file = $o_annotate->nextflow_file;
     if(!defined $s_nextflow_file || !-e $s_nextflow_file){
         $logger->error("Failed to create nextflow output!");
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return { 
             Error => { 

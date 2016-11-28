@@ -17,7 +17,7 @@
 
 
 =head1 CAVEATS
-	
+  
 
 =head1 LICENSE
 
@@ -40,12 +40,12 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =head1 VERSIONS
-	
-    Version    		Description             	Date
+  
+    Version       Description               Date
 
 
 =head1 TODO
-	
+  
 
 =head1 SUBROUTINES
 
@@ -61,6 +61,7 @@ use FindBin;
 use Moose;
 use Cwd;
     
+$| = 1;
 
 has 'directory' => (
     is => 'rw',
@@ -291,9 +292,11 @@ sub alignNextflow{
   my $s_flow_glob    = ".nextflow.lo*";
   my $s_flow_log     = ".nextflow.log";
   my $s_hap1_cmd     = "nextflow run ".$self->hmlnf;
-  my @args = ($s_hap1_cmd, " --hml $s_hml_file"," --output ".$self->outdir," --name ".$self->fileid," &> ".$s_nextflow_log);
-  my $exit_value = system(join("",@args));
 
+  my @args = ($s_hap1_cmd, " --hml $s_hml_file"," --output ".$self->outdir," --name ".$self->fileid," > ".$s_nextflow_log);
+  my $exit_value      = system(join("",@args));
+
+  # Check if nextflow failed
   if($exit_value != 0){
     $logger->error("system @args failed: $?");
     foreach my $s_log_flow (`cat $s_nextflow_log`){
@@ -309,7 +312,7 @@ sub alignNextflow{
       }
     }
   }
-  
+
   system("rm -rf $s_flow_glob") if(-e $s_flow_log);
   system("rm $s_nextflow_log")  if(-e $s_nextflow_log);
 
@@ -370,6 +373,7 @@ sub getId{
   }
 
 }
+
 
 =head2 cleanup
 
