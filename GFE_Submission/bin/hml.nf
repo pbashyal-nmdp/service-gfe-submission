@@ -36,7 +36,7 @@ process getGFE{
     set file {"${subject}.txt"}  into gfeResults mode flatten
 
   """
-    zcat ${subjectFastq} | fasta2gfe -s ${subject} 
+    gzcat ${subjectFastq} | fasta2gfe -s ${subject} 
   """
 }
 

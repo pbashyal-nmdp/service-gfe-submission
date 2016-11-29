@@ -361,7 +361,7 @@ sub align{
 sub getId{
 
   my ( $self )       = @_;
-  my $n_randid     = round(rand(1000));
+  my $n_randid     = round(rand(10000));
   my $s_fasta_file = $self->outdir."/".$n_randid.".fasta";
 
   if(defined $self->ids->{$n_randid} && !-e $s_fasta_file){
@@ -391,12 +391,21 @@ sub cleanup{
   my $s_nextflow     = $self->outdir."/".$self->fileid.".txt";
   my $s_fasta        = $self->fasta;
   my $s_aligned_file = $self->alignment_file();
+  my $s_outhap1      = $self->directory."/".$self->fileid."_ann.csv";
 
   system("rm $s_fasta")        if($self->has_fasta && defined $s_fasta 
                                     && $s_fasta !~ /t\/resources/ && -e $s_fasta);
   system("rm $s_aligned_file") if(defined $s_aligned_file && -e $s_aligned_file);
   system("rm $s_nextflow")     if(defined $s_nextflow && -e $s_nextflow);
+  system("rm $s_outhap1")      if(defined $s_outhap1 && -e $s_outhap1);
   system("rm -rf .nextflow")   if(-d ".nexflow");
+
+  if($self->has_locus){
+    my $s_loc = $self->locus;
+    $s_loc =~ s/-/_/;
+    my $alignment = $self->directory."/output/clu/".$s_loc."/".$self->fileid.".clu";
+    system("rm $alignment")      if(defined $alignment && -e $alignment);
+  }
 
   $self->clear_nextflow;
   $self->clear_hml;

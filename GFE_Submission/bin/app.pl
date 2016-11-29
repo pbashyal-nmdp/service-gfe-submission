@@ -38,7 +38,7 @@ set 'template'     => 'template_toolkit';
 set 'logger'       => 'console';
 set 'session'      => 'Simple';
 set 'log'          => 'debug';
-set 'serializer'   => 'JSON'; 
+
 set 'show_errors'  => 1;
 set 'startup_info' => 1;
 set 'warnings'     => 1;
