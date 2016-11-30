@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 19;
+use Test::More tests => 21;
 use strict;
 use warnings;
 
