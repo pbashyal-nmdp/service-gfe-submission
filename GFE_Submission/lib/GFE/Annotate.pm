@@ -404,7 +404,7 @@ sub cleanup{
     my $s_loc = $self->locus;
     $s_loc =~ s/-/_/;
     my $alignment = $self->directory."/output/clu/".$s_loc."/".$self->fileid.".clu";
-    system("rm $alignment")      if(defined $alignment && -e $alignment);
+    system("rm $alignment")   if(defined $alignment && -e $alignment);
   }
 
   $self->clear_nextflow;

@@ -97,6 +97,11 @@ my $o_client = GFE_Client->new();
 $o_client->gfe_url($s_url) if defined $s_url;
 my $rh_gfe = $o_client->getGfeFasta($s_locus,$s_fasta);
 
+if(defined $$rh_gfe{Error}){
+    print STDERR Dumper($rh_gfe),"\n";
+    die "Fasta file failed for convert to GFE!\n";
+}
+
 foreach my $rh_sub (@{$rh_gfe->{subjects}}){
     my $s_id = $rh_sub->{id};
     foreach my $rh_typingData (@{$rh_sub->{typingData}}){

@@ -91,5 +91,13 @@ ok(defined $$rh_fasta_invalid{Error},"fasta file invalid");
 ok(defined $$rh_fasta_invalid{Error}{type},"rh_seq typed defined defined");
 ok($$rh_fasta_invalid{Error}{type} eq "File","r_invalid_gfe->{content}->{type} eq GFE");
 
+my $o_gfe_l          = GFE->new();
+$o_gfe_l->setLogfile();
+ok($o_gfe_l->has_logfile,"Log file was created");
+
+$o_gfe_l->clear_logfile;
+ok(!$o_gfe_l->has_logfile,"Log file was cleared");
+
+
 
 
