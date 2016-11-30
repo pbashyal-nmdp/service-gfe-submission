@@ -140,7 +140,6 @@ sub getGfe{
 
     my($self,$s_locus,$s_seq) = @_;
 
-    my @a_log;
     my @a_gfe;
     my %h_seq;
     my %h_accesion;
@@ -148,23 +147,8 @@ sub getGfe{
     my %h_alignment;
     my $n_aligned_seq;
    
-    my $s_logfile = $self->getLogfile();
-    $self->logfile($s_logfile);
-
-Log::Log4perl->init(\<<CONFIG);
-log4perl.rootLogger = DEBUG, screen, file
-
-log4perl.appender.screen = Log::Log4perl::Appender::Screen
-log4perl.appender.screen.stderr = 1
-log4perl.appender.screen.layout = PatternLayout
-log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-
-log4perl.appender.file = Log::Log4perl::Appender::File
-log4perl.appender.file.filename = $s_logfile
-log4perl.appender.file.mode   = append
-log4perl.appender.file.layout = PatternLayout
-log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-CONFIG
+    $self->startLogfile();
+    my $s_logfile = $self->logfile;
 
     my $logger       = Log::Log4perl->get_logger();
     my $o_annotate   = $self->annotate;
@@ -174,15 +158,14 @@ CONFIG
     # Return an error if the sequence is not defined
     if(!defined $s_seq || $s_seq !~ /\S/){
         $logger->error("Sequence not defined");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Sequence not defined",
                 locus    => $s_locus,
                 type     => "Sequence",
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }
@@ -190,15 +173,14 @@ CONFIG
     # Sequence length is too small
     if(length($s_seq) < 10){
         $logger->error("Sequence length is too small");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Sequence length is too small",
                 locus    => $s_locus,
                 type     => "Sequence",
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }
@@ -206,15 +188,14 @@ CONFIG
     # Return an error if the locus is not valid
     if(!defined $s_locus || $s_locus !~ /\S/ || !defined $o_annotate->order->{$s_locus}){
         $logger->error("Locus not valid: ".$s_locus);
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Locus not valid",
                 locus    => $s_locus,
                 type     => "Locus",
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }
@@ -223,9 +204,7 @@ CONFIG
     my $s_fasta_file = $o_annotate->makeFasta($s_locus,$s_seq);
     if(!-e $s_fasta_file){
         $logger->error("Failed to create fasta file!");
-        $logger->error($s_fasta_file);
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to generate fasta file",
@@ -234,7 +213,7 @@ CONFIG
                 type     => "Fasta",
                 file     => $s_fasta_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Generated fasta file: $s_fasta_file") if $self->verbose; }
@@ -243,11 +222,8 @@ CONFIG
     my $b_exit_status = $o_annotate->align();
     if($b_exit_status != 0){
         $logger->error("Failed to run annotation!");
-        $logger->error($s_locus);
-        $logger->error($s_seq);
         $o_annotate->cleanup();
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to run annotation",
@@ -255,7 +231,7 @@ CONFIG
                 locus    => $s_locus,
                 sequence => $s_seq,
                 version  => $self->version,
-                log      => \@a_log    
+                log      => $ra_log   
             }
         };
     }else{ $logger->info("Alignment ran successfully") if $self->verbose; }
@@ -264,10 +240,8 @@ CONFIG
     my $s_aligned_file = $o_annotate->alignment_file();
     if(!-e $s_aligned_file){
         $logger->error("Failed to create alignment file!");
-        $logger->error($s_aligned_file);
         $o_annotate->cleanup();
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to create alignment file!",
@@ -276,7 +250,7 @@ CONFIG
                 type     => "Alignment",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Generated alignment file: $s_aligned_file") if $self->verbose; }
@@ -303,8 +277,7 @@ CONFIG
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Failed to generate fasta file",
@@ -313,7 +286,7 @@ CONFIG
                 type     => "Alignment",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Successfully loaded alignment results") if $self->verbose; }
@@ -335,15 +308,14 @@ CONFIG
     my $f_aligned = sprintf("%.3f",$n_aligned_seq / length($s_seq));
     if($f_aligned < $o_annotate->aligned_cutoff){
         $logger->error("Aligned sequence did not meet cutoff: ".$f_aligned." < ".$o_annotate->aligned_cutoff);
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Aligned sequence did not meet cutoff: ".$f_aligned." < ".$o_annotate->aligned_cutoff,
                 locus    => $s_locus,
                 type     => "Alignment",
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };  
     }
@@ -351,8 +323,7 @@ CONFIG
     my $s_gfe     = join('w',$s_locus, join('-', @a_gfe));
     if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
         $logger->error("Invalid GFE was generated");
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Invalid GFE was generated",
@@ -361,17 +332,16 @@ CONFIG
                 type     => "GFE",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };  
     }else{ $logger->info("Generated GFE: $s_gfe") if $self->verbose; }
    
     if($self->verbose){
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         $self->return_structure
-            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => \@a_log }
-            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version, log => \@a_log };
+            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => $ra_log }
+            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version, log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         $self->return_structure
@@ -395,29 +365,12 @@ sub getGfeFasta{
 
     my($self,$s_locus,$s_input_file) = @_;
 
-    my @a_log;
     my %h_seq;
     my %h_accesion;
     my @a_subjects;
-    
-    my $s_logfile = $self->getLogfile();
-    $self->logfile($s_logfile);
 
-Log::Log4perl->init(\<<CONFIG);
-log4perl.rootLogger = DEBUG, screen, file
-
-log4perl.appender.screen = Log::Log4perl::Appender::Screen
-log4perl.appender.screen.stderr = 1
-log4perl.appender.screen.layout = PatternLayout
-log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-
-log4perl.appender.file = Log::Log4perl::Appender::File
-log4perl.appender.file.filename = $s_logfile
-log4perl.appender.file.mode   = append
-log4perl.appender.file.layout = PatternLayout
-log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-
-CONFIG
+    $self->startLogfile();
+    my $s_logfile = $self->logfile;
 
     my $logger       = Log::Log4perl->get_logger();
     my $o_annotate   = $self->annotate;
@@ -435,16 +388,14 @@ CONFIG
     my $b_exit_status = $o_annotate->align();
     if($b_exit_status != 0){
         $logger->error("Failed to run annotation!");
-        $logger->error($s_locus);
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to run annotation",
                 type     => "Annotation",
                 locus    => $s_locus,
                 version  => $self->version,
-                log      => \@a_log    
+                log      => $ra_log    
             }
         };
     }else{ $logger->info("Alignment ran successfully") if $self->verbose; }
@@ -453,9 +404,7 @@ CONFIG
     my $s_aligned_file = $o_annotate->alignment_file();
     if(!-e $s_aligned_file){
         $logger->error("Failed to create alignment file!");
-        $logger->error($s_aligned_file);
-        if($self->verbose){foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to create alignment file!",
@@ -463,7 +412,7 @@ CONFIG
                 type     => "Alignment",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Generated alignment file: $s_aligned_file") if $self->verbose; }
@@ -489,8 +438,7 @@ CONFIG
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Failed to generate fasta file",
@@ -498,7 +446,7 @@ CONFIG
                 type     => "Alignment",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Successfully loaded alignment results") if $self->verbose; }
@@ -528,8 +476,7 @@ CONFIG
         my $s_gfe = join('w',$s_locus, join('-', @a_gfe));
         if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
             $logger->error("Invalid GFE was generated");
-            foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-            system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+            my $ra_log = $self->returnLog();
             return {
                 Error => { 
                     Message  => "Invalid GFE was generated from fasta file",
@@ -538,7 +485,7 @@ CONFIG
                     id       => $s_id,
                     file     => $s_aligned_file,
                     version  => $self->version,
-                    log      => \@a_log
+                    log      => $ra_log
                 }
             }; 
         }else{ $logger->info("Generated GFE for $s_id: $s_gfe") if $self->verbose; }
@@ -556,9 +503,8 @@ CONFIG
     }
 
     if($self->verbose){
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
-        return {subjects => \@a_subjects, version => $self->version,  log => \@a_log };
+        my $ra_log = $self->returnLog();
+        return {subjects => \@a_subjects, version => $self->version,  log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {subjects => \@a_subjects, version => $self->version };
@@ -580,29 +526,13 @@ sub getGfeHml{
 
     my($self,$s_input_file) = @_;
 
-    my @a_log;
     my %h_seq;
     my %h_imgthla;
     my %h_accesion;
     my @a_subjects;
 
-    my $s_logfile = $self->getLogfile();
-    $self->logfile($s_logfile);
-
-Log::Log4perl->init(\<<CONFIG);
-log4perl.rootLogger = DEBUG, screen, file
-
-log4perl.appender.screen = Log::Log4perl::Appender::Screen
-log4perl.appender.screen.stderr = 1
-log4perl.appender.screen.layout = PatternLayout
-log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-
-log4perl.appender.file = Log::Log4perl::Appender::File
-log4perl.appender.file.filename = $s_logfile
-log4perl.appender.file.mode   = append
-log4perl.appender.file.layout = PatternLayout
-log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-CONFIG
+    $self->startLogfile();
+    my $s_logfile = $self->logfile;
 
     my $logger       = Log::Log4perl->get_logger();
     my $o_annotate   = $self->annotate;
@@ -620,15 +550,14 @@ CONFIG
     my $b_exit_status = $o_annotate->alignHml();
     if($b_exit_status != 0){
         $logger->error("Failed to run annotation!");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to run annotation",
                 type     => "Annotation",
                 file     => $s_input_file,
                 version  => $self->version,
-                log      => \@a_log    
+                log      => $ra_log   
             }
         };
     }else{ $logger->info("Alignment ran successfully") if $self->verbose; }
@@ -639,15 +568,14 @@ CONFIG
     if(!defined $s_aligned_file || !-e $s_aligned_file){
         $logger->error("Failed to create alignment file!");
         $logger->error($s_aligned_file);
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to create alignment file!",
                 type     => "Alignment",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Generated alignment file: $s_aligned_file") if $self->verbose; }
@@ -681,15 +609,14 @@ CONFIG
     # If no results are observed..
     if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Failed to generate fasta file",
                 type     => "Alignment",
                 file     => $s_aligned_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Successfully loaded alignment results") if $self->verbose; }
@@ -736,9 +663,8 @@ CONFIG
     }
 
     if($self->verbose){
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
-        return {subjects => \@a_subjects, version => $self->version,  log => \@a_log };
+        my $ra_log = $self->returnLog();
+        return {subjects => \@a_subjects, version => $self->version,  log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {subjects => \@a_subjects, version => $self->version };
@@ -760,29 +686,13 @@ sub getGfeHmlNextflow{
 
     my($self,$s_input_file) = @_;
 
-    my @a_log;
     my %h_seq;
     my %h_imgthla;
     my %h_accesion;
     my @a_subjects;
 
-    my $s_logfile = $self->getLogfile();
-    $self->logfile($s_logfile);
-
-Log::Log4perl->init(\<<CONFIG);
-log4perl.rootLogger = DEBUG, screen, file
-
-log4perl.appender.screen = Log::Log4perl::Appender::Screen
-log4perl.appender.screen.stderr = 1
-log4perl.appender.screen.layout = PatternLayout
-log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-
-log4perl.appender.file = Log::Log4perl::Appender::File
-log4perl.appender.file.filename = $s_logfile
-log4perl.appender.file.mode   = append
-log4perl.appender.file.layout = PatternLayout
-log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-CONFIG
+    $self->startLogfile();
+    my $s_logfile = $self->logfile;
 
     my $logger       = Log::Log4perl->get_logger();
     my $o_annotate   = $self->annotate;
@@ -802,15 +712,14 @@ CONFIG
     my $s_nextflow_file = $o_annotate->nextflow_file;
     if(!defined $s_nextflow_file || !-e $s_nextflow_file){
         $logger->error("Failed to create nextflow output!");
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Failed to create nextflow file!",
                 type     => "Nextflow",
                 file     => $o_annotate->nextflow_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("Generated nextflow file: $s_nextflow_file") if $self->verbose; }
@@ -823,6 +732,22 @@ CONFIG
         $h_subjects{$s_subject_id}{$s_locus}{$s_gfe}++;
     }
     close $fh_nextflow;
+
+    # If no results are observed..
+    if(scalar (keys %h_subjects) == 0){
+        $logger->error("Nextflow ran but file is empty!");
+        my $ra_log = $self->returnLog();
+        return {
+            Error => { 
+                Message  => "Failed to generate nextflow file",
+                type     => "Nextflow",
+                file     => $s_nextflow_file,
+                version  => $self->version,
+                log      => $ra_log
+            }
+        };
+    }else{ $logger->info("Successfully loaded nextflow results") if $self->verbose; }
+
 
     # Delete alignment and fasta files
     $o_annotate->cleanup();
@@ -840,9 +765,8 @@ CONFIG
     }
 
     if($self->verbose){
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
-        return {subjects => \@a_subjects, version => $self->version,  log => \@a_log };
+        my $ra_log = $self->returnLog();
+        return {subjects => \@a_subjects, version => $self->version,  log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         return {subjects => \@a_subjects, version => $self->version };
@@ -863,31 +787,15 @@ sub getSequence{
 
     my($self,$s_locus,$s_gfe) = @_;
 
-    my @a_log;
     my %h_seq;
     my %h_accesion;
     my @a_term_rank;
     my @a_structure;
     my @a_sequence;
 
-    my $s_logfile = $self->getLogfile();
-    $self->logfile($s_logfile);
-
-Log::Log4perl->init(\<<CONFIG);
-log4perl.rootLogger = DEBUG, screen, file
-
-log4perl.appender.screen = Log::Log4perl::Appender::Screen
-log4perl.appender.screen.stderr = 1
-log4perl.appender.screen.layout = PatternLayout
-log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-
-log4perl.appender.file = Log::Log4perl::Appender::File
-log4perl.appender.file.filename = $s_logfile
-log4perl.appender.file.mode   = append
-log4perl.appender.file.layout = PatternLayout
-log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
-CONFIG
-
+    $self->startLogfile();
+    my $s_logfile = $self->logfile;
+    
     my $logger       = Log::Log4perl->get_logger();
     my $o_annotate   = $self->annotate;
     my $o_client     = $self->client;
@@ -897,8 +805,7 @@ CONFIG
     if(!defined $s_gfe || $s_gfe !~ /\S/ || $o_structures->invalidGfe($s_locus,$s_gfe)){
         $s_gfe = (!defined $s_gfe || $s_gfe !~ /\S/) ? '' : $s_gfe;
         $logger->error("GFE not valid: ".$s_gfe);
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "GFE not valid",
@@ -906,7 +813,7 @@ CONFIG
                 type     => "GFE",
                 gfe      => $s_gfe,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }
@@ -915,10 +822,7 @@ CONFIG
     if(!defined $s_locus || $s_locus !~ /\S/ || !defined $o_annotate->order->{$s_locus}){
         $s_locus = (!defined $s_locus || $s_locus !~ /\S/) ? '' : $s_locus;
         $logger->error("Locus not valid: ".$s_locus);
-        if (-e $s_logfile){
-            foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-            system("rm $s_logfile") if($self->delete_logs);  
-        }
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "Locus not valid",
@@ -926,7 +830,7 @@ CONFIG
                 gfe      => $s_gfe,
                 type     => "Locus",
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }
@@ -941,10 +845,7 @@ CONFIG
         if(!defined $term_rank || $term_rank !~ /\S/){
             $a_gfe[$_] = !defined $a_gfe[$_] ? '' : $a_gfe[$_];
             $logger->error("No term or rank defined $a_gfe[$_] $_");
-            if (-e $s_logfile){
-                foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-                system("rm $s_logfile") if($self->delete_logs);  
-            }
+            my $ra_log = $self->returnLog();
             return { 
                 Error => { 
                     Message   => "No term or rank defined $a_gfe[$_] $_",
@@ -952,7 +853,7 @@ CONFIG
                     type      => "Term_Rank",
                     gfe       => $s_gfe,
                     version   => $self->version,
-                    log       => \@a_log
+                    log       => $ra_log
                 }
             };
         }
@@ -980,10 +881,7 @@ CONFIG
             $logger->error("Rank:       $n_rank");
             $logger->error("Accession:  $n_accession");
             $logger->error("GFE:        $s_gfe");
-            if (-e $s_logfile){
-                foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-                system("rm $s_logfile") if($self->delete_logs);  
-            }
+            my $ra_log = $self->returnLog();
             return { 
                 Error => { 
                     Message   => "No sequence could be found for the given structure",
@@ -994,7 +892,7 @@ CONFIG
                     accession => $n_accession,
                     gfe       => $s_gfe,
                     version   => $self->version,
-                    log       => \@a_log
+                    log       => $ra_log
                 }
             };
         }else{ 
@@ -1019,11 +917,10 @@ CONFIG
     my $s_sequence = join("",@a_sequence);
 
     if($self->verbose){
-        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        my $ra_log = $self->returnLog();
         $self->return_structure
-            ? return {sequence => $s_sequence, structure => \@a_structure, version => $self->version,log => \@a_log }
-            : return {sequence => $s_sequence, version   => $self->version, log => \@a_log };
+            ? return {sequence => $s_sequence, structure => \@a_structure, version => $self->version,log => $ra_log }
+            : return {sequence => $s_sequence, version   => $self->version, log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         $self->return_structure
@@ -1031,6 +928,66 @@ CONFIG
             : return {sequence => $s_sequence, version   => $self->version };
     }
    
+}
+
+=head2 startLogfile
+
+    Title:     startLogfile
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub startLogfile{
+
+    my $self = shift;
+
+    my $s_logfile = $self->getLogfile();
+    $self->logfile($s_logfile);
+
+Log::Log4perl->init(\<<CONFIG);
+log4perl.rootLogger = DEBUG, screen, file
+
+log4perl.appender.screen = Log::Log4perl::Appender::Screen
+log4perl.appender.screen.stderr = 1
+log4perl.appender.screen.layout = PatternLayout
+log4perl.appender.screen.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
+
+log4perl.appender.file = Log::Log4perl::Appender::File
+log4perl.appender.file.filename = $s_logfile
+log4perl.appender.file.mode   = append
+log4perl.appender.file.layout = PatternLayout
+log4perl.appender.file.layout.ConversionPattern = %d %p> %F{1}:%L %M - %m%n
+CONFIG
+
+
+}
+
+=head2 returnLog
+
+    Title:     returnLog
+    Usage:     
+    Function:  
+    Returns:  
+    Args:      
+
+=cut
+sub returnLog{
+
+    my $self = shift;
+
+    if(defined $self->has_logfile && -e $self->logfile){
+        my @a_log;
+        my $s_logfile = $self->logfile;
+        foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
+        system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
+        $self->clear_logfile;
+        return \@a_log;
+    }
+
+    return;
+
 }
 
 =head2 getId
@@ -1108,8 +1065,8 @@ sub checkFile{
     
     if(!defined $s_input_file || $s_input_file !~ /\S/ || !-e $s_input_file){
         $s_input_file = !defined $s_input_file ? '' : $s_input_file;
-        $logger->error("Input file not valid: ".$s_input_file);
-        if (-e $s_logfile){
+        if ($self->has_logfile && -e $s_logfile){
+            $logger->error("Input file not valid: ".$s_input_file);
             foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
             system("rm $s_logfile") if($self->delete_logs);  
         }
@@ -1128,8 +1085,8 @@ sub checkFile{
     my $s_file = (split(/\//,$s_input_file))[  scalar( @{[ $s_input_file=~/\//gi ]} ) ];
     my $s_suf  = (split(/\./,$s_file))[ scalar( @{[ $s_file=~/\./gi ]} )];
     if(!defined $self->fileTypes->{lc $s_suf}){
-        $logger->error("Input file type not valid: ".$s_suf);
-        if (-e $s_logfile){
+        if ($self->has_logfile && -e $s_logfile){
+            $logger->error("Input file type not valid: ".$s_suf);
             foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
             system("rm $s_logfile") if($self->delete_logs);  
         }
@@ -1146,8 +1103,8 @@ sub checkFile{
 
     # check that file is valid for it's particular type
     if($self->fileTypes->{lc $s_suf}->($s_file)){
-        $logger->error("$s_file file is invalid for $s_suf");
-        if (-e $s_logfile){
+        if ($self->has_logfile && -e $s_logfile){
+            $logger->error("$s_file file is invalid for $s_suf");
             foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
             system("rm $s_logfile") if($self->delete_logs);  
         }

@@ -65,10 +65,10 @@ my $o_gfe  = GFE->new();
 $o_gfe->verbose(1);
 $o_gfe->return_structure(0);
 
-my $s_path = `echo \$PATH`;chomp($s_path);
-foreach my $s_p (split(/:/,$s_path)){
-    print STDERR "PATH: ".$s_p,"\n";
-}
+# my $s_path = `echo \$PATH`;chomp($s_path);
+# foreach my $s_p (split(/:/,$s_path)){
+#     print STDERR "PATH: ".$s_p,"\n";
+# }
 
 my $s_hml   = "$FindBin::Bin/../t/resources/hmltest1.HML";
 my $rh_gfe  = $o_gfe->getGfeHmlNextflow($s_hml);

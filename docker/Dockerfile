@@ -11,7 +11,7 @@ RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && apt-get install -qyy openjdk-7-jre-headless  perl-doc wget curl build-essential git \
     && sudo apt-get -qy install libssl-dev \
     && cpan JSON::Schema::AsType YAML Plack Plack::Handler::Starman Template JSON Getopt::Long Data::Dumper LWP::UserAgent Test::More Dancer \
-    && cpan Net::SSLeay IO::Socket::SSL REST::Client Math::Round Moose File::Spec Log::Log4perl Dancer::Plugin::Swagger \
+    && cpan Net::SSLeay IO::Socket::SSL REST::Client Math::Round Moose File::Spec XML::DOM Log::Log4perl Dancer::Plugin::Swagger \
     && curl -fsSL get.nextflow.io | bash \
     && cd /opt && tar -xzf hap1.1.tar.gz && export PATH=/opt/hap1.1:/opt:$PATH \
     && wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64 \

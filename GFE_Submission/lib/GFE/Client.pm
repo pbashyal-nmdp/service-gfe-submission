@@ -111,21 +111,19 @@ sub getAccesion{
 
     my $json_response = $client->responseContent;
     my $response      = JSON::from_json($json_response);
-    if(!defined $$response{accession}){
-        if($n_retry < $self->retry){ 
-            $n_retry++;
-            $logger->info("Retrying submission to GFE service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank));
-            goto RETRY;
-        }else{
-            $logger->error("No accession number could be assigned!");
-            $logger->error("LOCUS     $s_locus");
-            $logger->error("TERM      $s_term");
-            $logger->error("RANK      $n_rank");
-            $logger->error("SEQUENCE  $s_seq");
-        }
+    return $$response{accession} if defined $$response{accession};
+    if($n_retry < $self->retry){ 
+        $n_retry++;
+        $logger->info("Retrying submission to GFE service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank));
+        goto RETRY;
+    }else{
+        my $s_error = join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","SEQUENCE  $s_seq");
+        $logger->error("No accession number could be assigned!");
+        $logger->error($s_error);
     }
+    
 
-    return defined $$response{accession} ? $$response{accession} : 0;
+    return 0;
 
 }
 
@@ -166,24 +164,20 @@ sub getSequence{
     $client->GET('/features'.$s_get_request);
 
     my $json_response = $client->responseContent;
-    return if(!defined $json_response || $json_response !~ /\D/);
-
-    my $response      = JSON::from_json($json_response);
-    if(!defined $$response{sequence}){
-        if($n_retry < $self->retry){ 
-            $n_retry++;
-            $logger->info("Retrying accession submission to feature service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank,$s_accesion));
-            goto RETRY;
-        }else{
-            $logger->error("No sequence could be found!");
-            $logger->error("LOCUS      $s_locus");
-            $logger->error("TERM       $s_term");
-            $logger->error("RANK       $n_rank");
-            $logger->error("ACCESSION  $s_accesion");
-        }
+    my $response      = (defined $json_response && $json_response =~ /\D/) ? JSON::from_json($json_response) : {};
+    return $$response{sequence} if defined $$response{sequence};
+    
+    if($n_retry < $self->retry){ 
+        $n_retry++;
+        $logger->info("Retrying accession submission to feature service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank,$s_accesion));
+        goto RETRY;
+    }else{
+        my $s_error = join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","ACCESSION  $s_accesion");
+        $logger->error("No sequence could be found!");
+        $logger->error($s_error);
     }
-
-    return defined $$response{sequence} ? $$response{sequence} : '';
+    
+    return '';
 
 }
 
