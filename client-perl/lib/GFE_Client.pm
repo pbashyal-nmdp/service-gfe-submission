@@ -123,7 +123,7 @@ sub getGfeFasta{
     my($self,$s_loc,$s_fasta) = @_;
 
     my $ua = LWP::UserAgent->new;
-    my $response = $ua->request(
+    my $json_response = $ua->request(
         POST $self->{gfe_url}."/api/v1/fasta",
             Content_Type => 'form-data',
             Content => [
@@ -133,8 +133,8 @@ sub getGfeFasta{
                 verbose    => $self->{verbose},
             ]
     );
-
-    return $response->content;
+    my $response = JSON::from_json($json_response->content);
+    return $response;
 
 }
 
@@ -145,21 +145,55 @@ sub getGfeFasta{
 =cut
 sub getGfeHml{
 
-    my($self,$s_loc,$s_fasta) = @_;
+    my($self,$s_type,$s_hml) = @_;
 
     my $ua = LWP::UserAgent->new;
-    my $response = $ua->request(
+    my $api_response = $ua->request(
         POST $self->{gfe_url}."/api/v1/hml",
             Content_Type => 'form-data',
             Content => [
-                file       => [ $s_fasta ],
-                locus      => $s_loc,
+                file       => [ $s_hml ],
+                type      => $s_type,
                 structures => $self->{structures},
                 verbose    => $self->{verbose},
             ]
     );
 
-    return $response->content;
+    if($s_type ne "JSON"){
+        return $api_response->content;
+    }else{
+        my $response = JSON::from_json($api_response->content);
+        return $response;
+    }
+
+}
+
+=head2 getGfeHml
+
+    
+=cut
+sub getGfeHmlFlow{
+
+    my($self,$s_type,$s_hml) = @_;
+
+    my $ua = LWP::UserAgent->new;
+    my $api_response = $ua->request(
+        POST $self->{gfe_url}."/api/v1/flowhml",
+            Content_Type => 'form-data',
+            Content => [
+                file       => [ $s_hml ],
+                type       => $s_type,
+                structures => $self->{structures},
+                verbose    => $self->{verbose},
+            ]
+    );
+
+    if($s_type ne "JSON"){
+        return $api_response->content;
+    }else{
+        my $response = JSON::from_json($api_response->content);
+        return $response;
+    }
 
 }
 

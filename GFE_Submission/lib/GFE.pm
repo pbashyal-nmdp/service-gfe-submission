@@ -321,7 +321,7 @@ sub getGfe{
     }
 
     my $s_gfe     = join('w',$s_locus, join('-', @a_gfe));
-    if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
+    if($s_gfe eq $s_locus."w0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
         $logger->error("Invalid GFE was generated");
         my $ra_log = $self->returnLog();
         return {
@@ -474,7 +474,7 @@ sub getGfeFasta{
         }
 
         my $s_gfe = join('w',$s_locus, join('-', @a_gfe));
-        if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
+        if($s_gfe eq $s_locus."w0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
             $logger->error("Invalid GFE was generated");
             my $ra_log = $self->returnLog();
             return {
@@ -728,6 +728,7 @@ sub getGfeHmlNextflow{
     open(my $fh_nextflow,"<",$s_nextflow_file) or die "CANT OPEN FILE $! $0";
     while(<$fh_nextflow>){
         chomp;
+        print STDERR "Nextflow: $_\n";
         my($s_subject_id,$s_typing,$s_locus,$s_gfe,$n_seq,$s_seq) = split(/,/,$_);
         $h_subjects{$s_subject_id}{$s_locus}{$s_gfe}++;
     }
@@ -1099,7 +1100,7 @@ sub checkFile{
                 log      => \@a_log
             }
         };
-    }else{ $logger->info("HML file is valid") if $self->verbose; }
+    }else{ $logger->info("File is valid") if $self->verbose; }
 
     # check that file is valid for it's particular type
     if($self->fileTypes->{lc $s_suf}->($s_file)){
