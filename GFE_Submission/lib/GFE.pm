@@ -72,7 +72,7 @@ use GFE::Structures;
 use GFE::Annotate;
 use GFE::Client;
 
-our $VERSION = '1.0.4';
+our $VERSION = '1.0.5';
 
 has 'structures' => (
     is => 'ro',
