@@ -9,9 +9,7 @@ COPY ngs-tools_1.9.deb /opt/ngs-tools_1.9.deb
 RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && apt-get dist-upgrade -qy \
     && apt-get install -qyy openjdk-7-jre-headless  perl-doc wget curl build-essential git \
-    && sudo apt-get -qy install libssl-dev \
-    && cpan JSON::Schema::AsType YAML Plack Plack::Handler::Starman Template JSON Getopt::Long Data::Dumper LWP::UserAgent Test::More Dancer \
-    && cpan Net::SSLeay IO::Socket::SSL REST::Client Math::Round Moose File::Spec XML::DOM Log::Log4perl Dancer::Plugin::Swagger \
+    && sudo apt-get -qy install expat libexpat1-dev libnet-ssleay-perl libssl-dev \
     && curl -fsSL get.nextflow.io | bash \
     && cd /opt && tar -xzf hap1.1.tar.gz && export PATH=/opt/hap1.1:/opt:$PATH \
     && wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64 \
@@ -21,6 +19,7 @@ RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && export PATH=/opt/hap1.1:/opt/ngs-tools/bin:/opt/service-gfe-submission/gfe_submission/bin:$PATH \
     && cd /opt && git clone https://github.com/nmdp-bioinformatics/service-gfe-submission \
     && cd service-gfe-submission && mv -i GFE_Submission gfe_submission && cd gfe_submission \
+    && curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps . \
     && perl Makefile.PL && make && make test && make install
 
 EXPOSE 8080
