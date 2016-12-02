@@ -321,7 +321,7 @@ sub getGfe{
     }
 
     my $s_gfe     = join('w',$s_locus, join('-', @a_gfe));
-    if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
+    if($s_gfe eq $s_locus."w0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
         $logger->error("Invalid GFE was generated");
         my $ra_log = $self->returnLog();
         return {
@@ -474,7 +474,7 @@ sub getGfeFasta{
         }
 
         my $s_gfe = join('w',$s_locus, join('-', @a_gfe));
-        if($s_gfe eq $s_locus."w1-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
+        if($s_gfe eq $s_locus."w0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"){
             $logger->error("Invalid GFE was generated");
             my $ra_log = $self->returnLog();
             return {
@@ -990,9 +990,9 @@ sub returnLog{
 
 }
 
-=head2 getId
+=head2 getLogfile
 
-    Title:     getId
+    Title:     getLogfile
     Usage:     
     Function:  
     Returns:  
@@ -1099,7 +1099,7 @@ sub checkFile{
                 log      => \@a_log
             }
         };
-    }else{ $logger->info("HML file is valid") if $self->verbose; }
+    }else{ $logger->info("File is valid") if $self->verbose; }
 
     # check that file is valid for it's particular type
     if($self->fileTypes->{lc $s_suf}->($s_file)){

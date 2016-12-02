@@ -76,7 +76,7 @@ swagger_definition 'FastaSubmission' => {
     },
     example => {
         locus      => 'HLA-A',
-        fasta      => 'public/downloads/FastaTest.fasta',
+        file       => 'public/downloads/FastaTest.fasta',
         verbose    => 1,
         structures => 1
     }
@@ -93,11 +93,12 @@ swagger_definition 'HmlSubmission' => {
         retry      => { type => 'integer' },
         file       => { type => 'file'  },
         url        => { type => 'string'  },
+        type       => { type => 'string'  },
         verbose    => { type => 'boolean' },
         structures => { type => 'boolean' }
     },
     example => {
-        fasta      => 'public/downloads/HmlTest.Hml',
+        file      => 'public/downloads/HmlTest.Hml',
         verbose    => 1,
         structures => 1
     }

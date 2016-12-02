@@ -137,17 +137,45 @@ gfe        <- seq2gfe(host,'HLA-A',seq,verbose,structure)
 ### Tools
 
 ```bash
-./gfe-submission [--fasta] [--uri] [--verbose] [--help]
-            -f/--fasta      Fasta file
+./fasta2gfe [--fasta] [--locus] [--uri] [--verbose] [--help]
+            -f/--fasta      Fasta file ** STDIN **
             -u/--uri        URI of feature service
             -l/--locus      HLA-Locus
             -v/--verbose    Flag for running in verbose
             -h/--help
 
-gfe-submission --fasta t/resources/A.test1.fasta -l HLA-A -v 2> test1.gfe.log > test1.gfe.csv
+fasta2gfe --fasta t/resources/fastatest1.fasta -l HLA-A > fastatest1.gfe.csv
+cat t/resources/fastatest1.fasta | fasta2gfe -l HLA-A > fastatest1.gfe.csv
 
 ```
 
+```bash
+./seq2gfe [--seq] [--locus] [--uri] [--verbose] [--help]
+            -s/--seq        Sequence  ** STDIN **
+            -u/--uri        URI of feature service
+            -l/--locus      HLA-Locus
+            -v/--verbose    Flag for running in verbose
+            -h/--help
+
+seq2gfe --seq GACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCT \
+CTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTACCTGCGCT -l HLA-A > seqtest1.gfe.csv
+cat GACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGC \
+GGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTACCTGCGCTCTTGGACCGC | seq2gfe -l HLA-A > seqtest1.gfe.csv
+
+```
+
+```bash
+./hml2gfe [--input] [--hml] [--uri] [--verbose] [--help]
+            -i/--input      HML file
+            -u/--uri        URI of feature service
+            -h/--hml        flag for returning HML
+            -v/--verbose    Flag for running in verbose
+            -h/--help
+
+hml2gfe --input t/resources/hmltest1.HML > hmltest1.gfe.csv
+hml2gfe --input t/resources/hmltest1.HML --hml > hmltest1.gfe.HML
+
+```
 
 ## Installing and Running Service Locally
 

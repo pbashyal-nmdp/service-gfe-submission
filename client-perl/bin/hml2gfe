@@ -59,10 +59,10 @@ BEGIN{
     $| = 1;
 
     $USAGE = 
-        qq{./gfe-submission [--fasta] [--uri] [--verbose] [--help]
-            -f/--fasta      Fasta file
+        qq{./hml2gfe [--input] [--uri] [--verbose] [--help]
+            -i/--input      HML file
+            -h/--hml        Flag for returning HML or not
             -u/--uri        URI of feature service
-            -l/--locus      HLA-Locus
             -v/--verbose    Flag for running in verbose
             -h/--help
         };
@@ -73,12 +73,12 @@ use lib "$FindBin::Bin/../lib";
 use GFE_Client;
 use Data::Dumper;
 
-our($s_fasta,$s_locus,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,"http://gfe.b12x.org","http://feature.nmdp-bioinformatics.org");
+our($s_input,$b_hml,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,undef,"http://feature.nmdp-bioinformatics.org");
 
-&GetOptions('fasta|i=s'      => \$s_fasta,
+&GetOptions('input|i=s'      => \$s_input,
+            'hml|m'          => \$b_hml,
             'url|u=s'        => \$s_url,
             'feature|f=s'    => \$s_feature_url,
-            'locus|l=s'      => \$s_locus,
             'verbose|v'      => \$b_verbose,
             'help|h'         => \$help,
             );
@@ -88,30 +88,37 @@ if($help){
     die;
 }
 
-my $rh_seq;
-if(!defined $s_fasta && !-e $s_fasta){
-    die "Fasta file not provided!";
+if(!defined $s_input && !-e $s_input){
+    die "HML file not provided!";
 }
+
+my $s_type = $b_hml ? "HML" : "JSON";
 
 my $o_client = GFE_Client->new();
 $o_client->gfe_url($s_url) if defined $s_url;
-my $rh_gfe = $o_client->getGfeFasta($s_locus,$s_fasta);
+my $rh_gfe = $o_client->getGfeHmlFlow($s_type,$s_input);
 
-if(defined $$rh_gfe{Error}){
+
+if($s_type eq "JSON" && defined $rh_gfe->{Message}){
     print STDERR Dumper($rh_gfe),"\n";
     die "Fasta file failed for convert to GFE!\n";
 }
 
-foreach my $rh_sub (@{$rh_gfe->{subjects}}){
-    my $s_id = $rh_sub->{id};
-    foreach my $rh_typingData (@{$rh_sub->{typingData}}){
-        my $s_locus = $rh_typingData->{locus};
-        foreach my $rh_typing (@{$rh_typingData->{typing}}){
-            my $s_gfe = $rh_typing->{gfe};
-            print join(",",$s_id,$s_locus,$s_gfe),"\n";
+if($s_type eq "JSON"){
+    foreach my $rh_sub (@{$rh_gfe->{subjects}}){
+        my $s_id = $rh_sub->{id};
+        foreach my $rh_typingData (@{$rh_sub->{typingData}}){
+            my $s_locus = $rh_typingData->{locus};
+            foreach my $rh_typing (@{$rh_typingData->{typing}}){
+                my $s_gfe = $rh_typing->{gfe};
+                print join(",",$s_id,$s_locus,$s_gfe),"\n";
+            }
         }
     }
+}else{
+    print $rh_gfe,"\n";
 }
+
 
 
 
