@@ -728,7 +728,6 @@ sub getGfeHmlNextflow{
     open(my $fh_nextflow,"<",$s_nextflow_file) or die "CANT OPEN FILE $! $0";
     while(<$fh_nextflow>){
         chomp;
-        print STDERR "Nextflow: $_\n";
         my($s_subject_id,$s_typing,$s_locus,$s_gfe,$n_seq,$s_seq) = split(/,/,$_);
         $h_subjects{$s_subject_id}{$s_locus}{$s_gfe}++;
     }
