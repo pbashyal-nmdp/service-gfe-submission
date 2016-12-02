@@ -991,9 +991,9 @@ sub returnLog{
 
 }
 
-=head2 getId
+=head2 getLogfile
 
-    Title:     getId
+    Title:     getLogfile
     Usage:     
     Function:  
     Returns:  

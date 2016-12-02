@@ -59,10 +59,10 @@ BEGIN{
     $| = 1;
 
     $USAGE = 
-        qq{./fasta2gfe [--fasta] [--uri] [--verbose] [--help]
-            -f/--fasta      Fasta file
+        qq{./hml2gfe [--input] [--uri] [--verbose] [--help]
+            -i/--input      HML file
+            -h/--hml        Flag for returning HML or not
             -u/--uri        URI of feature service
-            -l/--locus      HLA-Locus
             -v/--verbose    Flag for running in verbose
             -h/--help
         };
@@ -73,12 +73,12 @@ use lib "$FindBin::Bin/../lib";
 use GFE_Client;
 use Data::Dumper;
 
-our($s_fasta,$s_locus,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,undef,"http://feature.nmdp-bioinformatics.org");
+our($s_input,$b_hml,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,undef,"http://feature.nmdp-bioinformatics.org");
 
-&GetOptions('fasta|i=s'      => \$s_fasta,
+&GetOptions('input|i=s'      => \$s_input,
+            'hml|m'          => \$b_hml,
             'url|u=s'        => \$s_url,
             'feature|f=s'    => \$s_feature_url,
-            'locus|l=s'      => \$s_locus,
             'verbose|v'      => \$b_verbose,
             'help|h'         => \$help,
             );
@@ -88,47 +88,23 @@ if($help){
     die;
 }
 
+if(!defined $s_input && !-e $s_input){
+    die "HML file not provided!";
+}
+
+my $s_type = $b_hml ? "HML" : "JSON";
+
 my $o_client = GFE_Client->new();
 $o_client->gfe_url($s_url) if defined $s_url;
+my $rh_gfe = $o_client->getGfeHmlFlow($s_type,$s_input);
 
-if(!defined $s_fasta){
-    my ($seq,$header);
-    my %h_seqs;
-    while (<>) {
-        chomp;
-        if ($_ =~ />/) {
-            if ($seq) {    
-                $h_seqs{$header} = $seq;
-            }              
-            $header = $_;
-            $header =~ s/^>//; # remove ">"
-            $header =~ s/\s+$//; # remove trailing whitespace
-            $seq = ""; # clear out old sequence
-        }else {    
-            s/\s+//g; # remove whitespace
-            $seq .= $_; # add sequence
-        }         
-    }    
-    if ($seq) { # handle last sequence
-        $h_seqs{$header} = $seq;
-    }
-    foreach my $s_header (keys %h_seqs){
-        my $rh_gfe = $o_client->getGfe($s_locus,$h_seqs{$s_header});
-        if(defined $rh_gfe->{Message} || !defined $rh_gfe->{gfe}){
-            print STDERR Dumper($rh_gfe),"\n";
-            next;
-        }
-        print join(",",$s_header,$s_locus,$rh_gfe->{gfe},$rh_gfe->{aligned},$rh_gfe->{version}),"\n";
-    }
-}else{
 
-    my $rh_gfe = $o_client->getGfeFasta($s_locus,$s_fasta);
+if($s_type eq "JSON" && defined $rh_gfe->{Message}){
+    print STDERR Dumper($rh_gfe),"\n";
+    die "Fasta file failed for convert to GFE!\n";
+}
 
-    if(defined $rh_gfe->{Message}){
-        print STDERR Dumper($rh_gfe),"\n";
-        die "Fasta file failed for convert to GFE!\n";
-    }
-
+if($s_type eq "JSON"){
     foreach my $rh_sub (@{$rh_gfe->{subjects}}){
         my $s_id = $rh_sub->{id};
         foreach my $rh_typingData (@{$rh_sub->{typingData}}){
@@ -139,8 +115,10 @@ if(!defined $s_fasta){
             }
         }
     }
-
+}else{
+    print $rh_gfe,"\n";
 }
+
 
 
 

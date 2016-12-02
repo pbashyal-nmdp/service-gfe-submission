@@ -21,7 +21,7 @@ WriteMakefile(
         'YAML'       => 0,
         'Dancer'     => 1.3134,
     },
-    EXE_FILES    => [ 'bin/gfe-submission' ],
-    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'GFE_Client-*' },
+    EXE_FILES    => [ 'bin/fasta2gfe','bin/hml2gfe','bin/seq2gfe' ],
+    dist         => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean        => { FILES => 'GFE_Client-*' },
 );
