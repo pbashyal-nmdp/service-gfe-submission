@@ -69,7 +69,8 @@ WriteMakefile(
         'REST::Client' => 0,
         'Math::Round' => 0,
         'File::Spec' => 0,
-        'XML::DOM' => 0
+        'XML::DOM' => 0,
+        'Try::Tiny' => 0
     },
     dist         => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean        => { FILES => 'GFE_Submission-*' },

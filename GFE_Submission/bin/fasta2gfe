@@ -114,6 +114,7 @@ foreach my $s_typing (keys %h_seqs){
     next if(!defined $s_locus || $s_locus !~ /\S/);
     my $o_gfe = GFE->new();
     my $rh_gfe = $o_gfe->getGfe($s_locus,$h_seqs{$s_typing});
+    if(defined $$rh_gfe{Message}){ print STDERR Dumper($rh_gfe),"\n";next;}
     my $s_gfe  = defined $$rh_gfe{gfe} ? $$rh_gfe{gfe} : '';
     next if !defined $s_gfe || $s_gfe !~ /\S/;
     my $n_seq  = length($h_seqs{$s_typing});

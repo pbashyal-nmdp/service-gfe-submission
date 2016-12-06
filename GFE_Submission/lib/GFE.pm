@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
-GFE
+GFE.pm
 
 =head1 SYNOPSIS
 
@@ -15,10 +15,6 @@ GFE
 
 =head1 DESCRIPTION
 
-
-
-=head1 CAVEATS
-    
 
 =head1 LICENSE
 
@@ -142,6 +138,7 @@ sub getGfe{
 
     my @a_gfe;
     my %h_seq;
+    my @a_blank;
     my %h_accesion;
     my @a_structure;
     my %h_alignment;
@@ -156,34 +153,8 @@ sub getGfe{
     my $o_structures = $self->structures;
 
     # Return an error if the sequence is not defined
-    if(!defined $s_seq || $s_seq !~ /\S/){
-        $logger->error("Sequence not defined");
-        my $ra_log = $self->returnLog();
-        return {
-            Error => { 
-                Message  => "Sequence not defined",
-                locus    => $s_locus,
-                type     => "Sequence",
-                version  => $self->version,
-                log      => $ra_log
-            }
-        };
-    }
-
-    # Sequence length is too small
-    if(length($s_seq) < 10){
-        $logger->error("Sequence length is too small");
-        my $ra_log = $self->returnLog();
-        return {
-            Error => { 
-                Message  => "Sequence length is too small",
-                locus    => $s_locus,
-                type     => "Sequence",
-                version  => $self->version,
-                log      => $ra_log
-            }
-        };
-    }
+    my $rh_check_seq = $self->checkSeq($s_seq,$s_locus);
+    return $rh_check_seq if(defined $rh_check_seq);
 
     # Return an error if the locus is not valid
     if(!defined $s_locus || $s_locus !~ /\S/ || !defined $o_annotate->order->{$s_locus}){
@@ -607,7 +578,7 @@ sub getGfeHml{
     $o_annotate->cleanup();
 
     # If no results are observed..
-    if((scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
+    if(-z $s_aligned_file || (scalar (keys %h_seq) == 0) || (scalar (keys %h_accesion) == 0)){
         $logger->error("Alignment ran but files are empty!");
         my $ra_log = $self->returnLog();
         return {
@@ -707,10 +678,23 @@ sub getGfeHmlNextflow{
     $o_annotate->setHmlFile($s_input_file);
 
     # run nextflow
-    $o_annotate->alignNextflow();
-
+    my $b_exit_status   = $o_annotate->alignNextflow();
     my $s_nextflow_file = $o_annotate->nextflow_file;
-    if(!defined $s_nextflow_file || !-e $s_nextflow_file){
+    if($b_exit_status != 0 && $b_exit_status != 911){
+        $logger->error("Failed to run nextflow!");
+        my $ra_log = $self->returnLog();
+        return { 
+            Error => { 
+                Message  => "Failed to run Nextflow",
+                type     => "Nextflow",
+                file     => $s_input_file,
+                version  => $self->version,
+                log      => $ra_log   
+            }
+        };
+    }else{ $logger->info("Nextflow successfully executed") if $self->verbose; }
+
+    if($b_exit_status == 911){
         $logger->error("Failed to create nextflow output!");
         my $ra_log = $self->returnLog();
         return { 
@@ -977,7 +961,7 @@ sub returnLog{
 
     my $self = shift;
 
-    if(defined $self->has_logfile && -e $self->logfile){
+    if($self->has_logfile && -e $self->logfile){
         my @a_log;
         my $s_logfile = $self->logfile;
         foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
@@ -1048,6 +1032,51 @@ sub deleteOldFiles{
 
 }
 
+=head2 checkSeq
+
+    Called in order to clear and old files that may have 
+    been generated
+  
+=cut
+sub checkSeq{
+
+    my( $self, $s_seq, $s_locus ) = @_;
+
+    my $logger    = Log::Log4perl->get_logger();
+    my $s_logfile = $self->logfile;
+    my @a_log     = ();
+
+    if(!defined $s_seq || $s_seq !~ /\S/){
+        $logger->error("Sequence not defined");
+        my $ra_log = $self->returnLog();
+        return {
+            Error => { 
+                Message  => "Sequence not defined",
+                locus    => $s_locus,
+                type     => "Sequence",
+                version  => $self->version,
+                log      => $ra_log
+            }
+        };
+    }
+
+    # Sequence length is too small
+    if(length($s_seq) < 10){
+        $logger->error("Sequence length is too small");
+        my $ra_log = $self->returnLog();
+        return {
+            Error => { 
+                Message  => "Sequence length is too small",
+                locus    => $s_locus,
+                type     => "Sequence",
+                version  => $self->version,
+                log      => $ra_log
+            }
+        };
+    }
+
+    return;
+}
 
 =head2 checkFileType
 
@@ -1065,18 +1094,14 @@ sub checkFile{
     
     if(!defined $s_input_file || $s_input_file !~ /\S/ || !-e $s_input_file){
         $s_input_file = !defined $s_input_file ? '' : $s_input_file;
-        if ($self->has_logfile && -e $s_logfile){
-            $logger->error("Input file not valid: ".$s_input_file);
-            foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-            system("rm $s_logfile") if($self->delete_logs);  
-        }
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Input file not defined",
                 file     => $s_input_file,
                 type     => "File",
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }
@@ -1085,36 +1110,28 @@ sub checkFile{
     my $s_file = (split(/\//,$s_input_file))[  scalar( @{[ $s_input_file=~/\//gi ]} ) ];
     my $s_suf  = (split(/\./,$s_file))[ scalar( @{[ $s_file=~/\./gi ]} )];
     if(!defined $self->fileTypes->{lc $s_suf}){
-        if ($self->has_logfile && -e $s_logfile){
-            $logger->error("Input file type not valid: ".$s_suf);
-            foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-            system("rm $s_logfile") if($self->delete_logs);  
-        }
+        my $ra_log = $self->returnLog();
         return {
             Error => { 
                 Message  => "Input file type not valid! - $s_suf",
                 type     => "File",
                 file     => $s_input_file,
                 version  => $self->version,
-                log      => \@a_log
+                log      => $ra_log
             }
         };
     }else{ $logger->info("File is valid") if $self->verbose; }
 
     # check that file is valid for it's particular type
     if($self->fileTypes->{lc $s_suf}->($s_file)){
-        if ($self->has_logfile && -e $s_logfile){
-            $logger->error("$s_file file is invalid for $s_suf");
-            foreach(`cat $s_logfile`){ chomp;push(@a_log,$_);}
-            system("rm $s_logfile") if($self->delete_logs);  
-        }
+        my $ra_log = $self->returnLog();
         return { 
             Error => { 
                 Message  => "$s_file file is invalid for $s_suf type",
                 type     => "File",
                 file     => $s_file,
                 version  => $self->version,
-                log      => \@a_log    
+                log      => $ra_log    
             }
         };
     }else{ $logger->info("File is valid for $s_suf type") if $self->verbose; }

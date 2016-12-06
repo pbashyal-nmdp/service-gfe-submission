@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
+  Annotate.pm
 
 =head1 SYNOPSIS
 
@@ -15,13 +16,9 @@
 =head1 DESCRIPTION
 
 
-
-=head1 CAVEATS
-  
-
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -38,14 +35,6 @@
     Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
 
     > http://www.gnu.org/licenses/lgpl.html
-
-=head1 VERSIONS
-  
-    Version       Description               Date
-
-
-=head1 TODO
-  
 
 =head1 SUBROUTINES
 
@@ -297,7 +286,9 @@ sub alignNextflow{
   my $exit_value      = system(join("",@args));
 
   # Check if nextflow failed
-  if($exit_value != 0){
+  my $s_nextflow_output = $self->nextflow_file;
+  if($exit_value != 0 || !-e $s_nextflow_output || -z $s_nextflow_output){
+    $exit_value = $exit_value == 0 ? 911 : $exit_value;
     $logger->error("system @args failed: $?");
     foreach my $s_log_flow (`cat $s_nextflow_log`){
       chomp($s_log_flow);
@@ -450,7 +441,9 @@ around BUILDARGS=>sub
   );
 
   my $s_hap1       =`which hap1.1.jar`;chomp($s_hap1);
+  my $s_nextflow   =`which nextflow`;chomp($s_nextflow);
   my $s_clustalo   =`which clustalo`;chomp($s_clustalo);
+  my $s_extract    =`which ngs-extract-consensus`;chomp($s_extract);
   my $s_hml_flow   = "$FindBin::Bin/../bin/hml.nf";
   my $s_fasta_flow = "$FindBin::Bin/../bin/fasta.nf";
 
@@ -468,6 +461,12 @@ around BUILDARGS=>sub
 
   die "clustalo is not installed!\n" 
     if(!defined $s_clustalo || !-x $s_clustalo);
+
+  die "nextflow is not installed!\n" 
+    if(!defined $s_nextflow || !-x $s_nextflow);
+
+  die "ngs-extract-consensus is not installed!\n" 
+    if(!defined $s_nextflow || !-x $s_nextflow);
 
   $outdir    = $working if(!-d $outdir);
 

@@ -59,6 +59,7 @@ use JSON;
 
 use Log::Log4perl;
 use Data::Dumper;
+use Try::Tiny;
 use Moose;
 
 
@@ -109,20 +110,25 @@ sub getAccesion{
     # List of haplotypes based on the first population
     $client->POST('/features', $json_request, {});
 
+    my $response;
     my $json_response = $client->responseContent;
-    my $response      = JSON::from_json($json_response);
+    try {
+      $response      = JSON::from_json($json_response);
+    } catch {
+      $logger->error("Failed to decode json!");
+    };
+
     return $$response{accession} if defined $$response{accession};
+    
     if($n_retry < $self->retry){ 
         $n_retry++;
         $logger->info("Retrying submission to GFE service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank));
         goto RETRY;
     }else{
-        my $s_error = join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","SEQUENCE  $s_seq");
         $logger->error("No accession number could be assigned!");
-        $logger->error($s_error);
+        $logger->error(join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","SEQUENCE  $s_seq"));
     }
     
-
     return 0;
 
 }
@@ -163,18 +169,23 @@ sub getSequence{
     # List of haplotypes based on the first population
     $client->GET('/features'.$s_get_request);
 
+    my $response;
     my $json_response = $client->responseContent;
-    my $response      = (defined $json_response && $json_response =~ /\D/) ? JSON::from_json($json_response) : {};
+    try {
+      $response      = JSON::from_json($json_response);
+    } catch {
+      $logger->error("Failed to decode json!");
+    };
+
     return $$response{sequence} if defined $$response{sequence};
-    
+
     if($n_retry < $self->retry){ 
         $n_retry++;
         $logger->info("Retrying accession submission to feature service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank,$s_accesion));
         goto RETRY;
     }else{
-        my $s_error = join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","ACCESSION  $s_accesion");
         $logger->error("No sequence could be found!");
-        $logger->error($s_error);
+        $logger->error(join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","ACCESSION  $s_accesion"));
     }
     
     return '';
