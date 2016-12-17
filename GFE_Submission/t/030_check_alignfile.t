@@ -53,6 +53,7 @@ my $o_annotate = GFE::Annotate->new();
 $o_annotate->alignment($s_alignment_valid);
 my $o_gfe_aln = GFE->new();
 $o_gfe_aln->annotate($o_annotate);
+$o_gfe_aln2->startLogfile();
 my $rh_align_status = $o_gfe_aln->checkAlignmentFile();
 ok(!defined $$rh_align_status{Error},"checkAlignmentFile works with ".$s_alignment_valid);
 my $ra_aln_logs = $o_gfe_aln->returnLog();
