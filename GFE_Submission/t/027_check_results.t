@@ -1,6 +1,6 @@
 =head1 NAME
  
-   020_file_fasta.t
+   027_check_results.t
 
 =head1 SYNOPSIS
 
@@ -33,11 +33,11 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 6;
+use Test::More tests => 7;
 use strict;
 use warnings;
+
 use Data::Dumper;
-# the order is important
 use Dancer::Test;
 use GFE_Submission;
 use Dancer::Plugin::Swagger;
@@ -46,21 +46,28 @@ use GFE_Submission::API;
 
 
 my $pwd          = `pwd`;chomp($pwd);
-my $t_file       = $pwd."/t/resources/fastatest1.fasta";
-my $r_fasta_file = dancer_response POST => '/api/v1/fasta?locus=HLA-A', {files => [{name => 'file', filename => $t_file}]};
 
-ok(defined $r_fasta_file->{content},"API successfully accepted a fasta file");
-ok(defined $r_fasta_file->{content}->{subjects},"API successfully subject GFE results from fasta");
-ok(defined $r_fasta_file->{content}->{subjects}[1],"size subjects > 0");
-ok(defined $r_fasta_file->{content}->{subjects}[0]->{typingData}[0],"Subject typing data returned from fasta input");
-ok(defined $r_fasta_file->{content}->{subjects}[0]->{typingData}[0]->{typing}[0],"Typing data returned from fasta input");
-ok(defined $r_fasta_file->{content}->{subjects}[0]->{typingData}[0]->{typing}[0]->{gfe},"API successfully subject GFE results from fasta");
+## checkResults valid
+my %h_valid_results = (1 => "A",2 => "B",3 => "C");
+my $s_blank_file    = "ValidFile.tmp";
+my $o_gfe_r  = GFE->new();
+my $rh_results_status1 = $o_gfe_r->checkResults(\%h_valid_results,$s_blank_file);
+ok(!defined $$rh_results_status1{Error},"checkResults works with valid hash");
+my $ra_blank_logs2 = $o_gfe_r->returnLog();
+ok(!defined $ra_blank_logs2,"returnLog works with checkResults works with valid hash");
 
-
-
-
-
-
+## checkResults invalid
+my %h_invalid_results = ();
+my $s_blank_file2    = "InvalidFile.tmp";
+my $o_gfe_r2  = GFE->new();
+$o_gfe_r2->startLogfile();
+my $rh_results_status2 = $o_gfe_r2->checkResults(\%h_invalid_results,$s_blank_file2);
+my $ra_logs3           = defined $$rh_results_status2{Error}{log} ? $$rh_results_status2{Error}{log} : '';
+ok(defined $$rh_results_status2{Error},"checkResults works with invalid hash");
+ok(defined $$rh_results_status2{Error}{type},"checkResults type defined with invalid hash");
+ok($$rh_results_status2{Error}{type} eq "Alignment","checkResults type equals Alignment with invalid hash");
+ok(defined $ra_logs3,"Error logs defined for checkResults with invalid hash");
+ok(scalar @{$ra_logs3} > 0,"Error logs for checkResults returned with invalid hash");
 
 
 

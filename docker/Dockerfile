@@ -1,8 +1,6 @@
 FROM ubuntu:14.04
 MAINTAINER Mike Halagan <mhalagan@nmdp.org>
 
-WORKDIR /opt
-
 COPY hap1.1.tar.gz /opt/hap1.1.tar.gz
 COPY ngs-tools_1.9.deb /opt/ngs-tools_1.9.deb
 
@@ -22,8 +20,7 @@ RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps . \
     && perl Makefile.PL && make && make test && make install
 
-EXPOSE 8080
-EXPOSE 5050
+EXPOSE 8080 5050
 
 WORKDIR /opt/service-gfe-submission/gfe_submission
 VOLUME /opt/service-gfe-submission/gfe_submission

@@ -14,7 +14,7 @@
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -56,4 +56,4 @@ my @a_info  = grep{ $_ =~ /INFO/ } @{$ra_logs};
 ok($#a_info > 0,"size a_info > 0");
 
 my @a_gfe   = grep{ $_ =~ /Generated GFE:/ } @{$ra_logs};
-ok(defined $a_gfe[0],"GFE returned");
+ok(defined $a_gfe[0],"GFE returned and logged");

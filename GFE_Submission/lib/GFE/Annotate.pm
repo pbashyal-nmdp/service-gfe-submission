@@ -91,6 +91,13 @@ has 'hml' => (
     predicate => 'has_hml',
 );
 
+has 'alignment' => (
+    is => 'rw',
+    isa => 'Str',
+    clearer   => 'clear_alignment',
+    predicate => 'has_alignment',
+);
+
 has 'fastanf' => (
     is => 'ro',
     isa => 'Str',
@@ -223,7 +230,7 @@ sub alignment_file{
   my ( $self )       = @_;
 
   my $logger         = Log::Log4perl->get_logger();
-  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  my $s_aligned_file = $self->alignment;
   $logger->info("Alignment file: $s_aligned_file");
 
   return $s_aligned_file;
@@ -255,6 +262,9 @@ sub alignHml{
     $logger->error("system @args failed: $?");
   }
 
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  $self->alignment($s_aligned_file);
+  
   return $exit_value;
 }
 
@@ -307,6 +317,9 @@ sub alignNextflow{
   system("rm -rf $s_flow_glob") if(-e $s_flow_log);
   system("rm $s_nextflow_log")  if(-e $s_nextflow_log);
 
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  $self->alignment($s_aligned_file);
+
   return $exit_value;
 }
 
@@ -336,6 +349,9 @@ sub align{
   if($exit_value != 0){
     $logger->error("system @args failed: $?");
   }
+
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  $self->alignment($s_aligned_file);
 
   return $exit_value;
 }
@@ -379,29 +395,30 @@ sub cleanup{
 
   my ( $self )       = @_;
 
-  my $s_nextflow     = $self->outdir."/".$self->fileid.".txt";
-  my $s_fasta        = $self->fasta;
-  my $s_aligned_file = $self->alignment_file();
-  my $s_outhap1      = $self->directory."/".$self->fileid."_ann.csv";
+  if($self->has_fileid){
+    my $s_nextflow     = $self->outdir."/".$self->fileid.".txt";
+    my $s_fasta        = $self->fasta;
+    my $s_aligned_file = $self->alignment_file();
+    my $s_outhap1      = $self->directory."/".$self->fileid."_ann.csv";
 
-  system("rm $s_fasta")        if($self->has_fasta && defined $s_fasta 
-                                    && $s_fasta !~ /t\/resources/ && -e $s_fasta);
-  system("rm $s_aligned_file") if(defined $s_aligned_file && -e $s_aligned_file);
-  system("rm $s_nextflow")     if(defined $s_nextflow && -e $s_nextflow);
-  system("rm $s_outhap1")      if(defined $s_outhap1 && -e $s_outhap1);
-  system("rm -rf .nextflow")   if(-d ".nexflow");
+    system("rm $s_fasta")        if($self->has_fasta && defined $s_fasta 
+                                      && $s_fasta !~ /t\/resources/ && -e $s_fasta);
+    system("rm $s_aligned_file") if(defined $s_aligned_file && -e $s_aligned_file);
+    system("rm $s_nextflow")     if(defined $s_nextflow && -e $s_nextflow);
+    system("rm $s_outhap1")      if(defined $s_outhap1 && -e $s_outhap1);
+    system("rm -rf .nextflow")   if(-d ".nexflow");
 
-  if($self->has_locus){
-    my $s_loc = $self->locus;
-    $s_loc =~ s/-/_/;
-    my $alignment = $self->directory."/output/clu/".$s_loc."/".$self->fileid.".clu";
-    system("rm $alignment")   if(defined $alignment && -e $alignment);
+    if($self->has_locus){
+      my $s_loc = $self->locus;$s_loc =~ s/-/_/;
+      my $alignment = $self->directory."/output/clu/".$s_loc."/".$self->fileid.".clu";
+      system("rm $alignment")   if(defined $alignment && -e $alignment);
+    }
+
+    $self->clear_nextflow;
+    $self->clear_hml;
+    $self->clear_fasta;
   }
-
-  $self->clear_nextflow;
-  $self->clear_hml;
-  $self->clear_fasta;
-
+  
 }
 
 =head2 BUILDARGS
@@ -474,7 +491,7 @@ around BUILDARGS=>sub
     if(!-d $working);
 
   my %h_ids = ( 0 => 1 );
-  $args->{aligned_cutoff} = .5;
+  $args->{aligned_cutoff} = .70;
   $args->{hmlnf}          = $s_hml_flow;
   $args->{fastanf}        = $s_fasta_flow;
   $args->{outdir}         = $outdir;

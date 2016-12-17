@@ -1,10 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
-Client
-
-=head1 SYNOPSIS
-
+Client.pm
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
     
@@ -16,13 +13,9 @@ Client
 =head1 DESCRIPTION
 
 
-
-=head1 CAVEATS
-	
-
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -39,14 +32,6 @@ Client
     Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
 
     > http://www.gnu.org/licenses/lgpl.html
-
-=head1 VERSIONS
-	
-    Version    		Description             	Date
-
-
-=head1 TODO
-	
 
 =head1 SUBROUTINES
 
@@ -113,7 +98,7 @@ sub getAccesion{
     my $response;
     my $json_response = $client->responseContent;
     try {
-      $response      = JSON::from_json($json_response);
+      $response       = JSON::from_json($json_response);
     } catch {
       $logger->error("Failed to decode json!");
     };
