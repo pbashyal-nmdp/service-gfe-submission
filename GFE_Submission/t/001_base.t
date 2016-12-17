@@ -14,7 +14,7 @@
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -33,10 +33,18 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 1;
+use Test::More tests => 7;
 use strict;
 use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../lib";
+use Dancer::Test;
+
 
 use_ok 'GFE_Submission';
+use_ok 'GFE_Submission::Definitions';
+use_ok 'GFE_Submission::API';
+use_ok 'GFE';
+use_ok 'GFE::Client';
+use_ok 'GFE::Annotate';
+use_ok 'GFE::Structures';
+
+

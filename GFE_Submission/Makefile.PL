@@ -11,7 +11,7 @@ Makefile.PL
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -69,7 +69,8 @@ WriteMakefile(
         'REST::Client' => 0,
         'Math::Round' => 0,
         'File::Spec' => 0,
-        'XML::DOM' => 0
+        'XML::DOM' => 0,
+        'Try::Tiny' => 0
     },
     dist         => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean        => { FILES => 'GFE_Submission-*' },

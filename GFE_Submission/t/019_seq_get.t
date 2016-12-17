@@ -1,6 +1,6 @@
 =head1 NAME
  
-   009_gfe_get.t
+   019_seq_get.t
 
 =head1 SYNOPSIS
 
@@ -14,7 +14,7 @@
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 2;
+use Test::More tests => 5;
 use strict;
 use warnings;
 
@@ -50,3 +50,12 @@ my $s_expected_seq = "TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCG
 
 ok(defined $$rh_gfe{sequence},"getSequence() returned");
 ok($$rh_gfe{sequence} eq $s_expected_seq,"sequence matched expected");
+
+my $rh_seq        = $o_gfe->getSequence("HLA-A","HLA-Aw1-1-7-20-10-1-1-1");
+ok(defined $$rh_seq{Error},"Error defined for getSequence() with invalid GFE");
+ok(defined $$rh_seq{Error}{type},"Error type defined for getSequence() with invalid GFE");
+ok($$rh_seq{Error}{type} eq "GFE","r_invalid_gfe->{content}->{type} eq GFE");
+
+
+
+

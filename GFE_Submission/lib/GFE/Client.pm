@@ -1,10 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
-Client
-
-=head1 SYNOPSIS
-
+Client.pm
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
     
@@ -16,13 +13,9 @@ Client
 =head1 DESCRIPTION
 
 
-
-=head1 CAVEATS
-	
-
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -40,14 +33,6 @@ Client
 
     > http://www.gnu.org/licenses/lgpl.html
 
-=head1 VERSIONS
-	
-    Version    		Description             	Date
-
-
-=head1 TODO
-	
-
 =head1 SUBROUTINES
 
 =cut
@@ -59,6 +44,7 @@ use JSON;
 
 use Log::Log4perl;
 use Data::Dumper;
+use Try::Tiny;
 use Moose;
 
 
@@ -109,20 +95,25 @@ sub getAccesion{
     # List of haplotypes based on the first population
     $client->POST('/features', $json_request, {});
 
+    my $response;
     my $json_response = $client->responseContent;
-    my $response      = JSON::from_json($json_response);
+    try {
+      $response       = JSON::from_json($json_response);
+    } catch {
+      $logger->error("Failed to decode json!");
+    };
+
     return $$response{accession} if defined $$response{accession};
+    
     if($n_retry < $self->retry){ 
         $n_retry++;
         $logger->info("Retrying submission to GFE service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank));
         goto RETRY;
     }else{
-        my $s_error = join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","SEQUENCE  $s_seq");
         $logger->error("No accession number could be assigned!");
-        $logger->error($s_error);
+        $logger->error(join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","SEQUENCE  $s_seq"));
     }
     
-
     return 0;
 
 }
@@ -163,18 +154,23 @@ sub getSequence{
     # List of haplotypes based on the first population
     $client->GET('/features'.$s_get_request);
 
+    my $response;
     my $json_response = $client->responseContent;
-    my $response      = (defined $json_response && $json_response =~ /\D/) ? JSON::from_json($json_response) : {};
+    try {
+      $response      = JSON::from_json($json_response);
+    } catch {
+      $logger->error("Failed to decode json!");
+    };
+
     return $$response{sequence} if defined $$response{sequence};
-    
+
     if($n_retry < $self->retry){ 
         $n_retry++;
         $logger->info("Retrying accession submission to feature service.. retry #".$n_retry." | ".join(" ",$s_locus,$s_term,$n_rank,$s_accesion));
         goto RETRY;
     }else{
-        my $s_error = join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","ACCESSION  $s_accesion");
         $logger->error("No sequence could be found!");
-        $logger->error($s_error);
+        $logger->error(join("|","LOCUS      $s_locus","TERM       $s_term","RANK       $n_rank","ACCESSION  $s_accesion"));
     }
     
     return '';

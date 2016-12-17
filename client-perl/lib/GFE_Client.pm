@@ -18,12 +18,10 @@
     This script takes in the output of ngs-validate-interp and the observed file and generates
     a static HTML website report.
 
-=head1 CAVEATS
-    
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -40,14 +38,6 @@
     Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
 
     > http://www.gnu.org/licenses/lgpl.html
-
-=head1 VERSIONS
-    
-    Version    Description              Date
-
-
-=head1 TODO
-    
 
 =head1 SUBROUTINES
 

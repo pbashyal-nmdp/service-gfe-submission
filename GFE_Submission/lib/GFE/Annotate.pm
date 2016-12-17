@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 =head1 NAME
  
+  Annotate.pm
 
 =head1 SYNOPSIS
 
@@ -15,13 +16,9 @@
 =head1 DESCRIPTION
 
 
-
-=head1 CAVEATS
-  
-
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -38,14 +35,6 @@
     Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
 
     > http://www.gnu.org/licenses/lgpl.html
-
-=head1 VERSIONS
-  
-    Version       Description               Date
-
-
-=head1 TODO
-  
 
 =head1 SUBROUTINES
 
@@ -100,6 +89,13 @@ has 'hml' => (
     isa => 'Str',
     clearer   => 'clear_hml',
     predicate => 'has_hml',
+);
+
+has 'alignment' => (
+    is => 'rw',
+    isa => 'Str',
+    clearer   => 'clear_alignment',
+    predicate => 'has_alignment',
 );
 
 has 'fastanf' => (
@@ -234,7 +230,7 @@ sub alignment_file{
   my ( $self )       = @_;
 
   my $logger         = Log::Log4perl->get_logger();
-  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  my $s_aligned_file = $self->alignment;
   $logger->info("Alignment file: $s_aligned_file");
 
   return $s_aligned_file;
@@ -266,6 +262,9 @@ sub alignHml{
     $logger->error("system @args failed: $?");
   }
 
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  $self->alignment($s_aligned_file);
+  
   return $exit_value;
 }
 
@@ -297,7 +296,9 @@ sub alignNextflow{
   my $exit_value      = system(join("",@args));
 
   # Check if nextflow failed
-  if($exit_value != 0){
+  my $s_nextflow_output = $self->nextflow_file;
+  if($exit_value != 0 || !-e $s_nextflow_output || -z $s_nextflow_output){
+    $exit_value = $exit_value == 0 ? 911 : $exit_value;
     $logger->error("system @args failed: $?");
     foreach my $s_log_flow (`cat $s_nextflow_log`){
       chomp($s_log_flow);
@@ -315,6 +316,9 @@ sub alignNextflow{
 
   system("rm -rf $s_flow_glob") if(-e $s_flow_log);
   system("rm $s_nextflow_log")  if(-e $s_nextflow_log);
+
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  $self->alignment($s_aligned_file);
 
   return $exit_value;
 }
@@ -345,6 +349,9 @@ sub align{
   if($exit_value != 0){
     $logger->error("system @args failed: $?");
   }
+
+  my $s_aligned_file = $self->directory."/GFE/parsed-local/".$self->fileid."_reformat.csv";
+  $self->alignment($s_aligned_file);
 
   return $exit_value;
 }
@@ -388,29 +395,30 @@ sub cleanup{
 
   my ( $self )       = @_;
 
-  my $s_nextflow     = $self->outdir."/".$self->fileid.".txt";
-  my $s_fasta        = $self->fasta;
-  my $s_aligned_file = $self->alignment_file();
-  my $s_outhap1      = $self->directory."/".$self->fileid."_ann.csv";
+  if($self->has_fileid){
+    my $s_nextflow     = $self->outdir."/".$self->fileid.".txt";
+    my $s_fasta        = $self->fasta;
+    my $s_aligned_file = $self->alignment_file();
+    my $s_outhap1      = $self->directory."/".$self->fileid."_ann.csv";
 
-  system("rm $s_fasta")        if($self->has_fasta && defined $s_fasta 
-                                    && $s_fasta !~ /t\/resources/ && -e $s_fasta);
-  system("rm $s_aligned_file") if(defined $s_aligned_file && -e $s_aligned_file);
-  system("rm $s_nextflow")     if(defined $s_nextflow && -e $s_nextflow);
-  system("rm $s_outhap1")      if(defined $s_outhap1 && -e $s_outhap1);
-  system("rm -rf .nextflow")   if(-d ".nexflow");
+    system("rm $s_fasta")        if($self->has_fasta && defined $s_fasta 
+                                      && $s_fasta !~ /t\/resources/ && -e $s_fasta);
+    system("rm $s_aligned_file") if(defined $s_aligned_file && -e $s_aligned_file);
+    system("rm $s_nextflow")     if(defined $s_nextflow && -e $s_nextflow);
+    system("rm $s_outhap1")      if(defined $s_outhap1 && -e $s_outhap1);
+    system("rm -rf .nextflow")   if(-d ".nexflow");
 
-  if($self->has_locus){
-    my $s_loc = $self->locus;
-    $s_loc =~ s/-/_/;
-    my $alignment = $self->directory."/output/clu/".$s_loc."/".$self->fileid.".clu";
-    system("rm $alignment")   if(defined $alignment && -e $alignment);
+    if($self->has_locus){
+      my $s_loc = $self->locus;$s_loc =~ s/-/_/;
+      my $alignment = $self->directory."/output/clu/".$s_loc."/".$self->fileid.".clu";
+      system("rm $alignment")   if(defined $alignment && -e $alignment);
+    }
+
+    $self->clear_nextflow;
+    $self->clear_hml;
+    $self->clear_fasta;
   }
-
-  $self->clear_nextflow;
-  $self->clear_hml;
-  $self->clear_fasta;
-
+  
 }
 
 =head2 BUILDARGS
@@ -450,7 +458,9 @@ around BUILDARGS=>sub
   );
 
   my $s_hap1       =`which hap1.1.jar`;chomp($s_hap1);
+  my $s_nextflow   =`which nextflow`;chomp($s_nextflow);
   my $s_clustalo   =`which clustalo`;chomp($s_clustalo);
+  my $s_extract    =`which ngs-extract-consensus`;chomp($s_extract);
   my $s_hml_flow   = "$FindBin::Bin/../bin/hml.nf";
   my $s_fasta_flow = "$FindBin::Bin/../bin/fasta.nf";
 
@@ -469,13 +479,19 @@ around BUILDARGS=>sub
   die "clustalo is not installed!\n" 
     if(!defined $s_clustalo || !-x $s_clustalo);
 
+  die "nextflow is not installed!\n" 
+    if(!defined $s_nextflow || !-x $s_nextflow);
+
+  die "ngs-extract-consensus is not installed!\n" 
+    if(!defined $s_nextflow || !-x $s_nextflow);
+
   $outdir    = $working if(!-d $outdir);
 
   die "Working directory doesn't exists! $working \n" 
     if(!-d $working);
 
   my %h_ids = ( 0 => 1 );
-  $args->{aligned_cutoff} = .5;
+  $args->{aligned_cutoff} = .70;
   $args->{hmlnf}          = $s_hml_flow;
   $args->{fastanf}        = $s_fasta_flow;
   $args->{outdir}         = $outdir;

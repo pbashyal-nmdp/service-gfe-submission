@@ -22,7 +22,7 @@ Structures
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -81,18 +81,22 @@ sub getStruct{
   return $self->{hla}->{$s_locus};
 }
 
-=head2 invalidGfe
+=head2 validGfe
 
 
 =cut
-sub invalidGfe{
+sub validGfe{
   my($self,$s_loc,$s_gfe) = @_;
 
+  return 0 if !defined $s_gfe;
+
   my $logger  = Log::Log4perl->get_logger();
+  my $n = $s_gfe =~ /KIR/ ? (scalar split(/-/,$s_gfe)) : (scalar split(/-/,$s_gfe)) - 1;
+  return 0 if $self->{gfe_length}->{$s_loc} != $n;
+  
+  my $s_invalid_gfe = $s_loc."w".join("-",map(0,(1..$self->{gfe_length}->{$s_loc})));
+  return 0 if $s_gfe eq $s_invalid_gfe;
 
-  return 0 if $self->{gfe_length}->{$s_loc} == (scalar split(/-/,$s_gfe));
-
-  $logger->error((scalar split(/-/,$s_gfe))." != ".$self->{gfe_length}->{$s_loc});
   return 1;
 }
 
@@ -125,7 +129,7 @@ around BUILDARGS=>sub
 
   my %h_gfe_l;
   foreach my $s_loc (@a_loci){
-    $h_gfe_l{$s_loc} = $#{$config_hash{$s_loc}} + 2;
+    $h_gfe_l{$s_loc} = scalar @{$config_hash{$s_loc}};
   }
 
   $args->{hla}=\%config_hash;

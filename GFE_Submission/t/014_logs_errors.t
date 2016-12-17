@@ -14,7 +14,7 @@
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -70,6 +70,6 @@ ok(defined $$ra_logs_align[0],"size ra_logs_align > 0");
 my @a_error_align  = grep{ $_ =~ /ERROR/ } @{$ra_logs_align};
 ok(defined $a_error_align[0],"ERROR size a_error_align defined");
 
-my @a_align_undef   = grep{ $_ =~ /Alignment ran but files are empty/ } @{$ra_logs_align};
+my @a_align_undef   = grep{ $_ =~ /Failed to create alignment file/ } @{$ra_logs_align};
 ok(defined $a_align_undef[0],"Alignment ran but files are empty");
 

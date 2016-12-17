@@ -1,7 +1,9 @@
-#!/usr/bin/env perl
 =head1 NAME
  
-app.pl
+   009_gfe_get.t
+
+=head1 SYNOPSIS
+
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
     
@@ -31,30 +33,22 @@ app.pl
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Dancer;
+use Test::More tests => 2;
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Dancer::Test;
 use GFE_Submission;
+use Dancer::Plugin::Swagger;
+use GFE_Submission::Definitions;
+use GFE_Submission::API;
 
-set 'template'     => 'template_toolkit';
-set 'logger'       => 'console';
-set 'session'      => 'Simple';
-set 'log'          => 'debug';
-set 'serializer'   => 'Mutable'; 
-set 'show_errors'  => 1;
-set 'startup_info' => 1;
-set 'warnings'     => 1;
-set 'layout'       => 'main';
+my $o_gfe_l          = GFE->new();
+$o_gfe_l->startLogfile();
+ok($o_gfe_l->has_logfile,"Log file was created");
 
-
-hook before_template => sub {
-       my $tokens = shift;
-        
-       $tokens->{'css_url'}           = request->base . 'css/style.css';
-       $tokens->{'login_url'}         = uri_for('/login');
-       $tokens->{'logout_url'}        = uri_for('/logout');
-       $tokens->{'upload_url'}        = uri_for('/upload');
-       $tokens->{'gfe_url'}           = uri_for('/gfe');
-       $tokens->{'ars_reduxfile_url'} = uri_for('/gfe');
-};
-
-dance;
+$o_gfe_l->returnLog();
+$o_gfe_l->clear_logfile;
+ok(!$o_gfe_l->has_logfile,"Log file was cleared");
 
