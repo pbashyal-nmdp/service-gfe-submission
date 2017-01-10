@@ -194,7 +194,7 @@ plackup -E deployment  \     # Deploy
 
 ```bash
 docker pull nmdpbioinformatics/service-gfe-submission
-docker run -d --name service-gfe-submission -p 5050:8080 service-gfe-submission:latest
+docker run -d --name service-gfe-submission -p 8080:5050 nmdpbioinformatics/service-gfe-submission
 ```
 [Click here](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission/) for more information on the publically available docker image. 
 
