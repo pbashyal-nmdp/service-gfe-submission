@@ -105,12 +105,6 @@ swagger_definition 'FastaSubmission' => {
         url        => { type => 'string'  },
         verbose    => { type => 'boolean' },
         structures => { type => 'boolean' }
-    },
-    example => {
-        locus      => 'HLA-A',
-        file       => 'public/downloads/FastaTest.fasta',
-        verbose    => 1,
-        structures => 1
     }
 };
 
@@ -128,11 +122,6 @@ swagger_definition 'HmlSubmission' => {
         type       => { type => 'string'  },
         verbose    => { type => 'boolean' },
         structures => { type => 'boolean' }
-    },
-    example => {
-        file      => 'public/downloads/HmlTest.Hml',
-        verbose    => 1,
-        structures => 1
     }
 };
 
