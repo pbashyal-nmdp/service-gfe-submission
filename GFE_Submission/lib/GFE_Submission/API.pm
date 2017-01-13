@@ -18,8 +18,6 @@ use GFE_Submission::Definitions;
 use Data::Dumper;
 use XML::DOM;
 
-prefix '/api/v1';
-
 
 =head2 getGfe API Call
 
@@ -50,7 +48,7 @@ swagger_path {
 },
 post '/gfe' => sub {
 
-    my $s_url        = params->{'url'};
+    my $s_url        = params->{'feature_url'};
     my $s_locus      = params->{'locus'};
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};
@@ -111,7 +109,7 @@ swagger_path {
 },
 post '/sequence' => sub {
 
-    my $s_url        = params->{'url'};
+    my $s_url        = params->{'feature_url'};
     my $s_gfe        = params->{'gfe'};
     my $n_retry      = params->{'retry'};
     my $s_locus      = params->{'locus'};
@@ -173,7 +171,7 @@ swagger_path {
 },
 post '/hml' => sub {
 
-    my $s_url          = params->{'url'};
+    my $s_url          = params->{'feature_url'};
     my $n_retry        = params->{'retry'};
     my $b_verbose      = params->{'verbose'};
     my $b_structures   = params->{'structures'};
@@ -286,7 +284,7 @@ swagger_path {
 },
 post '/flowhml' => sub {
 
-    my $s_url          = params->{'url'};
+    my $s_url          = params->{'feature_url'};
     my $n_retry        = params->{'retry'};
     my $b_verbose      = params->{'verbose'};
     my $b_structures   = params->{'structures'};
@@ -381,16 +379,15 @@ swagger_path {
             name => 'FastaSubmission',
             type => 'object',
             schema => { '$ref' => "#/definitions/FastaSubmission" },
-            description => 'GFE Submission',
+            description => 'GFE Submission from Fasta',
             in => 'body',
          }
     ],
     responses => {
         404 => {
-            description => 'Failed to generate GFE',
+            description => 'Failed to generate GFE from fasta',
             schema => { '$ref' => "#/definitions/Error" },
         },
-
         200 => {
             description => 'Gene Feature Enumeration (GFE) from fasta file',
             schema  => { '$ref' => "#/definitions/SubjectData" },
@@ -399,7 +396,7 @@ swagger_path {
 },
 post '/fasta' => sub {
 
-    my $s_url        = params->{'url'};
+    my $s_url        = params->{'feature_url'};
     my $s_locus      = params->{'locus'};
     my $n_retry      = params->{'retry'};
     my $b_verbose    = params->{'verbose'};

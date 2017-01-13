@@ -73,6 +73,8 @@ sub getAccesion{
     
     my($self,$s_locus,$s_term,$n_rank,$s_seq) = @_;
 
+    return 0 if $s_seq eq "NULL" || !defined $s_seq;
+
     my $n_retry = 0;
     my $logger  = Log::Log4perl->get_logger();
 

@@ -54,12 +54,12 @@ swagger_definition 'GfeSubmission' => {
     type => 'object',
     required   => [ 'locus','sequence'],
     properties => {
-        locus      => { type => 'string'  },
-        retry      => { type => 'integer' },
-    	sequence   => { type => 'string'  },
-    	url        => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
+        locus       => { type => 'string'  },
+        retry       => { type => 'integer' },
+    	sequence    => { type => 'string'  },
+    	feature_url => { type => 'string'  },
+        verbose     => { type => 'boolean' },
+        structures  => { type => 'boolean' }
     },
     example => {
         locus   => 'HLA-A',
@@ -76,12 +76,12 @@ swagger_definition 'SequenceSubmission' => {
     type => 'object',
     required   => [ 'gfe','locus'],
     properties => {
-        locus      => { type => 'string'  },
-        gfe        => { type => 'string'  },
-        retry      => { type => 'integer' },
-        url        => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
+        locus       => { type => 'string'  },
+        gfe         => { type => 'string'  },
+        retry       => { type => 'integer' },
+        feature_url => { type => 'string'  },
+        verbose     => { type => 'boolean' },
+        structures  => { type => 'boolean' }
     },
     example => {
         locus   => 'HLA-A',
@@ -99,12 +99,12 @@ swagger_definition 'FastaSubmission' => {
     type => 'object',
     required   => [ 'locus','file'],
     properties => {
-        locus      => { type => 'string'  },
-        retry      => { type => 'integer' },
-        file       => { type => 'file'  },
-        url        => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
+        locus       => { type => 'string'  },
+        retry       => { type => 'integer' },
+        file        => { type => 'file'  },
+        feature_url => { type => 'string'  },
+        verbose     => { type => 'boolean' },
+        structures  => { type => 'boolean' }
     }
 };
 
@@ -116,12 +116,12 @@ swagger_definition 'HmlSubmission' => {
     type => 'object',
     required   => ['file'],
     properties => {
-        retry      => { type => 'integer' },
-        file       => { type => 'file'  },
-        url        => { type => 'string'  },
-        type       => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
+        retry       => { type => 'integer' },
+        file        => { type => 'file'  },
+        feature_url => { type => 'string'  },
+        type        => { type => 'string'  },
+        verbose     => { type => 'boolean' },
+        structures  => { type => 'boolean' }
     }
 };
 
@@ -700,6 +700,7 @@ swagger_definition 'Gfe' => {
         gfe       => { type => 'string' },
         aligned   => { type => 'number' },
         version   => { type => 'string' },
+        fullgene  => { '$ref' => "#/definitions/Structure" },
         log       => { type => 'array',
            items  => { type => 'string' }
         },

@@ -253,7 +253,7 @@ sub alignHml{
   my $logger       = Log::Log4perl->get_logger();
   my $s_hml_file   = $self->hml;
 
-  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.1.jar";
+  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.2.jar";
   my @args = ($s_hap1_cmd, " -i $s_hml_file"," -o ".$self->directory."/GFE/parsed-local/");
 
   my $exit_value = system(join("",@args));
@@ -341,7 +341,7 @@ sub align{
   my $s_locus      = $self->locus;
   my $s_fasta_file = $self->fasta;
   my $s_loc = $s_locus !~ /HLA-/ && $s_locus !~ /KIR/ ? "HLA-".$s_locus : $s_locus;
-  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.1.jar";
+  my $s_hap1_cmd = "java -jar ".$self->directory."/hap1.2.jar";
   my @args = ($s_hap1_cmd, " -g ".$self->order->{$s_loc}, " -i $s_fasta_file"," -o ".$self->directory."/GFE/parsed-local/");
 
   my $exit_value = system(join("",@args));
@@ -457,7 +457,7 @@ around BUILDARGS=>sub
     "KIR3DS1" => 22
   );
 
-  my $s_hap1       =`which hap1.1.jar`;chomp($s_hap1);
+  my $s_hap1       =`which hap1.2.jar`;chomp($s_hap1);
   my $s_nextflow   =`which nextflow`;chomp($s_nextflow);
   my $s_clustalo   =`which clustalo`;chomp($s_clustalo);
   my $s_extract    =`which ngs-extract-consensus`;chomp($s_extract);
@@ -465,7 +465,7 @@ around BUILDARGS=>sub
   my $s_fasta_flow = "$FindBin::Bin/../bin/fasta.nf";
 
   my $s_hap1_dir = $s_hap1;
-  $s_hap1_dir    =~ s/hap1\.1\.jar//;
+  $s_hap1_dir    =~ s/hap1\.2\.jar//;
   $s_hap1_dir    =~ s/\/$//;
 
   my $working      = getcwd;
@@ -473,7 +473,7 @@ around BUILDARGS=>sub
   my $s_path       = `echo \$PATH`;chomp($s_path);
 
   # Die if the require programs aren't installed
-  die "hap1.1.jar is not installed!\n hap1.1.jar == $s_hap1 \n PATH == $s_path"
+  die "hap1.2.jar is not installed!\n hap1.2.jar == $s_hap1 \n PATH == $s_path"
     if(!defined $s_hap1 || !-x $s_hap1);
 
   die "clustalo is not installed!\n" 
