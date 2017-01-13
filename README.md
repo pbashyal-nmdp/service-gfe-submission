@@ -22,26 +22,25 @@ curl --header "Content-type: application/json" --request POST
 http://gfe.b12x.org/api/v1/sequence
 
 # Get GFE from fasta file #
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 
---data '{"fasta":"public/downloads/FastaTest.fasta","locus":"HLA-A","structures": 0,"verbose":0}' 
+curl -F "verbose=1" "locus=HLA-A" \
+-F "file=@GFE_Submission/public/downloads/FastaTest.fasta" \
 http://gfe.b12x.org/api/v1/fasta
 
 # Get GFE from HML file #
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 
---data '{"fasta":"public/downloads/HmlTest.HML","locus":"HLA-A","structures": 0,"verbose":0}' 
+curl -F "verbose=1" \
+-F "file=@GFE_Submission/public/downloads/HmlTest.HML" \
 http://gfe.b12x.org/api/v1/hml
 
 # Get HML file with GFE from HML  #
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 
---data '{"fasta":"public/downloads/HmlTest.HML","locus":"HLA-A","type":"xml","structures": 0,"verbose":0}' 
+curl -F "verbose=1" -F "type=xml" \
+-F "file=@GFE_Submission/public/downloads/HmlTest.HML" \
 http://gfe.b12x.org/api/v1/hml
 
 # Get HML file with GFE from HML using nextflow #
 # Faster than /api/v1/hml but can not provide structures #
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' 
---data '{"fasta":"public/downloads/HmlTest.HML","locus":"HLA-A","type":"xml","structures": 0,"verbose":0}' 
+curl -F "verbose=1" \
+-F "file=@GFE_Submission/public/downloads/HmlTest.HML" \
 http://gfe.b12x.org/api/v1/flowhml
-
 
 ```
 

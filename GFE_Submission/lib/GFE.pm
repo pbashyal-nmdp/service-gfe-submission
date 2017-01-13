@@ -172,6 +172,15 @@ sub getGfe{
     my $rh_check_loc = $self->checkLoc($s_locus);
     return $rh_check_loc if(defined $rh_check_loc);
 
+    # Get full gene accession number
+    my $n_fullgene   = $o_client->getAccesion($s_locus,"gene",1,uc $s_seq);
+    my $rh_fullgene  =  {
+                      term      => "gene",                  
+                      rank      => 1,
+                      accession => $n_fullgene,
+                      sequence  => uc $s_seq
+                    };
+
     # Make fasta file from sequence
     my $s_fasta_file = $o_annotate->makeFasta($s_locus,$s_seq);
 
@@ -256,13 +265,13 @@ sub getGfe{
     if($self->verbose){
         my $ra_log = $self->returnLog();
         $self->return_structure
-            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => $ra_log }
-            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version, log => $ra_log };
+            ? return {gfe => $s_gfe, locus => $s_locus,  fullgene => $rh_fullgene, aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => $ra_log }
+            : return {gfe => $s_gfe, locus => $s_locus,  fullgene => $rh_fullgene, aligned => $f_aligned, version => $self->version, log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         $self->return_structure
-            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version }
-            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version };
+            ? return {gfe => $s_gfe, locus => $s_locus, fullgene => $rh_fullgene, aligned => $f_aligned, structure => \@a_structure, version => $self->version }
+            : return {gfe => $s_gfe, locus => $s_locus, fullgene => $rh_fullgene, aligned => $f_aligned, version => $self->version };
     }
    
 }
@@ -744,10 +753,6 @@ sub getSequence{
 
         # Get sequence from feature-service
         my $s_sequence = $o_client->getSequence($s_locus,$s_term,$n_rank,$n_accession);
-
-        # Return an error if the sequence is not defined
-        #my $rh_check_seq = $self->checkSeq($s_sequence,$s_locus);
-        #return $rh_check_seq if(defined $rh_check_seq && !defined $s_sequence);
 
         push @a_structure, {
               locus     => $s_locus, 

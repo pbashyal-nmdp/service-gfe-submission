@@ -44,7 +44,7 @@ use Dancer::Plugin::Swagger;
 use GFE_Submission::Definitions;
 use GFE_Submission::API;
 
-my $r_verbose_blank = dancer_response POST => '/api/v1/gfe?verbose=1&locus=HLA-A&sequence=';
+my $r_verbose_blank = dancer_response POST => '/gfe?verbose=1&locus=HLA-A&sequence=';
 ok(defined $r_verbose_blank->{content},"r_verbose_blank->{content} defined");
 ok(defined $r_verbose_blank->{content}->{type},"r_verbose_blank->{content}->{type} defined");
 ok(defined $r_verbose_blank->{content}->{log},"r_verbose_blank->{content}->{log} defined");
@@ -59,7 +59,7 @@ my @a_seq_undef   = grep{ $_ =~ /Sequence not defined/ } @{$ra_logs};
 ok(defined $a_seq_undef[0],"Sequence not defined found in log");
 
 
-my $r_verbose_align = dancer_response POST => '/api/v1/gfe?verbose=1&locus=HLA-A&sequence=ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ';
+my $r_verbose_align = dancer_response POST => '/gfe?verbose=1&locus=HLA-A&sequence=ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ';
 ok(defined $r_verbose_align->{content},"r_verbose_align->{content} defined");
 ok(defined $r_verbose_align->{content}->{type},"r_verbose_align->{content}->{type} defined");
 ok(defined $r_verbose_align->{content}->{log},"r_verbose_align->{content}->{log} defined");

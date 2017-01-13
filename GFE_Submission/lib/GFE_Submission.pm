@@ -147,7 +147,7 @@ get '/download' => sub {
     ** Not the RESTful API - Refer to GFE_Submission::API **
 
 =cut
-get '/gfe' => sub {
+get '/gfe_gui' => sub {
 
 	my $url          = params->{'url'};
 	my $s_locus      = params->{'locus'};

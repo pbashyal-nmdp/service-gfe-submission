@@ -8,26 +8,26 @@ perl:
 env:
   global:
     - PERL_MM_USE_DEFAULT=1
-    - "PATH=$PATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/hap1.1:/opt/ngs-tools/bin:$TRAVIS_BUILD_DIR/gfe_submission/bin"
+    - "PATH=$PATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/hap1.2:/opt/ngs-tools/bin:$TRAVIS_BUILD_DIR/gfe_submission/bin"
     - NXF_VER='0.22.4'
     - NXF_OPTS='-Xms512M -Xmx2G'
 
 cache:
   directories:
   - perl_modules
-  - $TRAVIS_BUILD_DIR/hap1.1
+  - $TRAVIS_BUILD_DIR/hap1.2
 
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
   - export RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1 HARNESS_OPTIONS=c HARNESS_TIMER=1
-  - cp docker/hap1.1.tar.gz docker/ngs-tools_1.9.deb .
+  - cp docker/hap1.2.tar.gz docker/ngs-tools_1.9.deb .
   - sudo dpkg --install ngs-tools_1.9.deb
   - curl -fsSL get.nextflow.io | bash
-  - tar -xvzf hap1.1.tar.gz
-  - chmod a+x hap1.1/hap1.1.jar
+  - tar -xvzf hap1.2.tar.gz
+  - chmod a+x hap1.2/hap1.2.jar
   - wget http://www.clustal.org/omega/clustalo-1.2.3-Ubuntu-x86_64
-  - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.1/clustalo
-  - chmod a+x hap1.1/clustalo
+  - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.2/clustalo
+  - chmod a+x hap1.2/clustalo
   - cd GFE_Submission
   - cpanm --quiet --notest --installdeps .
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls

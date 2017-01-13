@@ -1,0 +1,184 @@
+#!/usr/bin/env perl
+=head1 NAME
+
+    fasta2structure
+
+=head1 SYNOPSIS
+    
+
+=head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
+    
+    Bioinformatics Scientist
+    3001 Broadway Stree NE
+    Minneapolis, MN 55413
+    ext. 8225
+
+=head1 DESCRIPTION
+
+
+=head1 CAVEATS
+
+
+=head1 LICENSE
+
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+ 
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+=head1 VERSIONS
+    
+    Version    Description              Date
+
+
+=head1 TODO
+    
+
+=head1 SUBROUTINES
+
+=cut
+use strict;    # always
+use warnings;  # or else
+use FindBin;
+use Data::Dumper;
+use FindBin;
+use Math::Round;
+use lib "$FindBin::Bin/../lib";
+use GFE;
+use GFE::Client;
+use GFE::Annotate;
+use vars qw($USAGE);
+BEGIN{
+
+    $| = 1;
+
+    $USAGE = 
+        qq{./fasta2structure [--fasta] [--uri] [--verbose] [--help]
+            -f/--fasta      Fasta file
+            -u/--uri        URI of feature service
+            -l/--locus      HLA-Locus
+            -v/--verbose    Flag for running in verbose
+            -h/--help
+        };
+
+}   
+use Getopt::Long;
+use Cwd;
+
+our($s_subject_id) = (undef);
+&GetOptions('subject|i=s' => \$s_subject_id );
+
+if(!defined $s_subject_id){
+    $s_subject_id = getSubID();
+}
+
+my $s_out_file = $s_subject_id.".txt";
+
+my %h_seqs;
+my $s_header;
+my $s_seq;
+while (<>) {
+    chomp;
+    if ($_ =~ />/) {
+        if ($s_seq) {    
+            $h_seqs{$s_header} = $s_seq;
+        }              
+        $s_header = $_;
+        $s_header =~ s/^>//; # remove ">"
+        $s_header =~ s/\s+$//; # remove trailing whitespace
+        $s_seq = ""; # clear out old sequence
+    }else {    
+        s/\s+//g; # remove whitespace
+        $s_seq .= $_; # add sequence
+    }
+}
+
+if ($s_seq) { # handle last sequence
+    $h_seqs{$s_header} = $s_seq;
+}
+
+open(my $fh,">",$s_out_file) or die "CANT OPEN FILE $! $0";
+foreach my $s_typing (keys %h_seqs){
+    $s_typing =~ /(HLA-\D{1,3}\d{0,1})(\*|\|)/;
+    my $s_locus = $1;
+    $s_locus =~ s/\|//g;
+    next if(!defined $s_locus || $s_locus !~ /\S/);
+    my $o_gfe = GFE->new();
+    my $rh_gfe = $o_gfe->getGfe($s_locus,$h_seqs{$s_typing});
+    if(defined $$rh_gfe{Message}){ print STDERR Dumper($rh_gfe),"\n";next;}
+    my $ra_structure = $$rh_gfe{structure};
+    foreach my $rh_struct (@$ra_structure){
+        my $s_term = $$rh_struct{term};
+        my $n_rank = $$rh_struct{rank};
+        my $s_seq  = $$rh_struct{sequence};
+        my $n_accs = $$rh_struct{accession};
+
+    }
+    my $s_structure = join(",",map{
+        my $s_term = $$_{term};
+        my $n_rank = $$_{rank};
+        my $s_seq  = $$_{sequence};
+        my $n_accs = $$_{accession};
+        my $struct = join(":",$s_term,$n_rank,$n_accs,$s_seq);
+        $struct
+    } (@$ra_structure));
+    my $s_gfe  = defined $$rh_gfe{gfe} ? $$rh_gfe{gfe} : '';
+    next if !defined $s_gfe || $s_gfe !~ /\S/;
+    my $n_seq  = length($h_seqs{$s_typing});
+    my $f_aligned  = $$rh_gfe{aligned};
+    print $fh join(",",$s_subject_id,$s_typing,$s_locus,$s_gfe,join(":",$n_seq,$f_aligned),$s_structure),"\n";
+}
+close $fh;
+
+
+sub getSubID{
+    my $id = int(rand(10000));
+    my $s_out_file = $id.".txt";
+    if(!-e $s_out_file){
+        return $id;
+    }else{
+        return getSubID();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

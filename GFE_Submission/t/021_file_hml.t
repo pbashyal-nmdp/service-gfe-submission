@@ -47,7 +47,7 @@ use GFE_Submission::API;
 
 my $pwd        = `pwd`;chomp($pwd);
 my $t_file     = $pwd."/t/resources/hmltest1.HML";
-my $r_hml_file = dancer_response POST => '/api/v1/hml', {files => [{name => 'file', filename => $t_file}]};
+my $r_hml_file = dancer_response POST => '/hml', {files => [{name => 'file', filename => $t_file}]};
 
 ok(defined $r_hml_file->{content},"API successfully accepted a HML file");
 ok(defined $r_hml_file->{content}->{subjects},"API successfully subject GFE results from HML");

@@ -62,7 +62,7 @@ $h_expected_gfe{"444444444"}{"HLA-A"}  = "HLA-Aw1-5-4-5-4-9-2-4-2-3-2-2-1-1-2-1-
 $h_expected_gfe{"444444444"}{"HLA-B"}  = "HLA-Bw10-10-15-78-32-115-21-7-3-6-20-1-10-2+HLA-Bw10-8-11-115-35-128-14-13-5-6-15-1-1-2";
 $h_expected_gfe{"444444444"}{"HLA-C"}  = "HLA-Cw22-1-3-78-16-139-20-24-2-10-14-1-13-1-1-1-1+HLA-Cw22-1-9-40-2-72-12-2-2-3-2-1-1-1-2-1-1";
 
-my $r_hml_file2 = dancer_response POST => '/api/v1/flowhml?type=xml', {files => [{name => 'file', filename => $t_file}]};
+my $r_hml_file2 = dancer_response POST => '/flowhml?type=xml', {files => [{name => 'file', filename => $t_file}]};
 my $parser = new XML::DOM::Parser;
 my $doc    = $parser->parse($r_hml_file2->{content});
 my $root   = $doc->getDocumentElement();
@@ -80,7 +80,7 @@ foreach my $ra_sample (sort @{$root->getElementsByTagName('sample')}){
     }
 }
 
-my $r_hml_file = dancer_response POST => '/api/v1/flowhml', {files => [{name => 'file', filename => $t_file}]};
+my $r_hml_file = dancer_response POST => '/flowhml', {files => [{name => 'file', filename => $t_file}]};
 ok(defined $r_hml_file->{content},"API successfully accepted a HML file");
 ok(defined $r_hml_file->{content}->{subjects},"API successfully subject GFE results from HML");
 ok(defined $r_hml_file->{content}->{subjects}[1],"size subjects > 0");
