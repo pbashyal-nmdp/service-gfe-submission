@@ -47,7 +47,7 @@ use GFE_Submission::API;
 
 my $pwd          = `pwd`;chomp($pwd);
 my $t_file       = $pwd."/t/resources/fastatest1.fasta";
-my $r_fasta_file = dancer_response POST => '/api/v1/fasta?locus=HLA-A', {files => [{name => 'file', filename => $t_file}]};
+my $r_fasta_file = dancer_response POST => '/fasta?locus=HLA-A', {files => [{name => 'file', filename => $t_file}]};
 
 ok(defined $r_fasta_file->{content},"API successfully accepted a fasta file");
 ok(defined $r_fasta_file->{content}->{subjects},"API successfully subject GFE results from fasta");
