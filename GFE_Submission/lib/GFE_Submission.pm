@@ -22,7 +22,7 @@ GFE_Submission - Service for getting a GFE from raw sequence data.
 
 =head1 LICENSE
 
-    Copyright (c) 2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -63,10 +63,9 @@ use GFE_Submission::Definitions;
 use GFE_Submission::API;
 use GFE;
 
-my %h_cache;
 my $o_gfe = GFE->new();
 
-our $VERSION = '1.0.5';
+our $VERSION = '1.1.1';
 
 prefix undef;
 
@@ -154,32 +153,21 @@ get '/gfe' => sub {
 	my $s_locus      = params->{'locus'};
 	my $s_sequence   = params->{'sequence'};
 
-	if(defined $h_cache{$s_locus}{$s_sequence}[0]){
-
+    $o_gfe->verbose(1);
+    $o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
+    my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
+    if(defined  $$rh_gfe{Error}){
+        template 'index', {
+            'Error'        => $$rh_gfe{Error}
+        };
+    }else{
 		template 'index', {
-			'gfe'        => $h_cache{$s_locus}{$s_sequence}[0],
-			'structures' => $h_cache{$s_locus}{$s_sequence}[1]
+		    'gfe'        => $$rh_gfe{gfe},
+		    'structures' => $$rh_gfe{structure},
+            'log'        => $$rh_gfe{log}
 		};
-
-	}else{
-        $o_gfe->verbose(1);
-        $o_gfe->client(GFE::Client->new(url => $url)) if(defined $url && $url =~ /\S/);
-        my $rh_gfe        = $o_gfe->getGfe($s_locus,$s_sequence);
-        if(defined  $$rh_gfe{Error}){
-            template 'index', {
-                'Error'        => $$rh_gfe{Error}
-            };
-        }else{
-            push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{gfe});
-            push(@{$h_cache{$s_locus}{$s_sequence}},$$rh_gfe{structure});
-
-    		template 'index', {
-    		    'gfe'        => $$rh_gfe{gfe},
-    		    'structures' => $$rh_gfe{structure},
-                'log'        => $$rh_gfe{log}
-    		};
-        }
-	}
+    }
+	
 	
 
 };

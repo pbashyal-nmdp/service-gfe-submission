@@ -73,7 +73,7 @@ use lib "$FindBin::Bin/../lib";
 use GFE_Client;
 use Data::Dumper;
 
-our($s_input,$b_hml,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,undef,"http://feature.nmdp-bioinformatics.org");
+our($s_input,$b_hml,$b_verbose,$help,$s_url,$s_feature_url) = (undef,undef,undef,undef,"http://gfe.b12x.org","http://feature.nmdp-bioinformatics.org");
 
 &GetOptions('input|i=s'      => \$s_input,
             'hml|m'          => \$b_hml,
