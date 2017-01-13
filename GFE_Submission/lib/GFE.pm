@@ -1298,13 +1298,6 @@ sub checkFile{
                 log      => $ra_log
             }
         };
-    }else{
-        open(my $fh,"<",$s_input_file);
-        while(<$fh>){
-            chomp;
-            print STDERR "Line: ".$_,"\n";
-        }
-        close $fh;
     }
 
     # Check to make sure the file type is supported
