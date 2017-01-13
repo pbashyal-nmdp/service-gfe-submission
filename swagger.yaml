@@ -1,312 +1,616 @@
-swagger: '2.0'
-info:
-  description: API for getting GFE results from raw sequence data
-  version: "1.0.0"
-  title: GFE Submission API
-  # put the contact info for your development or API team
-  contact:
-    email: mhalagan@nmdp.org
-
-  license:
-    name: GNU GENERAL PUBLIC LICENSE
-    url: https://www.gnu.org/licenses/lgpl.html
-
-# all paths will be relative to the basePath specified
-basePath: /api/v1
-
-
-paths:
-  /gfe:
-    post:
-      summary: Get GFE
-      operationId: getGfe
-      description: Get Gene Feature Enumeration (GFE) from sequence and locus
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        required: true
-        name: GfeSubmission
-        description: Submit raw sequence data
-        schema:
-          $ref: '#/definitions/GfeSubmission'
-      responses:
-        200:
-          description: GFE Generated
-          schema:
-            $ref: '#/definitions/Gfe'
-        400:
-          description: error occured
-          schema:
-             $ref: '#/definitions/Error'
-  /sequence:
-    post:
-      summary: Get sequence from GFE
-      operationId: getSequence
-      description: Sequence from Gene Feature Enumeration (GFE)
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        required: true
-        name: SequenceSubmission
-        description: Submit GFE
-        schema:
-          $ref: '#/definitions/SequenceSubmission'
-      responses:
-        200:
-          description: Sequence Generated
-          schema:
-            $ref: '#/definitions/Sequence'
-        400:
-          description: error occured
-          schema:
-             $ref: '#/definitions/Error'
-  /fasta:
-    post:
-      summary: Get GFE from fasta file
-      operationId: getFasta
-      description: Get gene Feature Enumeration (GFE) from fasta file
-      consumes:
-      - multipart/form-data
-      - application/x-www-form-urlencoded
-      produces:
-      - multipart/form-data
-      - application/x-www-form-urlencoded
-      parameters:
-      - in: body
-        required: true
-        name: FastaSubmission
-        description: Submit fasta file
-        schema:
-          $ref: '#/definitions/FastaSubmission'
-      responses:
-        200:
-          description: GFE data generated
-          schema:
-            $ref: '#/definitions/SubjectData'
-        400:
-          description: error occured
-          schema:
-             $ref: '#/definitions/Error'
 definitions:
-  GfeSubmission:
-    type: object
-    required:
-    - locus
-    - sequence
-    properties:
-      locus:
-        type: string
-        example: HLA-A
-      sequence:
-        type: string
-        example: TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
-      url:
-        type: string
-        example: http://feature.nmdp-bioinformatics.org
-      verbose:
-        type: boolean
-        example: 1
-  Gfe:
-    type: object
-    required:
-    - gfe
-    - structure
-    properties:
-      gfe:
-        type: string
-        example: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0
-      structure:
-          type: array
-          items:
-            $ref: '#/definitions/Structure'
-  Structure:
-    type: object
-    required:
-    - term
-    - rank
-    - accession
-    - sequence
-    - locus
-    properties:
-      term:
-        type: string
-        example: exon1
-      rank:
-        type: integer
-        example: 1
-      accession:
-        type: integer
-        example: 1
-      sequence:
-        type: string
-        example: AGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
-      locus:
-        type: string
-        example: HLA-A
   Error:
-    type: object
-    required:
-    - Message
     properties:
       Message:
         type: string
-        example: Sequence not defined
-      type:
+      accession:
         type: string
-        example: Sequence
-      sequence:
-        type: string
-        example: AGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
-      locus:
-        type: string
-        example: HLA-A
       file:
         type: string
-        example: input.fasta
-      log:
-          type: array
-          items:
-            type: string
-            example: 
-              - "2016/10/31 21:16:58 ERROR> GFE.pm:142 GFE::getGfe - Sequence not defined"
-              - "2016/10/31 21:16:58 ERROR> GFE.pm:173 GFE::getGfe - Locus not valid"
-  Sequence:
-    type: object
-    required:
-    - sequence
-    - version
-    properties:
-      version:
+      gfe:
         type: string
-        example: 1.1.0
+      log:
+        items:
+          type: string
+        type: array
+      rank:
+        type: integer
       sequence:
         type: string
-        example: AGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
-      structure:
-          type: array
-          items:
-            $ref: '#/definitions/Structure'      
-      log:
-          type: array
-          items:
-            type: string
-            example: 
-              - "2016/10/31 21:16:58 ERROR> GFE.pm:142 GFE::getGfe - Sequence not defined"
-              - "2016/10/31 21:16:58 ERROR> GFE.pm:173 GFE::getGfe - Locus not valid"
-  SequenceSubmission:
-      type: object
-      required:
-      - gfe
-      - locus
-      properties:
-        gfe:
-          type: string
-          example: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0
-        locus:
-          type: string
-          example: HLA-A
-        retry:
-          type: integer
-          example: 6
-        url:
-          type: string
-          example: http://feature.nmdp-bioinformatics.org
-        verbose:
-          type: boolean
-          example: 1
-        structures:
-          type: boolean
-          example: 1
-  Typing:
-    type: object
+      term:
+        type: string
+      type:
+        type: string
+      version:
+        type: string
     required:
-       - gfe
+      - Message
+      - version
+    type: object
+  FastaSubmission:
+    example:
+      file: public/downloads/FastaTest.fasta
+      locus: HLA-A
+      structures: 1
+      verbose: 1
+    properties:
+      file:
+        type: file
+      locus:
+        type: string
+      retry:
+        type: integer
+      structures:
+        type: boolean
+      url:
+        type: string
+      verbose:
+        type: boolean
+    required:
+      - locus
+      - file
+    type: object
+  Gfe:
+    example:
+      aligned: 0.95
+      gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+      imgthla: 'A*01:01:01:01'
+      locus: HLA-A
+      structure:
+        - accession: 1
+          rank: 1
+          sequence: ACTGACTG
+          term: exon
+        - accession: 23
+          rank: 2
+          sequence: ACTGACTG
+          term: exon
+      version: 1.0.0
     properties:
       aligned:
         type: number
-        example: .99
       gfe:
         type: string
-        example: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0
-      imgthla:
-        type: string
-        example: HLA-A*01:01
-      structure:
+      log:
+        items:
+          type: string
         type: array
+      structure:
         items:
           $ref: '#/definitions/Structure'
-  TypingData:
-    type: object
+        type: array
+      version:
+        type: string
     required:
-      - typing
-      - locus
+      - gfe
+      - version
+    type: object
+  GfeSubmission:
+    example:
+      locus: HLA-A
+      sequence: >-
+        TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
     properties:
       locus:
         type: string
-        example: HLA-A
-      typing:
-        type: array
-        items:
-          $ref: '#/definitions/Typing'
-  Subject:
-    type: object
+      retry:
+        type: integer
+      sequence:
+        type: string
+      structures:
+        type: boolean
+      url:
+        type: string
+      verbose:
+        type: boolean
     required:
-    - id
-    - typingData
+      - locus
+      - sequence
+    type: object
+  HmlSubmission:
+    example:
+      file: public/downloads/HmlTest.Hml
+      structures: 1
+      verbose: 1
+    properties:
+      file:
+        type: file
+      retry:
+        type: integer
+      structures:
+        type: boolean
+      type:
+        type: string
+      url:
+        type: string
+      verbose:
+        type: boolean
+    required:
+      - file
+    type: object
+  Sequence:
+    example:
+      sequence: >-
+        TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
+      structure:
+        - accession: 1
+          locus: HLA-A
+          rank: 1
+          sequence: ACTGACTG
+          term: exon
+        - accession: 23
+          locus: HLA-A
+          rank: 2
+          sequence: ACTGACTG
+          term: exon
+      version: 1.0.0
+    properties:
+      log:
+        items:
+          type: string
+        type: array
+      sequence:
+        type: string
+      structure:
+        items:
+          $ref: '#/definitions/Structure'
+        type: array
+      version:
+        type: string
+    required:
+      - sequence
+      - version
+    type: object
+  SequenceSubmission:
+    example:
+      gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0
+      locus: HLA-A
+      verbose: 1
+    properties:
+      gfe:
+        type: string
+      locus:
+        type: string
+      retry:
+        type: integer
+      structures:
+        type: boolean
+      url:
+        type: string
+      verbose:
+        type: boolean
+    required:
+      - gfe
+      - locus
+    type: object
+  Structure:
+    example:
+      accession: 1
+      locus: HLA-A
+      rank: 1
+      sequence: ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG
+      term: exon
+    properties:
+      accession:
+        type: integer
+      rank:
+        type: integer
+      sequence:
+        type: string
+      term:
+        type: string
+    required:
+      - term
+      - rank
+      - accession
+      - sequence
+    type: object
+  Subject:
+    example:
+      id: 012312A
+      typingData:
+        - locus: HLA-A
+          typing:
+            - gfe: HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'A*01:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+            - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'A*01:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+        - locus: HLA-B
+          typing:
+            - gfe: HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'B*04:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+            - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'B*05:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
     properties:
       id:
         type: string
-        example: 101021-1
       typingData:
-          type: array
-          items:
-            $ref: '#/definitions/TypingData'
-  SubjectData:
-    type: object
+        items:
+          $ref: '#/definitions/TypingData'
+        type: array
     required:
-    - subjects
-    - version
+      - id
+      - typingData
+    type: object
+  SubjectData:
+    example:
+      log:
+        - >-
+          2016/11/15 17:37:16 INFO> Annotate.pm:167
+          GFE::Annotate::setInputFile   - Input file:     
+          t/resources/HmlTest.HML
+        - >-
+          2016/11/15 17:37:16 INFO> Annotate.pm:185
+          GFE::Annotate::alignment_file - Alignment file: 
+          t/resources/HmlTest_reformat.csv
+      subjects:
+        - id: '111111'
+          typingData:
+            - locus: HLA-A
+              typing:
+                - gfe: HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'A*01:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+                - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'A*01:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+            - locus: HLA-B
+              typing:
+                - gfe: HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'B*04:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+                - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'B*05:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+        - id: '222222222'
+          typingData:
+            - locus: HLA-A
+              typing:
+                - gfe: HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'A*01:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+                - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'A*01:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+            - locus: HLA-B
+              typing:
+                - gfe: HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'B*04:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+                - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'B*05:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+        - id: '3333333333'
+          typingData:
+            - locus: HLA-A
+              typing:
+                - gfe: HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'A*01:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+                - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'A*01:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+            - locus: HLA-B
+              typing:
+                - gfe: HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'B*04:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+                - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+                  imgthla: 'B*05:01:01:01'
+                  structure:
+                    - accession: 1
+                      rank: 1
+                      sequence: ACTGACTG
+                      term: exon
+                    - accession: 23
+                      rank: 2
+                      sequence: ACTGACTG
+                      term: exon
+      version: 1.0.2
     properties:
+      log:
+        items:
+          type: string
+        type: array
+      subjects:
+        items:
+          $ref: '#/definitions/Subject'
+        type: array
       version:
         type: string
-        example: 1.1.0
-      subjects:
-          type: array
-          items:
-            $ref: '#/definitions/Subject'
-      log:
-          type: array
-          items:
-            type: string
-            example: 
-              - "2016/10/31 21:16:58 ERROR> GFE.pm:142 GFE::getGfe - Sequence not defined"
-              - "2016/10/31 21:16:58 ERROR> GFE.pm:173 GFE::getGfe - Locus not valid"
-  FastaSubmission:
-    type: object
     required:
-    - file
-    - locus
+      - subjects
+      - version
+    type: object
+  Typing:
+    example:
+      aligned: 0.95
+      gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+      imgthla: 'A*01:01:01:01'
+      locus: HLA-A
+      structure:
+        - accession: 1
+          rank: 1
+          sequence: ACTGACTG
+          term: exon
+        - accession: 23
+          rank: 2
+          sequence: ACTGACTG
+          term: exon
+      version: 1.0.0
     properties:
-      file:
+      aligned:
+        type: number
+      gfe:
         type: string
+      imgthla:
+        type: string
+      structure:
+        items:
+          $ref: '#/definitions/Structure'
+        type: array
+    required:
+      - gfe
+    type: object
+  TypingData:
+    example:
+      locus: HLA-A
+      typing:
+        - gfe: HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+          imgthla: 'A*01:01:01:01'
+          structure:
+            - accession: 1
+              rank: 1
+              sequence: ACTGACTG
+              term: exon
+            - accession: 23
+              rank: 2
+              sequence: ACTGACTG
+              term: exon
+        - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+          imgthla: 'A*02:01:01:01'
+          structure:
+            - accession: 1
+              rank: 1
+              sequence: ACTGACTG
+              term: exon
+            - accession: 23
+              rank: 2
+              sequence: ACTGACTG
+              term: exon
+    properties:
       locus:
         type: string
-        example: HLA-A
-      retry:
-        type: integer
-        example: 6
-      url:
-        type: string
-        example: http://feature.nmdp-bioinformatics.org
-      verbose:
-        type: boolean
-        example: 1
-      structures:
-        type: boolean
-        example: 1
+      typing:
+        items:
+          $ref: '#/definitions/Typing'
+        type: array
+    required:
+      - typing
+      - locus
+    type: object
+info:
+  description: 'Service for getting a GFE from raw sequence data. '
+  title: GFE_Submission
+  version: 0.0.0
+paths:
+  /api/v1/fasta:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from fasta file
+      parameters:
+        - description: GFE Submission
+          in: body
+          name: FastaSubmission
+          schema:
+            $ref: '#/definitions/FastaSubmission'
+          type: object
+      responses:
+        '200':
+          description: Gene Feature Enumeration (GFE) from fasta file
+          schema:
+            $ref: '#/definitions/SubjectData'
+        '404':
+          description: Failed to generate GFE
+          schema:
+            $ref: '#/definitions/Error'
+  /api/v1/flowhml:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from HML file
+      parameters:
+        - description: HML GFE Submission
+          in: body
+          name: HmlSubmission
+          schema:
+            $ref: '#/definitions/HmlSubmission'
+          type: object
+      responses:
+        '200':
+          description: Gene Feature Enumeration (GFE) from HML file
+          schema:
+            $ref: '#/definitions/SubjectData'
+        '404':
+          description: Failed to generate GFE
+          schema:
+            $ref: '#/definitions/Error'
+  /api/v1/gfe:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from sequence and locus
+      parameters:
+        - description: GFE Submission
+          in: body
+          name: GfeSubmission
+          schema:
+            $ref: '#/definitions/GfeSubmission'
+          type: object
+      responses:
+        '200':
+          description: Gene Feature Enumeration (GFE)
+          schema:
+            $ref: '#/definitions/Gfe'
+        '404':
+          description: Failed to generate GFE
+          schema:
+            $ref: '#/definitions/Error'
+  /api/v1/hml:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from HML file
+      parameters:
+        - description: HML GFE Submission
+          in: body
+          name: HmlSubmission
+          schema:
+            $ref: '#/definitions/HmlSubmission'
+          type: object
+      responses:
+        '200':
+          description: Gene Feature Enumeration (GFE) from HML file
+          schema:
+            $ref: '#/definitions/SubjectData'
+        '404':
+          description: Failed to generate GFE
+          schema:
+            $ref: '#/definitions/Error'
+  /api/v1/sequence:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from sequence and locus
+      parameters:
+        - description: Sequence submission
+          in: body
+          name: SequenceSubmission
+          schema:
+            $ref: '#/definitions/SequenceSubmission'
+          type: object
+      responses:
+        '200':
+          description: Sequence
+          schema:
+            $ref: '#/definitions/Sequence'
+        '404':
+          description: Failed to get sequence from GFE
+          schema:
+            $ref: '#/definitions/Error'
+swagger: '2.0'
