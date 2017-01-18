@@ -1,5 +1,5 @@
-Build Process
-=============
+Getting Started
+===============
 
 Files: `tasks.py`_ - `doc_builder/`_
 

@@ -1,4 +1,4 @@
-Read the Docs Public API
+RESTful API
 =========================
 
 We have a limited public API that is available for you to get data out of the site. 
@@ -45,23 +45,8 @@ Alternatively you can try with the following value::
     #val = api.version('pip').highest('0.8').get()
 
 
-API Endpoints
--------------
-
-Feel free to use cURL and python to look at formatted json examples. You can also look at them in your browser, if it handles returned json.
-
-::
-
-    curl http://readthedocs.org/api/v1/project/pip/?format=json | python -m json.tool
-
 Doc Search
 ----------
-
-.. http:get:: /api/v2/docsearch/
-
-    :string project: **Required**. The slug of a project. 
-    :string version: **Required**. The slug of the version for this project.
-    :string q: **Required**. The search query
 
     You can search a specific set of documentation using our doc search endpoint.
     It returns data in the format of Elastic Search,
@@ -114,7 +99,6 @@ Doc Search
 
 Root
 ----
-.. http:get::  /api/v1/
 
     Retrieve a list of resources.
    
@@ -148,7 +132,6 @@ Root
 
 Builds
 ------
-.. http:get::  /api/v1/build/
 
     Retrieve a list of Builds.
 
@@ -175,9 +158,6 @@ Builds
 
 Build
 -----
-.. http:get::  /api/v1/build/{id}/
-
-   :arg id: A Build id.
 
     Retrieve a single Build.
 
@@ -214,7 +194,6 @@ Build
 
 Files
 -----
-.. http:get::  /api/v1/file/
 
     Retrieve a list of Files.
 
@@ -241,9 +220,6 @@ Files
 
 File
 ----
-.. http:get::  /api/v1/file/{id}/
-
-   :arg id: A File id.
 
     Retrieve a single File.
 
@@ -268,7 +244,7 @@ File
 
 Projects
 --------
-.. http:get::  /api/v1/project/
+
 
     Retrieve a list of Projects.
 
@@ -296,9 +272,6 @@ Projects
    
 Project
 -------
-.. http:get::  /api/v1/project/{id}
-
-   :arg id: A Project id.
 
     Retrieve a single Project.
 
@@ -364,7 +337,7 @@ Project
 
 Users
 -----
-.. http:get::  /api/v1/user/
+
 
     Retrieve List of Users
 
@@ -391,10 +364,7 @@ Users
  
 User
 ----
-.. http:get::  /api/v1/user/{id}/
 
-   :arg id: A User id.
-   
     Retrieve a single User
 
    .. sourcecode:: js
@@ -418,7 +388,7 @@ User
  
 Versions
 --------
-.. http:get::  /api/v1/version/
+
 
     Retrieve a list of Versions.
 
@@ -446,9 +416,9 @@ Versions
 
 Version
 -------
-.. http:get::  /api/v1/version/{id}
 
-   :arg id: A Version id.
+
+   
 
     Retrieve a single Version.
 
@@ -487,9 +457,9 @@ Find Highest Version
 
     http://readthedocs.org/api/v1/version/pip/highest/?format=json
     
-.. http:get::  /api/v1/version/{id}/highest/
 
-   :arg id: A Version id.
+
+   
 
     Retrieve highest version.
 
@@ -515,9 +485,9 @@ This will allow you to compare whether a certain version is the highest version 
 
     http://readthedocs.org/api/v1/version/pip/highest/0.8/?format=json 
 
-.. http:get::  /api/v1/version/{id}/highest/{version}
 
-   :arg id: A Version id.
+
+   
    :arg version: A Version number or string.
 
     Retrieve highest version.
@@ -541,7 +511,7 @@ File Search
 
     http://readthedocs.org/api/v1/file/search/?format=json&q=virtualenvwrapper
     
-.. http:get::  /api/v1/file/search/?q={search_term}
+
 
    :arg search_term: Perform search with this term.
 
@@ -598,7 +568,7 @@ Anchor Search
 
     http://readthedocs.org/api/v1/file/anchor/?format=json&q=virtualenv
 
-.. http:get::  /api/v1/file/anchor/?q={search_term}
+
 
    :arg search_term: Perform search of files containing anchor text with this term.
 
