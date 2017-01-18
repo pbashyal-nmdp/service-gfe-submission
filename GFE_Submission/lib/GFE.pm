@@ -5,7 +5,7 @@
 
 =head1 SYNOPSIS
 
-    Perl module for converting HLA and KIR sequences
+    Perl module for converting HLA, KIR and ABO sequences
     into gene feature enumeration (GFE) typings.
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>

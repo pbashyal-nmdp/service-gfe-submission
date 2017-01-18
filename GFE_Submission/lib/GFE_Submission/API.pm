@@ -18,6 +18,14 @@ use GFE_Submission::Definitions;
 use Data::Dumper;
 use XML::DOM;
 
+Dancer::Plugin::Swagger->instance->{doc}->{info}{title}             = "Gene Feature Enumeration Service";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{description}       = "Test Description";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{version}           = "1.0.7";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{contact}{name}     = "Mike Halagan";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{contact}{email}    = "mhalagan\@nmdp.org";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{license}{name}     = "GNU GENERAL PUBLIC LICENSE";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{license}{url}      = "https://www.gnu.org/licenses/lgpl.html";
+
 
 =head2 getGfe API Call
 

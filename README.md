@@ -2,7 +2,7 @@
 
 RESTful API and UI for getting GFE results from raw sequence data
 
-[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)[![Coverage Status](https://coveralls.io/repos/github/nmdp-bioinformatics/service-gfe-submission/badge.svg?branch=master)](https://coveralls.io/github/nmdp-bioinformatics/service-gfe-submission?branch=master)[![](https://images.microbadger.com/badges/version/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own version badge on microbadger.com")[![](https://images.microbadger.com/badges/image/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own image badge on microbadger.com")[![License](https://img.shields.io/badge/License-GNU%20General%20Public%20License%20v3.0-blue.svg)]()
+[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)[![Coverage Status](https://coveralls.io/repos/github/nmdp-bioinformatics/service-gfe-submission/badge.svg?branch=master)](https://coveralls.io/github/nmdp-bioinformatics/service-gfe-submission?branch=master)[![Docs Status](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](http://service-gfe-submission.readthedocs.io/en/latest/index.html)[![](https://images.microbadger.com/badges/version/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own version badge on microbadger.com")[![](https://images.microbadger.com/badges/image/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own image badge on microbadger.com")[![License](https://img.shields.io/badge/License-GNU%20General%20Public%20License%20v3.0-blue.svg)]()
 
 The Gene Feature Enumeration (GFE) Submission service provides an API for converting raw sequence data to GFE. It provides both a RESTful API and a simple user interface for converting raw sequence data to GFE results. Sequences can be submitted one at a time or as a fasta file. This service uses [nmdp-bioinformatics/service-feature](https://github.com/nmdp-bioinformatics/service-feature) for encoding the raw sequence data and [nmdp-bioinformatics/HSA](https://github.com/nmdp-bioinformatics/HSA) for aligning the raw sequence data. A public version of this service is available for use at [gfe.b12x.org](http://gfe.b12x.org). Further documentation and tutorials are available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html).
 
@@ -22,7 +22,7 @@ curl --header "Content-type: application/json" --request POST
 http://gfe.b12x.org/api/v1/sequence
 
 # Get GFE from fasta file #
-curl -F "verbose=1" "locus=HLA-A" \
+curl -F "verbose=1" -F "locus=HLA-A" \
 -F "file=@GFE_Submission/public/downloads/FastaTest.fasta" \
 http://gfe.b12x.org/api/v1/fasta
 
