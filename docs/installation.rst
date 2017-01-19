@@ -7,10 +7,6 @@ If you just want to run the service locally, then refer to the documentaiton on 
 Software Requirements
 --------------------------
 
-When we import your documentation, we look at two things first: your *Repository URL* and the *Documentation Type*.
-We will clone your repository,
-and then build your documentation using the *Documentation Type* specified.
-
     * Git
     * Perl
     * Java
@@ -25,9 +21,11 @@ Perl Packages
 
 1) Clone github repository ``git clone ``
 
-2) Change to the directory of the `Makefile.PL`. ``cd service-gfe-sumission/GFE_Submission``
+2) Change to the directory of the `Makefile.PL`. 
+``cd service-gfe-sumission/GFE_Submission``
 
-3) Install cpanm and all the perl dependencies. ``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
+3) Install cpanm and all the perl dependencies. 
+``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
 
 
 ngs-tools
@@ -91,7 +89,10 @@ Installing service-gfe-submission
 
 5) Go to http://localhost:5000 for the GUI and access to the Swagger API.
 
-6) Test with curl. ``curl --header "Content-type: application/json" --request POST --data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' http://localhost:5000/sequence``
+6) Test with curl. 
+``curl --header "Content-type: application/json" --request POST \
+--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+http://localhost:5000/sequence``
 
 
 
