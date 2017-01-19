@@ -37,11 +37,10 @@ The main documentation for the site is organized into a couple sections:
    :maxdepth: 2
    :caption: User Documentation
 
-   gettingstarted
    restcalls
-   swagger
-   tools
    clients
+   tools
+   
 
 .. _feature-docs:
 
@@ -50,8 +49,8 @@ The main documentation for the site is organized into a couple sections:
    :glob:
    :caption: Developer Documentation
 
-   installation
    contributing
+   installation
    docker
 
 
