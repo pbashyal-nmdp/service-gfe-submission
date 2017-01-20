@@ -4,12 +4,12 @@ Clients
 Generating clients with Swagger
 --------------------------------
 
-    | *"`Swagger`_ is a specification and framework implementation 
-    |		for describing, producing, consuming, and visualizing RESTful web services."*
+    | "*Swagger is a specification and framework implementation* 
+    |		*for describing, producing, consuming, and visualizing RESTful web services.*"
 
 Creating new clients is easy when you use the `swagger.yaml` and Swagger autogeneration.
 You can autogenerate clients using the `Swagger editor`_ or by locallying running the `Swagger autogeneration`_ tools.
-Here I'll go through the steps for creating a new client using the GFE service `swagger.yaml` and the `Swagger editor`_.
+Here I'll go through the steps for creating a new client using the GFE service `swagger.yaml` and the *Swagger editor*.
 
 1) Go to the `Swagger editor`_.
 
@@ -17,7 +17,6 @@ Here I'll go through the steps for creating a new client using the GFE service `
 
 3) Click on *Generate Client* and then select the language you would like to use.
 
-.. _Swagger: http://readthedocs.org/
 .. _Swagger editor: http://editor.swagger.io/
 .. _Swagger autogeneration: http://editor.swagger.io/
 .. _raw text: http://editor.swagger.io/

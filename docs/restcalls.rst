@@ -3,18 +3,15 @@ RESTful API
 
 The GFE service is not intended to be used as GUI tool, even though that capability is present.
 This service was built with the intention of exposing RESTful APIs for easy integration with any language and platform.
-
-
-REST Calls
-----------
 Understanding the submission and reponse objects for each API will allow you to better utilize the capabilities of the GFE service.
 One of the best ways to become familiar with each API is to test them out using the Swagger GUI.
 Below I'll walk through each API with specific examples that are available on the Swagger GUI. 
 If you'd like to make some suggestions for changing or updating the Swagger spec, then go to the Swagger hub page and make your suggested change or open a issue on github.
 
+.. tip:: I suggest always using the verbose parameter that way you can see more detailed documentation of any potentail errors.
 
 POST /gfe
-~~~~~~~~~
+----------
 	
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 
@@ -23,20 +20,21 @@ The object model for the gfe API is as follows:
     | **GfeSubmission** {
     |       **feature_url** (string, *optional*),
     |       **locus** (string),
-    | 		**retry** (integer, *optional*),
-    | 		**sequence** (string),
-    | 		**structures** (boolean, *optional*),
-    | 		**verbose** (boolean, *optional*)
+    |       **retry** (integer, *optional*),
+    |       **sequence** (string),
+    |       **structures** (boolean, *optional*),
+    |       **verbose** (boolean, *optional*),
     | }
+    |
 
-At the very minimum you only have you provide a sequence and a locus. 
-I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
+At the very minimum you only have you provide a sequence and a locus.
 The *structures* parameter is for returning each part of the GFE allele.
 By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
 For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
 The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
 Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
 The default is 6 and should only be changed for debugging purposes.
+
 
 Here is an example of a json object that can be posted to the gfe API:
 
@@ -52,19 +50,20 @@ The reponse from the API will either be a GFE json object or an error object.
 The GFE reponse object model is as follows:
 
     | **Gfe** {
-    | 	**aligned** (number, *optional*),
-    | 	**fullgene** (Structure, *optional*),
-    | 	**gfe** (string),
-    | 	**log** (Array[string], *optional*),
-    | 	**structure** (Array[Structure], *optional*),
-    | 	**version** (string)
+    |       **aligned** (number, *optional*),
+    |       **fullgene** (Structure, *optional*),
+    |       **gfe** (string),
+    |       **log** (Array[string], *optional*),
+    |       **structure** (Array[Structure], *optional*),
+    |       **version** (string),
     | }
     | **Structure** {
-    | 	**accession** (integer),
-    | 	**rank** (integer),
-    | 	**sequence** (string),
-    | 	**term** (string)
+    |       **accession** (integer),
+    |       **rank** (integer),
+    |       **sequence** (string),
+    |       **term** (string),
     | }
+    |
 
 If you pass the *verbose* parameter to the API then the *log* field will be populated with the details of the run.
 The reponse will always contain a *fullgene* object, even though the model represents it as optional. 
@@ -195,21 +194,190 @@ Here is the json that would be returned from posting the above json object to th
 
 
 POST /sequence
-~~~~~~~~~~~~~~~~~~
+--------------------
+
+Converting a single sequence to GFE can be done by doing a POST to the gfe API.
+
+The object model for the gfe API is as follows:
+
+    | **SequenceSubmission** {
+    |       **feature_url** (string, *optional*),
+    |       **locus** (string),
+    |       **retry** (integer, *optional*),
+    |       **gfe** (string),
+    |       **structures** (boolean, *optional*),
+    |       **verbose** (boolean, *optional*)
+    | }
+    |
+
+At the very minimum you only have you provide a gfe and a locus. 
+I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
+The *structures* parameter is for returning each part of the GFE allele.
+By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
+For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
+The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
+The default is 6 and should only be changed for debugging purposes.
+
+Here is an example of a json object that can be posted to the gfe API:
 
    .. sourcecode:: js
 
-      {
-          "objects": [
-              "http//django-fab-deploy.readthedocs.io/en/latest/...", 
-              "http//dimagi-deployment-tools.readthedocs.io/en/...", 
-              "http//openblock.readthedocs.io/en/latest/install/base_install.html#virtualenv", 
-              ...
-          ]
-      }
+		{
+		  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+		  "locus": "HLA-A",
+		  "verbose": 1
+		}
+
+
+The reponse from the API will either be a GFE json object or an error object. 
+The GFE reponse object model is as follows:
+
+    | **Sequence** {
+    |       **sequence** (string),
+    |       **log** (Array[string], *optional*),
+    |       **structure** (Array[Structure], *optional*),
+    |       **version** (string)
+    | }
+    | **Structure** {
+    |       **accession** (integer),
+    |       **rank** (integer),
+    |       **sequence** (string),
+    |       **term** (string)
+    | }
+    |
+
+
+Here is the json that would be returned from posting the above json object to the sequence API:
+
+   .. sourcecode:: js
+
+	{
+	  "log": [
+	    "2017/01/20 19:34:30 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+	    "2017/01/20 19:34:30 WARN> GFE.pm:750 GFE::getSequence - Accession is not defined       - GFE:         HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"
+	  ],
+	  "sequence": "TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGA",
+	  "structure": [
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "1",
+	      "sequence": "TCCCCAGACGCCGAGG",
+	      "term": "five_prime_UTR"
+	    },
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "1",
+	      "sequence": "ATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGG",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "7",
+	      "locus": "HLA-A",
+	      "rank": "1",
+	      "sequence": "GTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "20",
+	      "locus": "HLA-A",
+	      "rank": "2",
+	      "sequence": "GCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "10",
+	      "locus": "HLA-A",
+	      "rank": "2",
+	      "sequence": "GTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "32",
+	      "locus": "HLA-A",
+	      "rank": "3",
+	      "sequence": "GTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGG",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "7",
+	      "locus": "HLA-A",
+	      "rank": "3",
+	      "sequence": "GTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "4",
+	      "sequence": "ACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGG",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "4",
+	      "sequence": "GTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "5",
+	      "sequence": "AGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAG",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "6",
+	      "locus": "HLA-A",
+	      "rank": "5",
+	      "sequence": "GTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "6",
+	      "sequence": "ATAGAAAAGGAGGGAGTTACACTCAGGCTGCAA",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "5",
+	      "locus": "HLA-A",
+	      "rank": "6",
+	      "sequence": "GTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "3",
+	      "locus": "HLA-A",
+	      "rank": "7",
+	      "sequence": "GCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAG",
+	      "term": "exon"
+	    },
+	    {
+	      "accession": "5",
+	      "locus": "HLA-A",
+	      "rank": "7",
+	      "sequence": "GTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAG",
+	      "term": "intron"
+	    },
+	    {
+	      "accession": "1",
+	      "locus": "HLA-A",
+	      "rank": "8",
+	      "sequence": "TGTGA",
+	      "term": "exon"
+	    }
+	  ],
+	  "version": "1.1.1"
+	}
+
 
 POST /fasta
-~~~~~~~~~~~~~~~~~~
+--------------------
 
    .. sourcecode:: js
 
@@ -224,7 +392,7 @@ POST /fasta
 
 
 POST /hml
-~~~~~~~~~~~~~~~~~~
+--------------------
 
    .. sourcecode:: js
 
@@ -239,7 +407,7 @@ POST /hml
 
 
 POST /flowhml
-~~~~~~~~~~~~~~~~~~
+--------------------
 
    .. sourcecode:: js
 
@@ -254,5 +422,5 @@ POST /flowhml
 
 
 Error Object
-~~~~~~~~~~~~~
+--------------------
 

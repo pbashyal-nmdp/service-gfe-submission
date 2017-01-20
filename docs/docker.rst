@@ -2,7 +2,7 @@ Docker
 =======
 .. _Docker:
 
-.. note:: Running and installing docker requires sudo access.
+.. note:: Running and installing docker requires sudo access on the machine you're using.
 
 This page walks through how to build the service-gfe-submission docker image and how to run the service.
 To install docker, go to the `Docker homepage`_ and follow the installation process for whatever machine you're using.
@@ -10,7 +10,7 @@ To install docker, go to the `Docker homepage`_ and follow the installation proc
 
 Building Docker Image Locally
 -----------------------------
-.. note:: Only do this if you're making changes to the service and are trying to do some debugging locally.
+Only build the docker image locally if you're making changes to the service and are trying to do some debugging.
 
 .. code-block:: shell
 
@@ -26,8 +26,7 @@ The easiest way to get the service running locally, is to pull an image containi
 
 	docker run -d --name service-gfe-submission -p 5050:8080 service-gfe-submission:latest
 
-.. note:: If you want a particular verison of the GFE service, then you can specify what release version after the name in place of *latest*.
-
+.. tip:: If you want a particular verison of the GFE service, then you can specify what release version after the name in place of *latest*.
 
 
 Running Service
