@@ -28,16 +28,20 @@ If you're looking to investigate the structure of a particular sequence then thi
 If you have a large number of sequence you need to convert to GFE then refer to the *fasta* or *hml* APIs.
 The object model for the gfe API is as follows:
 
-::
+.. raw:: html
 
-	**GfeSubmission** {
-		**feature_url** (string, *optional*),
-		**locus** (string),
-		**retry** (integer, *optional*),
-		**sequence** (string),
-		**structures** (boolean, *optional*),
-		**verbose** (boolean, *optional*) 
+	<div>
+	<pre>
+	<b>GfeSubmission</b>{
+	    <b>feature_url</b> (string, <i>optional</i>),
+	    <b>locus</b> (string),
+	    <b>retry</b> (integer, <i>optional</i>),
+	    <b>sequence</b> (string),
+	    <b>structures</b> (boolean, <i>optional</i>),
+	    <b>verbose</b> (boolean, <i>optional</i>)
 	}
+	</pre>
+	</div>
 
 At the very minimum you only have you provide a sequence and a locus.
 The *structures* parameter is for returning each part of the GFE allele.
@@ -60,22 +64,28 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-::
+.. raw:: html
 
- 	**Gfe** {
-       **aligned** (number, *optional*),
-       **fullgene** (Structure, *optional*),
-       **gfe** (string),
-       **log** (Array[string], *optional*),
-       **structure** (Array[Structure], *optional*),
-       **version** (string) 
-    }
- 	**Structure** {
-       **accession** (integer),
-       **rank** (integer),
-       **sequence** (string),
-       **term** (string) 
-    }
+	<div>
+	<pre>
+	<b>Gfe</b> {
+	    <b>aligned</b> (number, <i>optional</i>),
+	    <b>fullgene</b> (Structure, <i>optional</i>),
+	    <b>gfe</b> (string),
+	    <b>log</b> (Array[string], <i>optional</i>),
+	    <b>structure</b> (Array[Structure], <i>optional</i>),
+	    <b>version</b> (string) 
+	}
+	<b>Structure</b> {
+	    <b>accession</b> (integer),
+	    <b>rank</b> (integer),
+	    <b>sequence</b> (string),
+	    <b>term</b> (string) 
+	}
+	</pre>
+	</div>
+
+
 
 If you pass the *verbose* parameter to the API then the *log* field will be populated with the details of the run.
 The reponse will always contain a *fullgene* object, even though the model represents it as optional. 
@@ -236,13 +246,13 @@ The object model for the gfe API is as follows:
 
 	<div>
 	<pre>
-		<b>SequenceSubmission</b>{<br>
-			<b>feature_url</b> (string, <i>optional<\i>),<br>
-			<b>locus</b> (string),<br>
-			<b>retry</b> (integer, <i>optional<\i>),<br>
-			<b>gfe</b> (string),<br>
-			<b>structures</b> (boolean, <i>optional<\i>),<br>
-			<b>verbose</b> (boolean, <i>optional<\i>)<br>
+		<b>SequenceSubmission</b>{
+			<b>feature_url</b> (string, <i>optional</i>),
+			<b>locus</b> (string),
+			<b>retry</b> (integer, <i>optional</i>),
+			<b>gfe</b> (string),
+			<b>structures</b> (boolean, <i>optional</i>),
+			<b>verbose</b> (boolean, <i>optional</i>)
 		}
 	</pre>
 	</div>
@@ -436,12 +446,12 @@ The object model for the gfe API is as follows:
 	<div>
 	<pre>
 		<b>SequenceSubmission</b>{
-			<b>feature_url</b> (string, <i>optional<\i>),
+			<b>feature_url</b> (string, <i>optional</i>),
 			<b>locus</b> (string),
-			<b>retry</b> (integer, <i>optional<\i>),
-			<b>gfe</b> (string),<br>
-			<b>structures</b> (boolean, <i>optional<\i>),
-			<b>verbose</b> (boolean, <i>optional<\i>)
+			<b>retry</b> (integer, <i>optional</i>),
+			<b>gfe</b> (string),
+			<b>structures</b> (boolean, <i>optional</i>),
+			<b>verbose</b> (boolean, <i>optional</i>)
 		}
 	</pre>
 	</div>
