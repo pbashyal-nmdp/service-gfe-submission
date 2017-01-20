@@ -32,14 +32,14 @@ The object model for the gfe API is as follows:
 
 	<div>
 	<pre>
-	<b>GfeSubmission</b>{
-	    <b>feature_url</b> (string, <i>optional</i>),
-	    <b>locus</b> (string),
-	    <b>retry</b> (integer, <i>optional</i>),
-	    <b>sequence</b> (string),
-	    <b>structures</b> (boolean, <i>optional</i>),
-	    <b>verbose</b> (boolean, <i>optional</i>)
-	}
+		<b>GfeSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>sequence</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
 	</pre>
 	</div>
 
@@ -68,20 +68,20 @@ The GFE reponse object model is as follows:
 
 	<div>
 	<pre>
-	<b>Gfe</b> {
-	    <b>aligned</b> (number, <i>optional</i>),
-	    <b>fullgene</b> (Structure, <i>optional</i>),
-	    <b>gfe</b> (string),
-	    <b>log</b> (Array[string], <i>optional</i>),
-	    <b>structure</b> (Array[Structure], <i>optional</i>),
-	    <b>version</b> (string) 
-	}
-	<b>Structure</b> {
-	    <b>accession</b> (integer),
-	    <b>rank</b> (integer),
-	    <b>sequence</b> (string),
-	    <b>term</b> (string) 
-	}
+		<b>Gfe</b> {
+		    <b>aligned</b> (number, <i>optional</i>),
+		    <b>fullgene</b> (Structure, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>log</b> (Array[string], <i>optional</i>),
+		    <b>structure</b> (Array[Structure], <i>optional</i>),
+		    <b>version</b> (string) 
+		}
+		<b>Structure</b> {
+		    <b>accession</b> (integer),
+		    <b>rank</b> (integer),
+		    <b>sequence</b> (string),
+		    <b>term</b> (string) 
+		}
 	</pre>
 	</div>
 
@@ -247,12 +247,12 @@ The object model for the gfe API is as follows:
 	<div>
 	<pre>
 		<b>SequenceSubmission</b>{
-			<b>feature_url</b> (string, <i>optional</i>),
-			<b>locus</b> (string),
-			<b>retry</b> (integer, <i>optional</i>),
-			<b>gfe</b> (string),
-			<b>structures</b> (boolean, <i>optional</i>),
-			<b>verbose</b> (boolean, <i>optional</i>)
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
 		}
 	</pre>
 	</div>
@@ -285,14 +285,14 @@ The GFE reponse object model is as follows:
 	|		**sequence** (string),
 	|		**log** (Array[string], *optional*),
 	|		**structure** (Array[Structure], *optional*),
-	|		**version** (string) 
-	|	}
+	|		**version** (string)   
+	|	}  
 	|	**Structure** {
 	|		**accession** (integer),
 	|		**rank** (integer),
-	|		**sequence** (string),
+	|		**sequence** (string), 
 	|		**term** (string)
-	|	}
+	|	} \
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
