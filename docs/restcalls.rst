@@ -31,7 +31,7 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div style="font-family: serif;font-size:1em;">
+	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
 		<b>GfeSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -68,7 +68,7 @@ The GFE reponse object model is as follows:
 
 .. raw:: html
 
-	<div style="font-family: monospace;font-size:1em;">
+	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
 		<b>Gfe</b> {
 		    <b>aligned</b> (number, <i>optional</i>),
@@ -249,7 +249,7 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div style="font-family: monospace, serif;font-size:.5em;">
+	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
 		<b>SequenceSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -486,16 +486,18 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
- 	**Sequence** {
-       **sequence** (string),
-       **log** (Array[string], *optional*),
-       **structure** (Array[Structure], *optional*),
-       **version** (string) }
- 	**Structure** {
-       **accession** (integer),
-       **rank** (integer),
-       **sequence** (string),
-       **term** (string) }
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>SequenceSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
+	</pre>
+	</div>
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -508,15 +510,20 @@ POST /hml
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-	**SequenceSubmission** {
-		**feature_url** (string, *optional*),
-		**locus** (string),
-		**retry** (integer, *optional*),
-		**gfe** (string),
-		**structures** (boolean, *optional*),
-		**verbose** (boolean, *optional*)
-	}
+.. raw:: html
 
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>SequenceSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
+	</pre>
+	</div>
 
 At the very minimum you only have you provide a gfe and a locus. 
 I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
@@ -540,16 +547,20 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
- 	**Sequence** {
-       **sequence** (string),
-       **log** (Array[string], *optional*),
-       **structure** (Array[Structure], *optional*),
-       **version** (string) }
- 	**Structure** {
-       **accession** (integer),
-       **rank** (integer),
-       **sequence** (string),
-       **term** (string) }
+.. raw:: html
+
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>SequenceSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
+	</pre>
+	</div>
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -562,14 +573,20 @@ POST /flowhml
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
- 	**SequenceSubmission** {
-       **feature_url** (string, *optional*),
-       **locus** (string),
-       **retry** (integer, *optional*),
-       **gfe** (string),
-       **structures** (boolean, *optional*),
-       **verbose** (boolean, *optional*)}
+.. raw:: html
 
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>SequenceSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
+	</pre>
+	</div>
 
 At the very minimum you only have you provide a gfe and a locus. 
 I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
@@ -593,16 +610,20 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
- 	**Sequence** {
-       **sequence** (string),
-       **log** (Array[string], *optional*),
-       **structure** (Array[Structure], *optional*),
-       **version** (string) }
- 	**Structure** {
-       **accession** (integer),
-       **rank** (integer),
-       **sequence** (string),
-       **term** (string) }
+.. raw:: html
+
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>SequenceSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
+	</pre>
+	</div>
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -615,14 +636,20 @@ Error Object
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
- 	**SequenceSubmission** {
-       **feature_url** (string, *optional*),
-       **locus** (string),
-       **retry** (integer, *optional*),
-       **gfe** (string),
-       **structures** (boolean, *optional*),
-       **verbose** (boolean, *optional*)}
+.. raw:: html
 
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>SequenceSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>gfe</b> (string),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
+		}
+	</pre>
+	</div>
 
 At the very minimum you only have you provide a gfe and a locus. 
 I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
