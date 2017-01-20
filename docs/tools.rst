@@ -12,15 +12,13 @@ Installing Tools
 --------------------------------
 .. note:: Some perl modules will fail to load if you don't have certain software installed. Make sure you have `libssl-dev` installed otherwise *Moose* and *Log4j* will fail to properly install.
 
-1) Clone the github repository 
+1) Clone the github repository. 
 
 2) Change to the client-perl directory with the `Makefile.PL`. 
 
-3) Install cpanm and all the perl dependencies.
-``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
+3) Install cpanm and all the perl dependencies. ``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
 
-4) Run `make test` and `make install`. 
-``perl Makefile.PL && make && make test && make install``
+4) Run `make test` and `make install`. ``perl Makefile.PL && make && make test && make install``
 
 
 Tool Documentation
@@ -30,29 +28,31 @@ Tool Documentation
 seq2gfe
 ~~~~~~~
 
+.. tip:: Use seq2gfe for quickly investigating a particular sequence. Don't try to use it for bulk analysis of sequences.
+
 +---------------+------------------------------------------+
 | **Parameter** | **Description**                          | 
 +---------------+------------------------------------------+
-| -s/--seq      | Convert sequence one at a time to GFE    |
+| -s/--seq      | Raw sequence text, defaults to ``STDIN`` |
 +---------------+------------------------------------------+
-| -u/--uri      | Convert sequences in a fasta file to GFE |
+| -u/--url      | URL for service, default is gfe.b12x.org |
 +---------------+------------------------------------------+
-| -l/--locus    | Convert sequences in a HML file to GFE   | 
+| -l/--locus    | Gene locus                               | 
 +---------------+------------------------------------------+
-| -v/--verbose  | Convert sequences in a HML file to GFE   | 
+| -v/--verbose  | Flag for running in verbose              | 
 +---------------+------------------------------------------+
-| -h/--help     | Convert sequences in a HML file to GFE   | 
+| -h/--help     | Flag for returning the Perl POD          | 
 +---------------+------------------------------------------+
 
 Example commands:
 
 .. code-block:: shell
 
-	curl --header "Content-type: application/json" --request POST \
-	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
-	http://localhost:5000/sequence
+	seq2gfe --seq GACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCT \
+	CTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTACCTGCGCT -l HLA-A > seqtest1.gfe.csv
+	cat GACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGC \
+	GGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTACCTGCGCTCTTGGACCGC | seq2gfe -l HLA-A > seqtest1.gfe.csv
 
-.. tip:: 
 
 fasta2gfe
 ~~~~~~~~~~~~~~
@@ -60,24 +60,23 @@ fasta2gfe
 +---------------+------------------------------------------+
 | **Parameter** | **Description**                          | 
 +---------------+------------------------------------------+
-| -s/--seq      | Convert sequence one at a time to GFE    |
+| -f/--fasta    | Fasta file, defaults to ``STDIN``        |
 +---------------+------------------------------------------+
-| -u/--uri      | Convert sequences in a fasta file to GFE |
+| -u/--url      | URL for service, default is gfe.b12x.org |
 +---------------+------------------------------------------+
-| -l/--locus    | Convert sequences in a HML file to GFE   | 
+| -l/--locus    | Gene locus                               | 
 +---------------+------------------------------------------+
-| -v/--verbose  | Convert sequences in a HML file to GFE   | 
+| -v/--verbose  | Flag for running in verbose              | 
 +---------------+------------------------------------------+
-| -h/--help     | Convert sequences in a HML file to GFE   | 
+| -h/--help     | Flag for returning the Perl POD          | 
 +---------------+------------------------------------------+
 
 Example commands:
 
 .. code-block:: shell
 
-	curl --header "Content-type: application/json" --request POST \
-	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
-	http://localhost:5000/sequence
+	fasta2gfe --fasta t/resources/fastatest1.fasta -l HLA-A > fastatest1.gfe.csv
+	cat t/resources/fastatest1.fasta | fasta2gfe -l HLA-A > fastatest1.gfe.csv
 
 
 hml2gfe
@@ -86,22 +85,21 @@ hml2gfe
 +---------------+------------------------------------------+
 | **Parameter** | **Description**                          | 
 +---------------+------------------------------------------+
-| -s/--seq      | Convert sequence one at a time to GFE    |
+| -i/--input    | Input HML File                           |
 +---------------+------------------------------------------+
-| -u/--uri      | Convert sequences in a fasta file to GFE |
+| -u/--url      | URL for service, default is gfe.b12x.org |
 +---------------+------------------------------------------+
-| -l/--locus    | Convert sequences in a HML file to GFE   | 
+| -m/--hml      | Flag for returning results in HML file   | 
 +---------------+------------------------------------------+
-| -v/--verbose  | Convert sequences in a HML file to GFE   | 
+| -v/--verbose  | Flag for running in verbose              | 
 +---------------+------------------------------------------+
-| -h/--help     | Convert sequences in a HML file to GFE   | 
+| -h/--help     | Flag for returning the Perl POD          | 
 +---------------+------------------------------------------+
 
 Example commands:
 
 .. code-block:: shell
 
-	curl --header "Content-type: application/json" --request POST \
-	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
-	http://localhost:5000/sequence
+	hml2gfe --input t/resources/hmltest1.HML > hmltest1.gfe.csv
+	hml2gfe --input t/resources/hmltest1.HML --hml > hmltest1.gfe.HML
 

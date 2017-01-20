@@ -1,6 +1,14 @@
 RESTful API
 =========================
 
+* `POST /gfe`_
+* `POST /sequence`_
+* `POST /fasta`_
+* `POST /hml`_
+* `POST /flowhml`_
+* `Error Object`_
+
+
 The GFE service is not intended to be used as GUI tool, even though that capability is present.
 This service was built with the intention of exposing RESTful APIs for easy integration with any language and platform.
 One of the best ways to become familiar with each API is to test them out using the Swagger GUI.
@@ -9,12 +17,6 @@ If you'd like to make some suggestions for changing or updating the Swagger spec
 
 .. tip:: I suggest always using the verbose parameter that way you can see more detailed documentation of any potentail errors.
 
-* `POST /gfe`_
-* `POST /sequence`_
-* `POST /fasta`_
-* `POST /hml`_
-* `POST /flowhml`_
-* `Error Object`_
 
 .. _POST /gfe:
 
@@ -26,14 +28,13 @@ If you're looking to investigate the structure of a particular sequence then thi
 If you have a large number of sequence you need to convert to GFE then refer to the *fasta* or *hml* APIs.
 The object model for the gfe API is as follows:
 
-    | **GfeSubmission** {
-    |       **feature_url** (string, *optional*),
-    |       **locus** (string),
-    |       **retry** (integer, *optional*),
-    |       **sequence** (string),
-    |       **structures** (boolean, *optional*),
-    |       **verbose** (boolean, *optional*)
-    | \}
+| 	**GfeSubmission** {
+|       **feature_url** (string, *optional*),
+|       **locus** (string),
+|       **retry** (integer, *optional*),
+|       **sequence** (string),
+|       **structures** (boolean, *optional*),
+|       **verbose** (boolean, *optional*) }
 
 At the very minimum you only have you provide a sequence and a locus.
 The *structures* parameter is for returning each part of the GFE allele.
@@ -46,30 +47,28 @@ Here is an example of a json object that can be posted to the gfe API:
 
    .. sourcecode:: js
 
-		{
-		  "locus": "HLA-A",
-		  "verbose":1,
-		  "sequence": "TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG"
-		}
+	{
+	  "locus": "HLA-A",
+	  "verbose":1,
+	  "sequence": "TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG"
+	}
 
 
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-    | **Gfe** {
-    |       **aligned** (number, *optional*),
-    |       **fullgene** (Structure, *optional*),
-    |       **gfe** (string),
-    |       **log** (Array[string], *optional*),
-    |       **structure** (Array[Structure], *optional*),
-    |       **version** (string),
-    | \}
-    | **Structure** {
-    |       **accession** (integer),
-    |       **rank** (integer),
-    |       **sequence** (string),
-    |       **term** (string)
-    | \}
+| 	**Gfe** {
+|       **aligned** (number, *optional*),
+|       **fullgene** (Structure, *optional*),
+|       **gfe** (string),
+|       **log** (Array[string], *optional*),
+|       **structure** (Array[Structure], *optional*),
+|       **version** (string) }
+| 	**Structure** {
+|       **accession** (integer),
+|       **rank** (integer),
+|       **sequence** (string),
+|       **term** (string) }
 
 If you pass the *verbose* parameter to the API then the *log* field will be populated with the details of the run.
 The reponse will always contain a *fullgene* object, even though the model represents it as optional. 
@@ -79,6 +78,7 @@ If there is a large insertion or deletion in the submitted sequence, the *aligne
 Here is the json that would be returned from posting the above json object to the gfe API:
 
    .. sourcecode:: js
+
 	{
 	  "aligned": "1.000",
 	  "fullgene": {
@@ -225,15 +225,14 @@ POST /sequence
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-    | **SequenceSubmission** {
-    |       **feature_url** (string, *optional*),
-    |       **locus** (string),
-    |       **retry** (integer, *optional*),
-    |       **gfe** (string),
-    |       **structures** (boolean, *optional*),
-    |       **verbose** (boolean, *optional*)
-    | \}
-    |
+| 	**SequenceSubmission** {
+|       **feature_url** (string, *optional*),
+|       **locus** (string),
+|       **retry** (integer, *optional*),
+|       **gfe** (string),
+|       **structures** (boolean, *optional*),
+|       **verbose** (boolean, *optional*)}
+
 
 At the very minimum you only have you provide a gfe and a locus. 
 I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
@@ -257,20 +256,16 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-    | **Sequence** {
-    |       **sequence** (string),
-    |       **log** (Array[string], *optional*),
-    |       **structure** (Array[Structure], *optional*),
-    |       **version** (string)
-    | }
-    | **Structure** {
-    |       **accession** (integer),
-    |       **rank** (integer),
-    |       **sequence** (string),
-    |       **term** (string)
-    | }
-    |
-
+| 	**Sequence** {
+|       **sequence** (string),
+|       **log** (Array[string], *optional*),
+|       **structure** (Array[Structure], *optional*),
+|       **version** (string) }
+| 	**Structure** {
+|       **accession** (integer),
+|       **rank** (integer),
+|       **sequence** (string),
+|       **term** (string) }
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -415,51 +410,209 @@ You can generate the above json by running the following ``curl`` command:
 POST /fasta
 --------------------
 
+
+Converting a single sequence to GFE can be done by doing a POST to the gfe API.
+The object model for the gfe API is as follows:
+
+| 	**SequenceSubmission** {
+|       **feature_url** (string, *optional*),
+|       **locus** (string),
+|       **retry** (integer, *optional*),
+|       **gfe** (string),
+|       **structures** (boolean, *optional*),
+|       **verbose** (boolean, *optional*)}
+
+
+At the very minimum you only have you provide a gfe and a locus. 
+I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
+The *structures* parameter is for returning each part of the GFE allele.
+By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
+For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
+The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
+The default is 6 and should only be changed for debugging purposes.
+Here is an example of a json object that can be posted to the gfe API:
+
    .. sourcecode:: js
 
-      {
-          "objects": [
-              "http//django-fab-deploy.readthedocs.io/en/latest/...", 
-              "http//dimagi-deployment-tools.readthedocs.io/en/...", 
-              "http//openblock.readthedocs.io/en/latest/install/base_install.html#virtualenv", 
-              ...
-          ]
-      }
+	{
+	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+	  "locus": "HLA-A",
+	  "verbose": 1
+	}
+
+
+The reponse from the API will either be a GFE json object or an error object. 
+The GFE reponse object model is as follows:
+
+| 	**Sequence** {
+|       **sequence** (string),
+|       **log** (Array[string], *optional*),
+|       **structure** (Array[Structure], *optional*),
+|       **version** (string) }
+| 	**Structure** {
+|       **accession** (integer),
+|       **rank** (integer),
+|       **sequence** (string),
+|       **term** (string) }
+
+Here is the json that would be returned from posting the above json object to the sequence API:
 
 .. _POST /hml:
 
 POST /hml
 --------------------
 
+
+Converting a single sequence to GFE can be done by doing a POST to the gfe API.
+The object model for the gfe API is as follows:
+
+| 	**SequenceSubmission** {
+|       **feature_url** (string, *optional*),
+|       **locus** (string),
+|       **retry** (integer, *optional*),
+|       **gfe** (string),
+|       **structures** (boolean, *optional*),
+|       **verbose** (boolean, *optional*)}
+
+
+At the very minimum you only have you provide a gfe and a locus. 
+I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
+The *structures* parameter is for returning each part of the GFE allele.
+By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
+For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
+The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
+The default is 6 and should only be changed for debugging purposes.
+Here is an example of a json object that can be posted to the gfe API:
+
    .. sourcecode:: js
 
-      {
-          "objects": [
-              "http//django-fab-deploy.readthedocs.io/en/latest/...", 
-              "http//dimagi-deployment-tools.readthedocs.io/en/...", 
-              "http//openblock.readthedocs.io/en/latest/install/base_install.html#virtualenv", 
-              ...
-          ]
-      }
+	{
+	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+	  "locus": "HLA-A",
+	  "verbose": 1
+	}
+
+
+The reponse from the API will either be a GFE json object or an error object. 
+The GFE reponse object model is as follows:
+
+| 	**Sequence** {
+|       **sequence** (string),
+|       **log** (Array[string], *optional*),
+|       **structure** (Array[Structure], *optional*),
+|       **version** (string) }
+| 	**Structure** {
+|       **accession** (integer),
+|       **rank** (integer),
+|       **sequence** (string),
+|       **term** (string) }
+
+Here is the json that would be returned from posting the above json object to the sequence API:
 
 .. _POST /flowhml:
 
 POST /flowhml
 --------------------
 
+
+Converting a single sequence to GFE can be done by doing a POST to the gfe API.
+The object model for the gfe API is as follows:
+
+| 	**SequenceSubmission** {
+|       **feature_url** (string, *optional*),
+|       **locus** (string),
+|       **retry** (integer, *optional*),
+|       **gfe** (string),
+|       **structures** (boolean, *optional*),
+|       **verbose** (boolean, *optional*)}
+
+
+At the very minimum you only have you provide a gfe and a locus. 
+I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
+The *structures* parameter is for returning each part of the GFE allele.
+By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
+For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
+The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
+The default is 6 and should only be changed for debugging purposes.
+Here is an example of a json object that can be posted to the gfe API:
+
    .. sourcecode:: js
 
-      {
-          "objects": [
-              "http//django-fab-deploy.readthedocs.io/en/latest/...", 
-              "http//dimagi-deployment-tools.readthedocs.io/en/...", 
-              "http//openblock.readthedocs.io/en/latest/install/base_install.html#virtualenv", 
-              ...
-          ]
-      }
+	{
+	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+	  "locus": "HLA-A",
+	  "verbose": 1
+	}
+
+
+The reponse from the API will either be a GFE json object or an error object. 
+The GFE reponse object model is as follows:
+
+| 	**Sequence** {
+|       **sequence** (string),
+|       **log** (Array[string], *optional*),
+|       **structure** (Array[Structure], *optional*),
+|       **version** (string) }
+| 	**Structure** {
+|       **accession** (integer),
+|       **rank** (integer),
+|       **sequence** (string),
+|       **term** (string) }
+
+Here is the json that would be returned from posting the above json object to the sequence API:
 
 .. _Error Object:
 
 Error Object
 --------------------
 
+
+Converting a single sequence to GFE can be done by doing a POST to the gfe API.
+The object model for the gfe API is as follows:
+
+| 	**SequenceSubmission** {
+|       **feature_url** (string, *optional*),
+|       **locus** (string),
+|       **retry** (integer, *optional*),
+|       **gfe** (string),
+|       **structures** (boolean, *optional*),
+|       **verbose** (boolean, *optional*)}
+
+
+At the very minimum you only have you provide a gfe and a locus. 
+I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
+The *structures* parameter is for returning each part of the GFE allele.
+By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
+For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
+The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
+The default is 6 and should only be changed for debugging purposes.
+Here is an example of a json object that can be posted to the gfe API:
+
+   .. sourcecode:: js
+
+	{
+	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+	  "locus": "HLA-A",
+	  "verbose": 1
+	}
+
+
+The reponse from the API will either be a GFE json object or an error object. 
+The GFE reponse object model is as follows:
+
+| 	**Sequence** {
+|       **sequence** (string),
+|       **log** (Array[string], *optional*),
+|       **structure** (Array[Structure], *optional*),
+|       **version** (string) }
+| 	**Structure** {
+|       **accession** (integer),
+|       **rank** (integer),
+|       **sequence** (string),
+|       **term** (string) }
+
+Here is the json that would be returned from posting the above json object to the sequence API:

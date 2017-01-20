@@ -9,7 +9,7 @@ Swagger
 
 Creating new clients is easy when you use the `swagger.yaml` and Swagger autogeneration.
 You can autogenerate clients using the `Swagger editor`_ or by locallying running the `Swagger autogeneration`_ tools.
-Here I'll go through the steps for creating a new client using the GFE service `swagger.yaml` and the *Swagger editor*.
+I'll go through the steps for creating a new client using the GFE service `swagger.yaml` and the *Swagger editor*.
 
 1) Go to the `Swagger editor`_.
 
