@@ -95,7 +95,7 @@ sub getGfe{
     $client->addHeader('Accept', 'application/json');
 
     # List of haplotypes based on the first population
-    $client->POST('/api/v1/gfe', $json_request, {});
+    $client->POST('/gfe', $json_request, {});
 
     my $json_response = $client->responseContent;
     my $response = JSON::from_json($json_response);
@@ -114,7 +114,7 @@ sub getGfeFasta{
 
     my $ua = LWP::UserAgent->new;
     my $json_response = $ua->request(
-        POST $self->{gfe_url}."/api/v1/fasta",
+        POST $self->{gfe_url}."/fasta",
             Content_Type => 'form-data',
             Content => [
                 file => [ $s_fasta ],
@@ -139,7 +139,7 @@ sub getGfeHml{
 
     my $ua = LWP::UserAgent->new;
     my $api_response = $ua->request(
-        POST $self->{gfe_url}."/api/v1/hml",
+        POST $self->{gfe_url}."/hml",
             Content_Type => 'form-data',
             Content => [
                 file       => [ $s_hml ],

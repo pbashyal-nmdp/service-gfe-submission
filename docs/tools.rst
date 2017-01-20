@@ -1,76 +1,106 @@
 Tools
 =====
 
+In the client-perl directory there are three command line tools available. 
 
-+-------------------------+--------------------------------------------------+----------------------------------------------------------------+
-| Tool                    | Description                                      | Example Commands                                               |
-+-------------------------+--------------------------------------------------+----------------------------------------------------------------+
-| `seq2gfe`               | Whether the build is running inside RTD          | ``seq2gfe --seq GACGGCAA... -l HLA-A > seqtest1.gfe.csv``      |
-+-------------------------+--------------------------------------------------+----------------------------------------------------------------+
-| `fasta2gfe`             | The RTD name of the version which is being built | ``fasta2gfe --fasta test.fasta -l HLA-A > fastatest1.gfe.csv`` |
-+-------------------------+--------------------------------------------------+----------------------------------------------------------------+
-| `hml2gfe`               | The RTD name of the project which is being built | ``hml2gfe --input hmltest1.HML --hml > hmltest1.gfe.HML``      |
-+-------------------------+--------------------------------------------------+----------------------------------------------------------------+
-
+Three `Perl` based tools are available in the client-perl directory in the GFE Service repository. 
+When running these tools you can specify which `feature-service` and `gfe-service` to use. 
+Without specifying they default to [feature.nmdp-bioinformatics.org](feature.nmdp-bioinformatics.org) and [gfe.b12x.org](https://gfe.b12x.org).
 
 Installing Tools
 --------------------------------
+.. note:: Some perl modules will fail to load if you don't have certain software installed. Make sure you have `libssl-dev` installed otherwise *Moose* and *Log4j* will fail to properly install.
 
-1) Clone github repository 
-``git clone https://github.com/nmdp-bioinformatics/service-gfe-submission``
+1) Clone the github repository 
 
 2) Change to the client-perl directory with the `Makefile.PL`. 
-``cd service-gfe-sumission/client-perl``
 
-3) Install cpanm and all the perl dependencies. 
+3) Install cpanm and all the perl dependencies.
 ``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
 
 4) Run `make test` and `make install`. 
 ``perl Makefile.PL && make && make test && make install``
 
-seq2gfe
+
+Tool Documentation
 --------------------------------
 
- -s/--seq
++-------------+------------------------------------------+----------------------------------------------------------------+
+| **Tool**    | **Description**                          | **Example Commands**                                           |
++-------------+------------------------------------------+----------------------------------------------------------------+
+| `seq2gfe`   | Convert sequence one at a time to GFE    | ``seq2gfe --seq GACGGCAA... -l HLA-A > seqtest1.gfe.csv``      |
++-------------+------------------------------------------+----------------------------------------------------------------+
+| `fasta2gfe` | Convert sequences in a fasta file to GFE | ``fasta2gfe --fasta test.fasta -l HLA-A > fastatest1.gfe.csv`` |
++-------------+------------------------------------------+----------------------------------------------------------------+
+| `hml2gfe`   | Convert sequences in a HML file to GFE   | ``hml2gfe --input hmltest1.HML --hml > hmltest1.gfe.HML``      |
++-------------+------------------------------------------+----------------------------------------------------------------+
+
+
+seq2gfe
+~~~~~~~
+
+--seq
 	Sequence ** STDIN **
- -u/--uri
+--uri
 	URI of feature service
- -l/--locus
+--locus
 	HLA-Locus
- -v/--verbose
+--verbose
 	Flag for running in verbose
- -h/--help
+--help
  	Flag for returning perldoc
 
+-s/--seq   Output all.
+-b         Output both (this description is
+           quite long).
+-c arg     Output just arg.
+--long     Output all day long.
 
+-u/--uri   This option has two paragraphs in the description.
+           This is the first.
+
+           This is the second.  Blank lines may be omitted between
+           options (as above) or left in (as here and below).
+
+-p         This option has two paragraphs in the description.
+           This is the first.
+
+           This is the second.  Blank lines may be omitted between
+           options (as above) or left in (as here and below).
+
+-p         This option has two paragraphs in the description.
+           This is the first.
+
+           This is the second.  Blank lines may be omitted between
+           options (as above) or left in (as here and below).          
 
 fasta2gfe
---------------------------------
+~~~~~~~~~~~~~~
 
- -f/--fasta
+--fasta
 	Fasta file ** STDIN **
- -u/--uri
+--uri
 	URI of feature service
- -l/--locus
+--locus
 	HLA-Locus
- -v/--verbose
+--verbose
 	Flag for running in verbose
- -h/--help
+--help
  	Flag for returning perldoc
 
 
 hml2gfe
---------------------------------
+~~~~~~~~~~~~~~
 
- -i/--input
+ --input
 	HML file
- -u/--uri
+ --uri
 	URI of feature service
- -m/--hml
+ --hml
 	flag for returning HML
- -v/--verbose
+ --verbose
 	Flag for running in verbose
- -h/--help
+ --help
  	Flag for returning perldoc
 
 
