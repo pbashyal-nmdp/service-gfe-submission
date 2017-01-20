@@ -2,7 +2,7 @@ Installation
 =============
 
 The following instructions are for installing and running the service locally for development purposes.
-If you just want to run the service locally, then refer to the documentaiton on running the _Docker image instead.
+If you just want to run the service locally, then refer to the documentaiton on running the `Docker`_ image instead.
 
 Software Requirements
 --------------------------

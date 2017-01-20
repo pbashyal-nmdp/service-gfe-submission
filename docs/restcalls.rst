@@ -1,6 +1,12 @@
 RESTful API
 =========================
 
+The GFE service is not intended to be used as GUI tool, even though that capability is present.
+This service was built with the intention of exposing RESTful APIs for easy integration with any language and platform.
+One of the best ways to become familiar with each API is to test them out using the Swagger GUI.
+Below I'll walk through each API with specific examples that are available on the Swagger GUI. 
+If you'd like to make some suggestions for changing or updating the Swagger spec, then go to the Swagger hub page and make your suggested change or open a issue on github.
+
 * `POST /gfe`_
 * `POST /sequence`_
 * `POST /fasta`_
@@ -8,12 +14,6 @@ RESTful API
 * `POST /flowhml`_
 * `Error Object`_
 
-
-The GFE service is not intended to be used as GUI tool, even though that capability is present.
-This service was built with the intention of exposing RESTful APIs for easy integration with any language and platform.
-One of the best ways to become familiar with each API is to test them out using the Swagger GUI.
-Below I'll walk through each API with specific examples that are available on the Swagger GUI. 
-If you'd like to make some suggestions for changing or updating the Swagger spec, then go to the Swagger hub page and make your suggested change or open a issue on github.
 
 .. tip:: I suggest always using the verbose parameter that way you can see more detailed documentation of any potentail errors.
 
@@ -28,13 +28,16 @@ If you're looking to investigate the structure of a particular sequence then thi
 If you have a large number of sequence you need to convert to GFE then refer to the *fasta* or *hml* APIs.
 The object model for the gfe API is as follows:
 
-| 	**GfeSubmission** {
-|       **feature_url** (string, *optional*),
-|       **locus** (string),
-|       **retry** (integer, *optional*),
-|       **sequence** (string),
-|       **structures** (boolean, *optional*),
-|       **verbose** (boolean, *optional*) }
+::
+
+	**GfeSubmission** {
+		**feature_url** (string, *optional*),
+		**locus** (string),
+		**retry** (integer, *optional*),
+		**sequence** (string),
+		**structures** (boolean, *optional*),
+		**verbose** (boolean, *optional*) 
+	}
 
 At the very minimum you only have you provide a sequence and a locus.
 The *structures* parameter is for returning each part of the GFE allele.
@@ -57,18 +60,22 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-| 	**Gfe** {
-|       **aligned** (number, *optional*),
-|       **fullgene** (Structure, *optional*),
-|       **gfe** (string),
-|       **log** (Array[string], *optional*),
-|       **structure** (Array[Structure], *optional*),
-|       **version** (string) }
-| 	**Structure** {
-|       **accession** (integer),
-|       **rank** (integer),
-|       **sequence** (string),
-|       **term** (string) }
+::
+
+ 	**Gfe** {
+       **aligned** (number, *optional*),
+       **fullgene** (Structure, *optional*),
+       **gfe** (string),
+       **log** (Array[string], *optional*),
+       **structure** (Array[Structure], *optional*),
+       **version** (string) 
+    }
+ 	**Structure** {
+       **accession** (integer),
+       **rank** (integer),
+       **sequence** (string),
+       **term** (string) 
+    }
 
 If you pass the *verbose* parameter to the API then the *log* field will be populated with the details of the run.
 The reponse will always contain a *fullgene* object, even though the model represents it as optional. 
@@ -225,13 +232,16 @@ POST /sequence
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-| 	**SequenceSubmission** {
-|       **feature_url** (string, *optional*),
-|       **locus** (string),
-|       **retry** (integer, *optional*),
-|       **gfe** (string),
-|       **structures** (boolean, *optional*),
-|       **verbose** (boolean, *optional*)}
+::
+
+ 	**SequenceSubmission** {
+       **feature_url** (string, *optional*),
+       **locus** (string),
+       **retry** (integer, *optional*),
+       **gfe** (string),
+       **structures** (boolean, *optional*),
+       **verbose** (boolean, *optional*)
+    }
 
 
 At the very minimum you only have you provide a gfe and a locus. 
@@ -256,16 +266,18 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-| 	**Sequence** {
-|       **sequence** (string),
-|       **log** (Array[string], *optional*),
-|       **structure** (Array[Structure], *optional*),
-|       **version** (string) }
-| 	**Structure** {
-|       **accession** (integer),
-|       **rank** (integer),
-|       **sequence** (string),
-|       **term** (string) }
+	|	**Sequence** {
+	|		**sequence** (string),
+	|		**log** (Array[string], *optional*),
+	|		**structure** (Array[Structure], *optional*),
+	|		**version** (string) 
+	|	}
+	|	**Structure** {
+	|		**accession** (integer),
+	|		**rank** (integer),
+	|		**sequence** (string),
+	|		**term** (string)
+	|	}
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -414,13 +426,15 @@ POST /fasta
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-| 	**SequenceSubmission** {
-|       **feature_url** (string, *optional*),
-|       **locus** (string),
-|       **retry** (integer, *optional*),
-|       **gfe** (string),
-|       **structures** (boolean, *optional*),
-|       **verbose** (boolean, *optional*)}
+
+	**SequenceSubmission** {
+	   **feature_url** (string, *optional*),
+	   **locus** (string),
+	   **retry** (integer, *optional*),
+	   **gfe** (string),
+	   **structures** (boolean, *optional*),
+	   **verbose** (boolean, *optional*)
+	}
 
 
 At the very minimum you only have you provide a gfe and a locus. 
@@ -445,16 +459,16 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-| 	**Sequence** {
-|       **sequence** (string),
-|       **log** (Array[string], *optional*),
-|       **structure** (Array[Structure], *optional*),
-|       **version** (string) }
-| 	**Structure** {
-|       **accession** (integer),
-|       **rank** (integer),
-|       **sequence** (string),
-|       **term** (string) }
+ 	**Sequence** {
+       **sequence** (string),
+       **log** (Array[string], *optional*),
+       **structure** (Array[Structure], *optional*),
+       **version** (string) }
+ 	**Structure** {
+       **accession** (integer),
+       **rank** (integer),
+       **sequence** (string),
+       **term** (string) }
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -467,13 +481,14 @@ POST /hml
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-| 	**SequenceSubmission** {
-|       **feature_url** (string, *optional*),
-|       **locus** (string),
-|       **retry** (integer, *optional*),
-|       **gfe** (string),
-|       **structures** (boolean, *optional*),
-|       **verbose** (boolean, *optional*)}
+	**SequenceSubmission** {
+		**feature_url** (string, *optional*),
+		**locus** (string),
+		**retry** (integer, *optional*),
+		**gfe** (string),
+		**structures** (boolean, *optional*),
+		**verbose** (boolean, *optional*)
+	}
 
 
 At the very minimum you only have you provide a gfe and a locus. 
@@ -498,16 +513,16 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-| 	**Sequence** {
-|       **sequence** (string),
-|       **log** (Array[string], *optional*),
-|       **structure** (Array[Structure], *optional*),
-|       **version** (string) }
-| 	**Structure** {
-|       **accession** (integer),
-|       **rank** (integer),
-|       **sequence** (string),
-|       **term** (string) }
+ 	**Sequence** {
+       **sequence** (string),
+       **log** (Array[string], *optional*),
+       **structure** (Array[Structure], *optional*),
+       **version** (string) }
+ 	**Structure** {
+       **accession** (integer),
+       **rank** (integer),
+       **sequence** (string),
+       **term** (string) }
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -520,13 +535,13 @@ POST /flowhml
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-| 	**SequenceSubmission** {
-|       **feature_url** (string, *optional*),
-|       **locus** (string),
-|       **retry** (integer, *optional*),
-|       **gfe** (string),
-|       **structures** (boolean, *optional*),
-|       **verbose** (boolean, *optional*)}
+ 	**SequenceSubmission** {
+       **feature_url** (string, *optional*),
+       **locus** (string),
+       **retry** (integer, *optional*),
+       **gfe** (string),
+       **structures** (boolean, *optional*),
+       **verbose** (boolean, *optional*)}
 
 
 At the very minimum you only have you provide a gfe and a locus. 
@@ -551,16 +566,16 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-| 	**Sequence** {
-|       **sequence** (string),
-|       **log** (Array[string], *optional*),
-|       **structure** (Array[Structure], *optional*),
-|       **version** (string) }
-| 	**Structure** {
-|       **accession** (integer),
-|       **rank** (integer),
-|       **sequence** (string),
-|       **term** (string) }
+ 	**Sequence** {
+       **sequence** (string),
+       **log** (Array[string], *optional*),
+       **structure** (Array[Structure], *optional*),
+       **version** (string) }
+ 	**Structure** {
+       **accession** (integer),
+       **rank** (integer),
+       **sequence** (string),
+       **term** (string) }
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -573,13 +588,13 @@ Error Object
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-| 	**SequenceSubmission** {
-|       **feature_url** (string, *optional*),
-|       **locus** (string),
-|       **retry** (integer, *optional*),
-|       **gfe** (string),
-|       **structures** (boolean, *optional*),
-|       **verbose** (boolean, *optional*)}
+ 	**SequenceSubmission** {
+       **feature_url** (string, *optional*),
+       **locus** (string),
+       **retry** (integer, *optional*),
+       **gfe** (string),
+       **structures** (boolean, *optional*),
+       **verbose** (boolean, *optional*)}
 
 
 At the very minimum you only have you provide a gfe and a locus. 
@@ -604,15 +619,15 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-| 	**Sequence** {
-|       **sequence** (string),
-|       **log** (Array[string], *optional*),
-|       **structure** (Array[Structure], *optional*),
-|       **version** (string) }
-| 	**Structure** {
-|       **accession** (integer),
-|       **rank** (integer),
-|       **sequence** (string),
-|       **term** (string) }
+ 	|**Sequence** {
+    |   **sequence** (string),
+    |   **log** (Array[string], *optional*),
+    |   **structure** (Array[Structure], *optional*),
+    |   **version** (string) }
+ 	|**Structure** {
+    |   **accession** (integer),
+    |   **rank** (integer),
+    |   **sequence** (string),
+    |   **term** (string) }
 
 Here is the json that would be returned from posting the above json object to the sequence API:
