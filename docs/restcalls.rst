@@ -232,16 +232,21 @@ POST /sequence
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
-::
+.. raw:: html
 
- 	**SequenceSubmission** {
-       **feature_url** (string, *optional*),
-       **locus** (string),
-       **retry** (integer, *optional*),
-       **gfe** (string),
-       **structures** (boolean, *optional*),
-       **verbose** (boolean, *optional*)
-    }
+<div>
+<pre>
+	<b>SequenceSubmission</b>{<br>
+		<b>feature_url</b> (string, <i>optional<\i>),<br>
+		<b>locus</b> (string),<br>
+		<b>retry</b> (integer, <i>optional<\i>),<br>
+		<b>gfe</b> (string),<br>
+		<b>structures</b> (boolean, <i>optional<\i>),<br>
+		<b>verbose</b> (boolean, <i>optional<\i>)<br>
+	}
+</pre>
+</div>
+
 
 
 At the very minimum you only have you provide a gfe and a locus. 
@@ -426,15 +431,20 @@ POST /fasta
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
+.. raw:: html
 
-	**SequenceSubmission** {
-	   **feature_url** (string, *optional*),
-	   **locus** (string),
-	   **retry** (integer, *optional*),
-	   **gfe** (string),
-	   **structures** (boolean, *optional*),
-	   **verbose** (boolean, *optional*)
+<div>
+<pre>
+	<b>SequenceSubmission</b>{<br>
+		<b>feature_url</b> (string, <i>optional<\i>),<br>
+		<b>locus</b> (string),<br>
+		<b>retry</b> (integer, <i>optional<\i>),<br>
+		<b>gfe</b> (string),<br>
+		<b>structures</b> (boolean, <i>optional<\i>),<br>
+		<b>verbose</b> (boolean, <i>optional<\i>)<br>
 	}
+</pre>
+</div>
 
 
 At the very minimum you only have you provide a gfe and a locus. 
