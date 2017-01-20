@@ -234,18 +234,18 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-<div>
-<pre>
-	<b>SequenceSubmission</b>{<br>
-		<b>feature_url</b> (string, <i>optional<\i>),<br>
-		<b>locus</b> (string),<br>
-		<b>retry</b> (integer, <i>optional<\i>),<br>
-		<b>gfe</b> (string),<br>
-		<b>structures</b> (boolean, <i>optional<\i>),<br>
-		<b>verbose</b> (boolean, <i>optional<\i>)<br>
-	}
-</pre>
-</div>
+	<div>
+	<pre>
+		<b>SequenceSubmission</b>{<br>
+			<b>feature_url</b> (string, <i>optional<\i>),<br>
+			<b>locus</b> (string),<br>
+			<b>retry</b> (integer, <i>optional<\i>),<br>
+			<b>gfe</b> (string),<br>
+			<b>structures</b> (boolean, <i>optional<\i>),<br>
+			<b>verbose</b> (boolean, <i>optional<\i>)<br>
+		}
+	</pre>
+	</div>
 
 
 
@@ -433,18 +433,18 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-<div>
-<pre>
-	<b>SequenceSubmission</b>{<br>
-		<b>feature_url</b> (string, <i>optional<\i>),<br>
-		<b>locus</b> (string),<br>
-		<b>retry</b> (integer, <i>optional<\i>),<br>
-		<b>gfe</b> (string),<br>
-		<b>structures</b> (boolean, <i>optional<\i>),<br>
-		<b>verbose</b> (boolean, <i>optional<\i>)<br>
-	}
-</pre>
-</div>
+	<div>
+	<pre>
+		<b>SequenceSubmission</b>{
+			<b>feature_url</b> (string, <i>optional<\i>),
+			<b>locus</b> (string),
+			<b>retry</b> (integer, <i>optional<\i>),
+			<b>gfe</b> (string),<br>
+			<b>structures</b> (boolean, <i>optional<\i>),
+			<b>verbose</b> (boolean, <i>optional<\i>)
+		}
+	</pre>
+	</div>
 
 
 At the very minimum you only have you provide a gfe and a locus. 
