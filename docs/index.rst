@@ -14,14 +14,6 @@ The code is open source, and `available on GitHub`_.
 .. _available on GitHub: http://github.com/rtfd/readthedocs.org
 .. _gfe.b12x.org: http://gfe.b12x.org
 
-The main documentation for the site is organized into a couple sections:
-
-* :ref:`about-docs`
-* :ref:`user-docs`
-* :ref:`feature-docs`
-
-
-.. _about-docs:
 
 .. toctree::
    :maxdepth: 2
@@ -30,18 +22,16 @@ The main documentation for the site is organized into a couple sections:
    overview
    hackathons
 
-.. _user-docs:
 
 .. toctree::
    :maxdepth: 2
    :caption: User Documentation
 
+   gettingstarted
    restcalls
    clients
    tools
-   nextflow
 
-.. _feature-docs:
 
 .. toctree::
    :maxdepth: 2

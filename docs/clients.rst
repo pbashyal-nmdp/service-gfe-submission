@@ -1,8 +1,8 @@
 Clients
 =======
 
-Generating clients with Swagger
---------------------------------
+Swagger
+-------
 
     | "*Swagger is a specification and framework implementation* 
     |		*for describing, producing, consuming, and visualizing RESTful web services.*"
@@ -26,7 +26,6 @@ R Client
 .. note:: The R client hasn't been updated yet to include the nextflow APIs. Open the GfeClient.R script in the client-R directory to see all of the available functions.
 
 The R client is available in the `client-R` directory in the github repositiory. 
-
 Here are a few examples of installing and using the R client:
 
 .. code-block:: R
@@ -63,7 +62,6 @@ Perl Client
 -----------
 
 The perl client is available in the `client-perl` directory in the github repositiory. 
-
 Here are a few examples of installing and using the perl client:
 
 .. code-block:: perl

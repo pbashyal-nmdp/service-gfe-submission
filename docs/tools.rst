@@ -1,11 +1,12 @@
 Tools
 =====
 
-In the client-perl directory there are three command line tools available. 
-
 Three `Perl` based tools are available in the client-perl directory in the GFE Service repository. 
 When running these tools you can specify which `feature-service` and `gfe-service` to use. 
-Without specifying they default to [feature.nmdp-bioinformatics.org](feature.nmdp-bioinformatics.org) and [gfe.b12x.org](https://gfe.b12x.org).
+Without specifying they default to `feature.nmdp-bioinformatics.org`_ and `gfe.b12x.org`_.
+
+.. _feature.nmdp-bioinformatics.org: http://feature.nmdp-bioinformatics.org
+.. _gfe.b12x.org: ttps://gfe.b12x.org
 
 Installing Tools
 --------------------------------
@@ -25,82 +26,82 @@ Installing Tools
 Tool Documentation
 --------------------------------
 
-+-------------+------------------------------------------+----------------------------------------------------------------+
-| **Tool**    | **Description**                          | **Example Commands**                                           |
-+-------------+------------------------------------------+----------------------------------------------------------------+
-| `seq2gfe`   | Convert sequence one at a time to GFE    | ``seq2gfe --seq GACGGCAA... -l HLA-A > seqtest1.gfe.csv``      |
-+-------------+------------------------------------------+----------------------------------------------------------------+
-| `fasta2gfe` | Convert sequences in a fasta file to GFE | ``fasta2gfe --fasta test.fasta -l HLA-A > fastatest1.gfe.csv`` |
-+-------------+------------------------------------------+----------------------------------------------------------------+
-| `hml2gfe`   | Convert sequences in a HML file to GFE   | ``hml2gfe --input hmltest1.HML --hml > hmltest1.gfe.HML``      |
-+-------------+------------------------------------------+----------------------------------------------------------------+
-
 
 seq2gfe
 ~~~~~~~
 
---seq
-	Sequence ** STDIN **
---uri
-	URI of feature service
---locus
-	HLA-Locus
---verbose
-	Flag for running in verbose
---help
- 	Flag for returning perldoc
++---------------+------------------------------------------+
+| **Parameter** | **Description**                          | 
++---------------+------------------------------------------+
+| -s/--seq      | Convert sequence one at a time to GFE    |
++---------------+------------------------------------------+
+| -u/--uri      | Convert sequences in a fasta file to GFE |
++---------------+------------------------------------------+
+| -l/--locus    | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+| -v/--verbose  | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+| -h/--help     | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
 
--s/--seq   Output all.
--b         Output both (this description is
-           quite long).
--c arg     Output just arg.
---long     Output all day long.
+Example commands:
 
--u/--uri   This option has two paragraphs in the description.
-           This is the first.
+.. code-block:: shell
 
-           This is the second.  Blank lines may be omitted between
-           options (as above) or left in (as here and below).
+	curl --header "Content-type: application/json" --request POST \
+	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+	http://localhost:5000/sequence
 
--p         This option has two paragraphs in the description.
-           This is the first.
-
-           This is the second.  Blank lines may be omitted between
-           options (as above) or left in (as here and below).
-
--p         This option has two paragraphs in the description.
-           This is the first.
-
-           This is the second.  Blank lines may be omitted between
-           options (as above) or left in (as here and below).          
+.. tip:: 
 
 fasta2gfe
 ~~~~~~~~~~~~~~
 
---fasta
-	Fasta file ** STDIN **
---uri
-	URI of feature service
---locus
-	HLA-Locus
---verbose
-	Flag for running in verbose
---help
- 	Flag for returning perldoc
++---------------+------------------------------------------+
+| **Parameter** | **Description**                          | 
++---------------+------------------------------------------+
+| -s/--seq      | Convert sequence one at a time to GFE    |
++---------------+------------------------------------------+
+| -u/--uri      | Convert sequences in a fasta file to GFE |
++---------------+------------------------------------------+
+| -l/--locus    | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+| -v/--verbose  | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+| -h/--help     | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+
+Example commands:
+
+.. code-block:: shell
+
+	curl --header "Content-type: application/json" --request POST \
+	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+	http://localhost:5000/sequence
 
 
 hml2gfe
 ~~~~~~~~~~~~~~
 
- --input
-	HML file
- --uri
-	URI of feature service
- --hml
-	flag for returning HML
- --verbose
-	Flag for running in verbose
- --help
- 	Flag for returning perldoc
++---------------+------------------------------------------+
+| **Parameter** | **Description**                          | 
++---------------+------------------------------------------+
+| -s/--seq      | Convert sequence one at a time to GFE    |
++---------------+------------------------------------------+
+| -u/--uri      | Convert sequences in a fasta file to GFE |
++---------------+------------------------------------------+
+| -l/--locus    | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+| -v/--verbose  | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
+| -h/--help     | Convert sequences in a HML file to GFE   | 
++---------------+------------------------------------------+
 
+Example commands:
+
+.. code-block:: shell
+
+	curl --header "Content-type: application/json" --request POST \
+	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+	http://localhost:5000/sequence
 
