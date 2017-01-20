@@ -15,7 +15,7 @@ If you'd like to make some suggestions for changing or updating the Swagger spec
 * `Error Object`_
 
 
-.. tip:: I suggest always using the verbose parameter that way you can see more detailed documentation of any potentail errors.
+.. tip:: I suggest always using the *verbose* parameter that way you can see more detailed documentation of any potentail errors.
 
 
 .. _POST /gfe:
@@ -26,11 +26,12 @@ POST /gfe
 Converting a single sequence to GFE can be done by doing a POST to the *gfe* API. 
 If you're looking to investigate the structure of a particular sequence then this API is what you should use. 
 If you have a large number of sequence you need to convert to GFE then refer to the *fasta* or *hml* APIs.
+
 The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div style="font-family: serif;font-size:.8em;">
+	<div style="font-family: serif;font-size:1em;">
 	<pre>
 		<b>GfeSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -50,6 +51,7 @@ For instance, if you submit a sequence to the gfe API without providing the *str
 The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
 Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
 The default is 6 and should only be changed for debugging purposes.
+
 Here is an example of a json object that can be posted to the gfe API:
 
    .. sourcecode:: js
@@ -66,7 +68,7 @@ The GFE reponse object model is as follows:
 
 .. raw:: html
 
-	<div style="font-family: monospace;font-size:2em;">
+	<div style="font-family: monospace;font-size:1em;">
 	<pre>
 		<b>Gfe</b> {
 		    <b>aligned</b> (number, <i>optional</i>),
@@ -92,6 +94,7 @@ The reponse will always contain a *fullgene* object, even though the model repre
 This is because the GFE reponse object is also used for the HML and Fasta APIs, for which the *fullgene* object can not always populated.
 The *aligned* represents what percent of the submitted sequence was able to be aligned to the reference.
 If there is a large insertion or deletion in the submitted sequence, the *aligned* value should reflect that.
+
 Here is the json that would be returned from posting the above json object to the gfe API:
 
 .. sourcecode:: js
@@ -241,6 +244,7 @@ POST /sequence
 --------------------
 
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
+
 The object model for the gfe API is as follows:
 
 .. raw:: html
@@ -268,6 +272,7 @@ For instance, if you submit a sequence to the gfe API without providing the *str
 The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
 Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
 The default is 6 and should only be changed for debugging purposes.
+
 Here is an example of a json object that can be posted to the gfe API:
 
 .. sourcecode:: js
@@ -298,7 +303,7 @@ The GFE reponse object model is as follows:
 Here is the json that would be returned from posting the above json object to the sequence API:
 
 .. sourcecode:: js
-   	:emphasize-lines: 3
+   	:emphasize-lines: 6
 
 	{
 	  "log": [
