@@ -30,7 +30,7 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div>
+	<div style="font-family: monospace, serif;font-size:1em;">
 	<pre>
 		<b>GfeSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -66,7 +66,7 @@ The GFE reponse object model is as follows:
 
 .. raw:: html
 
-	<div>
+	<div style="font-family: monospace, serif;font-size:1em;">
 	<pre>
 		<b>Gfe</b> {
 		    <b>aligned</b> (number, <i>optional</i>),
@@ -94,7 +94,8 @@ The *aligned* represents what percent of the submitted sequence was able to be a
 If there is a large insertion or deletion in the submitted sequence, the *aligned* value should reflect that.
 Here is the json that would be returned from posting the above json object to the gfe API:
 
-   .. sourcecode:: js
+.. sourcecode:: js
+	:emphasize-lines: 9
 
 	{
 	  "aligned": "1.000",
@@ -244,7 +245,7 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div>
+	<div style="font-family: monospace, serif;font-size:1em;">
 	<pre>
 		<b>SequenceSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -297,7 +298,7 @@ The GFE reponse object model is as follows:
 Here is the json that would be returned from posting the above json object to the sequence API:
 
    .. sourcecode:: js
-
+   	:emphasize-lines: 3
 	{
 	  "log": [
 	    "2017/01/20 19:34:30 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
