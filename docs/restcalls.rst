@@ -30,7 +30,7 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div style="font-family: monospace, serif;font-size:1em;">
+	<div style="font-family: serif;font-size:.8em;">
 	<pre>
 		<b>GfeSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -66,7 +66,7 @@ The GFE reponse object model is as follows:
 
 .. raw:: html
 
-	<div style="font-family: monospace, serif;font-size:1em;">
+	<div style="font-family: monospace;font-size:2em;">
 	<pre>
 		<b>Gfe</b> {
 		    <b>aligned</b> (number, <i>optional</i>),
@@ -245,7 +245,7 @@ The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div style="font-family: monospace, serif;font-size:1em;">
+	<div style="font-family: monospace, serif;font-size:.5em;">
 	<pre>
 		<b>SequenceSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
@@ -270,7 +270,7 @@ Occasionally the feature service does not respond on the first request, therefor
 The default is 6 and should only be changed for debugging purposes.
 Here is an example of a json object that can be posted to the gfe API:
 
-   .. sourcecode:: js
+.. sourcecode:: js
 
 	{
 	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
@@ -297,8 +297,9 @@ The GFE reponse object model is as follows:
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
-   .. sourcecode:: js
+.. sourcecode:: js
    	:emphasize-lines: 3
+
 	{
 	  "log": [
 	    "2017/01/20 19:34:30 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
