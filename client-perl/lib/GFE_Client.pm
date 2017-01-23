@@ -54,7 +54,6 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 
 
-
 our $VERSION = '1.0.2';
 
 has 'gfe_url' => (

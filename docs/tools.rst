@@ -1,7 +1,7 @@
 Tools
 =====
 
-Three `Perl` based tools are available in the client-perl directory in the GFE Service repository. 
+Three tools are available in the client-perl directory in the GFE Service github repository. 
 When running these tools you can specify which `feature-service` and `gfe-service` to use. 
 Without specifying they default to `feature.nmdp-bioinformatics.org`_ and `gfe.b12x.org`_.
 

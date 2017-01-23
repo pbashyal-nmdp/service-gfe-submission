@@ -20,11 +20,14 @@ If the docker image is successfuly built then typing ``docker images`` will show
 
 Pulling the Image
 ----------------------
-The easiest way to get the service running locally, is to pull an image containing the service from docker hub.
+The easiest way to get the service running locally, is to pull an image containing the service from docker hub. 
+Running the following command will pull the latest GFE service image from docker hub.
+The image on docker hub is built from the *Dockerfile* in the *docker* directory in the github repository.
+Every new commit to the *nmdp-bioinformatics/service-gfe-submission* repository triggers a new build of the docker image on docker hub.
 
 .. code-block:: shell
 
-	docker run -d --name service-gfe-submission -p 5050:8080 service-gfe-submission:latest
+	docker pull nmdpbioinformatics/service-gfe-submission
 
 .. tip:: If you want a particular verison of the GFE service, then you can specify what release version after the name in place of *latest*.
 
@@ -35,7 +38,6 @@ The easiest way to get the service running locally, is to pull an image containi
 
 .. code-block:: shell
 
-	docker pull nmdpbioinformatics/service-gfe-submission
 	docker run -d --name service-gfe-submission -p 8080:5050 nmdpbioinformatics/service-gfe-submission
 
 The *-d* flag runs the service in the background and *-p* specifies what ports to expose.

@@ -27,7 +27,6 @@ The code is open source, and `available on GitHub`_.
    :maxdepth: 2
    :caption: User Documentation
 
-   gettingstarted
    restcalls
    clients
    tools
@@ -40,7 +39,6 @@ The code is open source, and `available on GitHub`_.
 
    docker
    installation
-   pod
    contributing
    
 

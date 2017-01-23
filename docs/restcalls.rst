@@ -12,7 +12,7 @@ If you'd like to make some suggestions for changing or updating the Swagger spec
 * `POST /fasta`_
 * `POST /hml`_
 * `POST /flowhml`_
-* `Error Object`_
+* `Error Response`_
 
 
 .. tip:: I suggest always using the *verbose* parameter that way you can see more detailed documentation of any potentail errors.
@@ -86,8 +86,6 @@ The GFE reponse object model is as follows:
 		}
 	</pre>
 	</div>
-
-
 
 If you pass the *verbose* parameter to the API then the *log* field will be populated with the details of the run.
 The reponse will always contain a *fullgene* object, even though the model represents it as optional. 
@@ -235,7 +233,7 @@ You can generate the above json by running the following ``curl`` command:
 
 	curl --header "Content-type: application/json" --request POST \
 	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
-	http://localhost:5000/sequence
+	http://gfe.b12x.org/gfe
 
 
 .. _POST /sequence:
@@ -262,16 +260,7 @@ The object model for the gfe API is as follows:
 	</pre>
 	</div>
 
-
-
 At the very minimum you only have you provide a gfe and a locus. 
-I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
-Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
-The default is 6 and should only be changed for debugging purposes.
 
 Here is an example of a json object that can be posted to the gfe API:
 
@@ -287,18 +276,24 @@ Here is an example of a json object that can be posted to the gfe API:
 The reponse from the API will either be a GFE json object or an error object. 
 The GFE reponse object model is as follows:
 
-	|	**Sequence** {
-	|		**sequence** (string),
-	|		**log** (Array[string], *optional*),
-	|		**structure** (Array[Structure], *optional*),
-	|		**version** (string)   
-	|	}  
-	|	**Structure** {
-	|		**accession** (integer),
-	|		**rank** (integer),
-	|		**sequence** (string), 
-	|		**term** (string)
-	|	} \
+.. raw:: html
+
+	<div style="font-family: monospace, serif;font-size:.9em;">
+	<pre>
+		<b>Sequence</b> {
+		    <b>sequence</b> (string),
+		    <b>log</b> (Array[string], <i>optional</i>),
+		    <b>structure</b> (Array[Structure], <i>optional</i>),
+		    <b>version</b> (string) 
+		}
+		<b>Structure</b> {
+		    <b>accession</b> (integer),
+		    <b>rank</b> (integer),
+		    <b>sequence</b> (string),
+		    <b>term</b> (string) 
+		}
+	</pre>
+	</div>
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -425,9 +420,8 @@ Here is the json that would be returned from posting the above json object to th
 	      "term": "exon"
 	    }
 	  ],
-	  "version": "1.1.1"
+	  "version": "1.0.7"
 	}
-
 
 
 You can generate the above json by running the following ``curl`` command:
@@ -436,7 +430,7 @@ You can generate the above json by running the following ``curl`` command:
 
 	curl --header "Content-type: application/json" --request POST \
 	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
-	http://localhost:5000/sequence
+	http://gfe.b12x.org/sequence
 
 
 .. _POST /fasta:
@@ -444,25 +438,23 @@ You can generate the above json by running the following ``curl`` command:
 POST /fasta
 --------------------
 
-
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
 .. raw:: html
 
-	<div>
+	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
-			<b>feature_url</b> (string, <i>optional</i>),
-			<b>locus</b> (string),
-			<b>retry</b> (integer, <i>optional</i>),
-			<b>gfe</b> (string),
-			<b>structures</b> (boolean, <i>optional</i>),
-			<b>verbose</b> (boolean, <i>optional</i>)
+		<b>FastaSubmission</b>{
+		    <b>feature_url</b> (string, <i>optional</i>),
+		    <b>locus</b> (string),
+		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>file</b> (file),
+		    <b>structures</b> (boolean, <i>optional</i>),
+		    <b>verbose</b> (boolean, <i>optional</i>)
 		}
 	</pre>
 	</div>
-
 
 At the very minimum you only have you provide a gfe and a locus. 
 I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
@@ -474,10 +466,10 @@ Occasionally the feature service does not respond on the first request, therefor
 The default is 6 and should only be changed for debugging purposes.
 Here is an example of a json object that can be posted to the gfe API:
 
-   .. sourcecode:: js
+.. sourcecode:: js
 
 	{
-	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
+	  "file": "GFE_Submission/t/resources/fastatest1.fasta",
 	  "locus": "HLA-A",
 	  "verbose": 1
 	}
@@ -488,24 +480,540 @@ The GFE reponse object model is as follows:
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
+		<b>SubjectData</b>{
+		    <b>log</b> (Array[string], <i>optional</i>),
+		    <b>subjects</b> (Array[Subject]),
+		    <b>version</b> (string, (string)
+		}
+		<b>Subject</b>{
+		    <b>id</b> (string),
+		    <b>typingData</b> (Array[TypingData])
+		}
+		<b>TypingData</b>{
 		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>typing</b> (Array[Typing])
+		}
+		<b>Typing</b>{
+		    <b>aligned</b> (number, <i>optional</i>),
 		    <b>gfe</b> (string),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
+		    <b>imgthla</b> (string, <i>optional</i>),
+		    <b>structure</b> (Array[Structure], <i>optional</i>)
+		}
+		<b>Structure</b> {
+		    <b>accession</b> (integer),
+		    <b>rank</b> (integer),
+		    <b>sequence</b> (string),
+		    <b>term</b> (string) 
 		}
 	</pre>
 	</div>
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
+.. sourcecode:: js
+
+	{
+	   "log" : [
+	      "2017/01/22 21:06:37 INFO> GFE.pm:1317 GFE::checkFile - File is valid",
+	      "2017/01/22 21:06:37 INFO> GFE.pm:1331 GFE::checkFile - File is valid for fasta type",
+	      "2017/01/22 21:06:37 INFO> Annotate.pm:190 GFE::Annotate::setFastaFile - Input file: public/downloads/fastatest1.fasta",
+	      "2017/01/22 21:06:51 INFO> GFE.pm:1209 GFE::checkExitStatus - Alignment ran successfully",
+	      "2017/01/22 21:06:51 INFO> Annotate.pm:234 GFE::Annotate::alignment_file - Alignment file: /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-upload/hap1.2/GFE/parsed-local/fastatest1_reformat.csv",
+	      "2017/01/22 21:06:51 INFO> Annotate.pm:234 GFE::Annotate::alignment_file - Alignment file: /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-upload/hap1.2/GFE/parsed-local/fastatest1_reformat.csv",
+	      "2017/01/22 21:06:51 INFO> GFE.pm:1127 GFE::checkAlignmentFile - Generated alignment file: /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-upload/hap1.2/GFE/parsed-local/fastatest1_reformat.csv",
+	      "2017/01/22 21:06:56 INFO> Annotate.pm:234 GFE::Annotate::alignment_file - Alignment file: /Users/mhalagan/web_apps/devel/dancer-apps/service-gfe-upload/hap1.2/GFE/parsed-local/fastatest1_reformat.csv",
+	      "2017/01/22 21:06:56 INFO> GFE.pm:1010 GFE::checkResults - Successfully loaded results",
+	      "2017/01/22 21:06:56 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	      "2017/01/22 21:06:56 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-68-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	      "2017/01/22 21:06:56 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	      "2017/01/22 21:06:56 INFO> GFE.pm:1154 GFE::checkGfe - Generated GFE: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1"
+	   ],
+	   "subjects" : [
+	      {
+	         "id" : "HLA-A*01:01:01",
+	         "typingData" : [
+	            {
+	               "locus" : "HLA-A",
+	               "typing" : [
+	                  {
+	                     "gfe" : "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	                     "structure" : [
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "TCCCCAGACGCCGAGG",
+	                           "term" : "five_prime_UTR"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "ATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "1",
+	                           "sequence" : "GTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "20",
+	                           "rank" : "2",
+	                           "sequence" : "GCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "10",
+	                           "rank" : "2",
+	                           "sequence" : "GTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "32",
+	                           "rank" : "3",
+	                           "sequence" : "GTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "3",
+	                           "sequence" : "GTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "ACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "GTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "5",
+	                           "sequence" : "AGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "6",
+	                           "rank" : "5",
+	                           "sequence" : "GTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "6",
+	                           "sequence" : "ATAGAAAAGGAGGGAGTTACACTCAGGCTGCAA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "6",
+	                           "sequence" : "GTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "3",
+	                           "rank" : "7",
+	                           "sequence" : "GCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "7",
+	                           "sequence" : "GTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "TGTGA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "GACAGCTGCCTTGTGTGGGACTGAG",
+	                           "term" : "three_prime_UTR"
+	                        }
+	                     ]
+	                  }
+	               ]
+	            }
+	         ]
+	      },
+	      {
+	         "id" : "HLA-A*01:01:03",
+	         "typingData" : [
+	            {
+	               "locus" : "HLA-A",
+	               "typing" : [
+	                  {
+	                     "gfe" : "HLA-Aw1-68-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	                     "structure" : [
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "TCCCCAGACGCCGAGG",
+	                           "term" : "five_prime_UTR"
+	                        },
+	                        {
+	                           "accession" : "68",
+	                           "rank" : "1",
+	                           "sequence" : "ATGGCCGTCATGGCCCAGACCTGGGCGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "1",
+	                           "sequence" : "GTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "20",
+	                           "rank" : "2",
+	                           "sequence" : "GCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "10",
+	                           "rank" : "2",
+	                           "sequence" : "GTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "32",
+	                           "rank" : "3",
+	                           "sequence" : "GTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "3",
+	                           "sequence" : "GTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "ACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "GTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "5",
+	                           "sequence" : "AGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "6",
+	                           "rank" : "5",
+	                           "sequence" : "GTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "6",
+	                           "sequence" : "ATAGAAAAGGAGGGAGTTACACTCAGGCTGCAA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "6",
+	                           "sequence" : "GTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "3",
+	                           "rank" : "7",
+	                           "sequence" : "GCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "7",
+	                           "sequence" : "GTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "TGTGA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "GACAGCTGCCTTGTGTGGGACTGAG",
+	                           "term" : "three_prime_UTR"
+	                        }
+	                     ]
+	                  }
+	               ]
+	            }
+	         ]
+	      },
+	      {
+	         "id" : "HLA-A*01:01:04",
+	         "typingData" : [
+	            {
+	               "locus" : "HLA-A",
+	               "typing" : [
+	                  {
+	                     "gfe" : "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	                     "structure" : [
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "TCCCCAGACGCCGAGG",
+	                           "term" : "five_prime_UTR"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "ATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "1",
+	                           "sequence" : "GTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "20",
+	                           "rank" : "2",
+	                           "sequence" : "GCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "10",
+	                           "rank" : "2",
+	                           "sequence" : "GTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "32",
+	                           "rank" : "3",
+	                           "sequence" : "GTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "3",
+	                           "sequence" : "GTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "ACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "GTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "5",
+	                           "sequence" : "AGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "6",
+	                           "rank" : "5",
+	                           "sequence" : "GTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "6",
+	                           "sequence" : "ATAGAAAAGGAGGGAGTTACACTCAGGCTGCAA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "6",
+	                           "sequence" : "GTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "3",
+	                           "rank" : "7",
+	                           "sequence" : "GCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "7",
+	                           "sequence" : "GTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "TGTGA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "GACAGCTGCCTTGTGTGGGACTGAG",
+	                           "term" : "three_prime_UTR"
+	                        }
+	                     ]
+	                  }
+	               ]
+	            }
+	         ]
+	      },
+	      {
+	         "id" : "HLA-A*01:01:02",
+	         "typingData" : [
+	            {
+	               "locus" : "HLA-A",
+	               "typing" : [
+	                  {
+	                     "gfe" : "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1",
+	                     "structure" : [
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "TCCCCAGACGCCGAGG",
+	                           "term" : "five_prime_UTR"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "1",
+	                           "sequence" : "ATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "1",
+	                           "sequence" : "GTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "20",
+	                           "rank" : "2",
+	                           "sequence" : "GCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "10",
+	                           "rank" : "2",
+	                           "sequence" : "GTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "32",
+	                           "rank" : "3",
+	                           "sequence" : "GTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "7",
+	                           "rank" : "3",
+	                           "sequence" : "GTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "ACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "4",
+	                           "sequence" : "GTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "5",
+	                           "sequence" : "AGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "6",
+	                           "rank" : "5",
+	                           "sequence" : "GTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "6",
+	                           "sequence" : "ATAGAAAAGGAGGGAGTTACACTCAGGCTGCAA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "6",
+	                           "sequence" : "GTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "3",
+	                           "rank" : "7",
+	                           "sequence" : "GCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAG",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "5",
+	                           "rank" : "7",
+	                           "sequence" : "GTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAG",
+	                           "term" : "intron"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "TGTGA",
+	                           "term" : "exon"
+	                        },
+	                        {
+	                           "accession" : "1",
+	                           "rank" : "8",
+	                           "sequence" : "GACAGCTGCCTTGTGTGGGACTGAG",
+	                           "term" : "three_prime_UTR"
+	                        }
+	                     ]
+	                  }
+	               ]
+	            }
+	         ]
+	      }
+	   ],
+	   "version" : "1.0.7"
+	}
+
+You can generate the above json by running the following ``curl`` command:
+
+.. code-block:: shell
+
+	curl --header "Content-type: application/json" --request POST \
+	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+	http://gfe.b12x.org/gfe
+
+
 .. _POST /hml:
 
 POST /hml
 --------------------
-
 
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
@@ -514,28 +1022,20 @@ The object model for the gfe API is as follows:
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
+		<b>HmlSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
 		    <b>locus</b> (string),
 		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>gfe</b> (string),
+		    <b>file</b> (file),
 		    <b>structures</b> (boolean, <i>optional</i>),
 		    <b>verbose</b> (boolean, <i>optional</i>)
 		}
 	</pre>
 	</div>
 
-At the very minimum you only have you provide a gfe and a locus. 
-I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
-Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
-The default is 6 and should only be changed for debugging purposes.
 Here is an example of a json object that can be posted to the gfe API:
 
-   .. sourcecode:: js
+.. sourcecode:: js
 
 	{
 	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
@@ -551,16 +1051,34 @@ The GFE reponse object model is as follows:
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
+		<b>SubjectData</b>{
+		    <b>log</b> (Array[string], <i>optional</i>),
+		    <b>subjects</b> (Array[Subject]),
+		    <b>version</b> (string, (string)
+		}
+		<b>Subject</b>{
+		    <b>id</b> (string),
+		    <b>typingData</b> (Array[TypingData])
+		}
+		<b>TypingData</b>{
 		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
+		    <b>typing</b> (Array[Typing])
+		}
+		<b>Typing</b>{
+		    <b>aligned</b> (number, <i>optional</i>),
 		    <b>gfe</b> (string),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
+		    <b>imgthla</b> (string, <i>optional</i>),
+		    <b>structure</b> (Array[Structure], <i>optional</i>)
+		}
+		<b>Structure</b> {
+		    <b>accession</b> (integer),
+		    <b>rank</b> (integer),
+		    <b>sequence</b> (string),
+		    <b>term</b> (string) 
 		}
 	</pre>
 	</div>
+
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
@@ -569,7 +1087,6 @@ Here is the json that would be returned from posting the above json object to th
 POST /flowhml
 --------------------
 
-
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
@@ -577,28 +1094,21 @@ The object model for the gfe API is as follows:
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
+		<b>HmlSubmission</b>{
 		    <b>feature_url</b> (string, <i>optional</i>),
 		    <b>locus</b> (string),
 		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>gfe</b> (string),
+		    <b>file</b> (file),
 		    <b>structures</b> (boolean, <i>optional</i>),
 		    <b>verbose</b> (boolean, <i>optional</i>)
 		}
 	</pre>
 	</div>
 
-At the very minimum you only have you provide a gfe and a locus. 
-I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
-Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
-The default is 6 and should only be changed for debugging purposes.
+
 Here is an example of a json object that can be posted to the gfe API:
 
-   .. sourcecode:: js
+.. sourcecode:: js
 
 	{
 	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
@@ -627,12 +1137,11 @@ The GFE reponse object model is as follows:
 
 Here is the json that would be returned from posting the above json object to the sequence API:
 
-.. _Error Object:
+.. _Error Response:
 
 Error Object
 --------------------
 
-
 Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The object model for the gfe API is as follows:
 
@@ -640,25 +1149,21 @@ The object model for the gfe API is as follows:
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>gfe</b> (string),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
+		<b>Error</b>{
+		    <b>Message</b> (string),
+		    <b>accession</b> (string, <i>optional</i>),
+		    <b>file</b> (string, <i>optional</i>),
+		    <b>gfe</b> (string, <i>optional</i>),
+		    <b>log</b> (Array[string], <i>optional</i>),
+		    <b>rank</b> (integer, <i>optional</i>),
+			<b>sequence</b> (string, <i>optional</i>),
+			<b>term</b> (string, <i>optional</i>),
+			<b>type</b> (string, <i>optional</i>),
+			<b>version</b> (string)
 		}
 	</pre>
 	</div>
 
-At the very minimum you only have you provide a gfe and a locus. 
-I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
-Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
-The default is 6 and should only be changed for debugging purposes.
 Here is an example of a json object that can be posted to the gfe API:
 
    .. sourcecode:: js
@@ -669,19 +1174,3 @@ Here is an example of a json object that can be posted to the gfe API:
 	  "verbose": 1
 	}
 
-
-The reponse from the API will either be a GFE json object or an error object. 
-The GFE reponse object model is as follows:
-
- 	|**Sequence** {
-    |   **sequence** (string),
-    |   **log** (Array[string], *optional*),
-    |   **structure** (Array[Structure], *optional*),
-    |   **version** (string) }
- 	|**Structure** {
-    |   **accession** (integer),
-    |   **rank** (integer),
-    |   **sequence** (string),
-    |   **term** (string) }
-
-Here is the json that would be returned from posting the above json object to the sequence API:
