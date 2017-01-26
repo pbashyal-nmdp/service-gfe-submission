@@ -9,7 +9,7 @@ A public version of this service is available for use at `gfe.b12x.org`_.
 
 The code is open source, and `available on GitHub`_.
 
-.. _feature service: http://readthedocs.org/
+.. _feature service: http://feature.nmdp-bioinformatics.org/
 .. _annotation pipeline: http://sphinx.pocoo.org/
 .. _available on GitHub: http://github.com/rtfd/readthedocs.org
 .. _gfe.b12x.org: http://gfe.b12x.org

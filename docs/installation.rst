@@ -1,64 +1,57 @@
 Installation
 =============
 
-The following instructions are for installing and running the service locally for development purposes.
-If you just want to run the service locally, then refer to the documentaiton on running the `Docker`_ image instead.
+.. note:: The following instructions are for installing and running the service locally for **development purposes**. If you just want to run the service locally, then refer to the documentaiton on running the :doc:`docker` image instead.
 
 Software Requirements
 --------------------------
+Before installing the GFE service locally, you'll need to install some required software. 
+If you want to reproduce the GFE service locally, then installing the *ngs-tools* and *annotation pipeline* from the file available in the docker directory is the safest method.
 
     * `Git`_
     * `Perl`_
     * `Java`_
-    * `HSA`_
+    * `Annotation Pipeline`_
     * `nextflow`_
     * `ngs-tools`_
 
 .. _ngs-tools: https://github.com/nmdp-bioinformatics/ngs
 .. _nextflow: http://www.python.org
-.. _HSA: http://www.python.org
+.. _Annotation Pipeline: http://www.python.org
 .. _Java: http://www.python.org
 .. _Perl: http://www.python.org
 .. _Git: http://www.python.org
 
 Perl Packages
 -----------------------------
-.. note:: Some perl modules will fail to load if you don't have certain software installed. Make sure you have `libssl-dev` installed otherwise *Moose* and *Log4j* will fail to properly install.
+.. tip:: Some perl modules will fail to load if you don't have certain software installed. Make sure you have `libssl-dev` installed otherwise *Moose* and *Log4j* will fail to properly install.
 
-1) Clone the github repository
+1) Clone the `github repository`_
 
-2) Change to the directory of the `Makefile.PL`. 
+2) Change into the *service-gfe-submission directory, with the `Makefile.PL` file.
 
-3) Install cpanm and all the perl dependencies. 
-``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
-
+3) Install cpanm and all the perl dependencies. ``curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps .``
 
 ngs-tools
 -----------------------------
-
-There are several ways that you can build the ngs-tools needed for running the *GFE service*. 
-I'll list all three below, but the easiest and safest way would be to install from the debian file located in the docker directory. 
+There are several ways that you can build the ngs-tools needed for running the GFE service. 
+The easiest and safest way would be to install from the debian file located in the docker directory. 
+Make sure to export the location the ngs-tools in your ``PATH`` environment variable.
 
 Installing From Debian
 ~~~~~~~~~~~~~~~~~~~~~~~~
+If you're not worried about the mechanics of the ngs-tools, then installing it from the debian file located in the docker directory is the best method.
+Don't use this debian for the testing and development of the ngs-tools. 
 
 .. code-block:: shell
 
 	cd service-gfe-submission/docker
-	dpkg --install /opt/ngs-tools_1.9.deb
-
-
-Maven Central Repository
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: shell
-
-	curl -OL http://search.maven.org/remotecontent?filepath=org/nmdp/ngs/ngs-tools/1.9.0/ngs-tools-1.9.0.deb
-	dpkg --install ngs-tools-1.9.0.deb && rm ngs-tools-1.9.0.deb
-
+	dpkg --install ngs-tools_1.9.deb
 
 Building locally
 ~~~~~~~~~~~~~~~~~~~~~~~~
+If you want to make some modifications to the ngs-tools and test it locally with the GFE service, then this is the best option for you.
+If you think the changes you make should be part of the ngs code base, then make sure to make a pull request to the ngs master branch on github.
 
 .. code-block:: shell
 
@@ -69,9 +62,9 @@ Building locally
 
 Annotation Pipeline
 -----------------------------
-
 Currently the annotaion pipeline is not able to be built from the github page.
-Instead you can just install it locally, by unzipping the tar file in the docker directory.
+Instead you can install it locally, by unzipping the tar file in the docker directory.
+We're currently working on adding this to the ngs code base on github.
 
 .. code-block:: shell
 
@@ -82,7 +75,7 @@ Instead you can just install it locally, by unzipping the tar file in the docker
 
 Installing service-gfe-submission
 ---------------------------------
-.. note:: This step will fail if you don't have the required software listed above installed and listed in the ``PATH`` environment variable. Make sure to add the *nextflow*, *HSA* and the *ngs-tools* to your ``PATH`` environment variable.
+.. note:: This step will fail if you don't have the required software listed above installed and listed in the ``PATH`` environment variable. Make sure to add the *nextflow*, *anootation pipeline* and the *ngs-tools* to your ``PATH`` environment variable.
 
 1) Clone the github repository.
 
