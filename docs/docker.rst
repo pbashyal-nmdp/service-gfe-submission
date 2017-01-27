@@ -17,7 +17,7 @@ Only build the docker image locally if you're making changes to the service and 
 	docker build -t service-gfe-submssion:latest .
 
 If the docker image is successfuly built then typing ``docker images`` will show a new image labeled service-gfe-submission. 
-For running this image follow the instructions below, except remove the *nmdpbioinformatics/* from the image name.
+For running this image follow the instructions below, except remove the *nmdpbioinformatics* from the image name.
 
 Pulling the Image
 ----------------------
@@ -28,11 +28,11 @@ Every new commit to the *nmdp-bioinformatics/service-gfe-submission* repository 
 
 `Click here`_ for more information on the publically available docker image. 
 
+.. tip:: If you want a particular verison of the GFE service, then you can specify what release version after the name in place of *latest*.
+
 .. code-block:: shell
 
 	docker pull nmdpbioinformatics/service-gfe-submission
-
-.. tip:: If you want a particular verison of the GFE service, then you can specify what release version after the name in place of *latest*.
 
 
 Running Service
@@ -50,6 +50,8 @@ If the docker container is successfuly executed then typing ``docker ps -a`` wil
 
 Debugging
 ----------------------
+.. tip:: The JSON parsing tool **jq** can be useful 
+
 If you want to stop and delete a currently running docker container, then run ``docker ps`` to find the container id and then run the following command.
 
 .. code-block:: shell

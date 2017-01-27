@@ -1,11 +1,15 @@
 RESTful API
 =========================
 
-The GFE service is not intended to be used as GUI tool, even though that capability is present.
-This service was built with the intention of exposing RESTful APIs for easy integration with any language and platform.
-One of the best ways to become familiar with each API is to test them out using the Swagger GUI.
-Below I'll walk through each API with specific examples that are available on the Swagger GUI. 
-If you'd like to make some suggestions for changing or updating the Swagger spec, then go to the Swagger hub page and make your suggested change or open a issue on github.
+One of the best ways to become familiar with each API is to test them out using the Swagger API interface.
+Below I'll walk through each API with specific examples. 
+
+The *structures* parameter is for returning each part of the GFE allele.
+By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
+For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
+The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+
+Open an a issue on github with any suggested changes you have or any issues you notice with the service.
 
 * `POST /gfe`_
 * `POST /sequence`_
@@ -15,15 +19,14 @@ If you'd like to make some suggestions for changing or updating the Swagger spec
 * `Error Response`_
 
 
-.. tip:: I suggest always using the *verbose* parameter for more detailed documentation of any potentail errors.
-
-
 .. _POST /gfe:
 
 POST /gfe
 ----------
+.. tip:: I suggest always using the *verbose* parameter for more detailed documentation of any potentail errors.
 	
 Converting a single sequence to GFE can be done by doing a POST to the *gfe* API. 
+
 If you're looking to investigate the structure of a particular sequence then this API is what you should use. 
 If you have a large number of sequences you need to convert to GFE then refer to the `fasta`_ or `hml`_ APIs.
 
@@ -233,7 +236,7 @@ You can generate the above JSON by running the following ``curl`` command:
 .. code-block:: shell
 
 	curl --header "Content-type: application/JSON" --request POST \
-	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+	--data '{"locus":"HLA-A","verbose":1,sequence":"TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGA"}' \
 	http://gfe.b12x.org/gfe
 
 
@@ -279,8 +282,8 @@ Here is an example of a JSON object that can be posted to the sequence API:
 	}
 
 
-The reponse from the API will either be a Sequence JSON object or an error object. 
-The GFE reponse object model is as follows:
+The reponse from the API will either be a Sequence JSON object or an `error object`_. 
+The reponse model for the sequence API is as follows:
 
 .. raw:: html
 
@@ -470,7 +473,7 @@ For instance, if you submit a sequence to the gfe API without providing the *str
 The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
 Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
 The default is 6 and should only be changed for debugging purposes.
-Here is an example of a JSON object that can be posted to the gfe API:
+Here is an example of JSON that can be posted to the fasta API:
 
 .. sourcecode:: js
 
@@ -481,8 +484,9 @@ Here is an example of a JSON object that can be posted to the gfe API:
 	}
 
 
-The reponse from the API will either be a GFE JSON object or an error object. 
+The reponse from the API will either be a SubjectData object or an `error object`_. 
 The GFE reponse object model is as follows:
+.. _SubjectData object:
 
 .. raw:: html
 
@@ -516,7 +520,7 @@ The GFE reponse object model is as follows:
 	</pre>
 	</div>
 
-Here is the JSON that would be returned from posting the above JSON object to the sequence API:
+Here is the JSON that would be returned from posting the above JSON to the sequence API:
 
 .. sourcecode:: js
 
@@ -1022,8 +1026,6 @@ You can generate the above JSON by running the following ``curl`` command:
 
 POST /hml
 --------------------
-
-
 The object model for the hml API is as follows:
 
 .. raw:: html
@@ -1041,54 +1043,18 @@ The object model for the hml API is as follows:
 	</pre>
 	</div>
 
-Here is an example of a JSON object that can be posted to the gfe API:
+Here is an example of a JSON object that can be posted to the hml API:
 
 .. sourcecode:: js
 
 	{
-	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
-	  "locus": "HLA-A",
+	  "file": "GFE_Submission/t/resources/hmltest1.HML",
 	  "verbose": 1
 	}
 
 
-The reponse from the API will either be a GFE JSON object or an error object. 
-The GFE reponse object model is as follows:
+The response from the hml API is either a `SubjectData object`_ or an `error object`_.
 
-.. raw:: html
-
-	<div style="font-family: monospace, serif;font-size:.9em;">
-	<pre>
-		<b>SubjectData</b>{
-		    <b>log</b> (Array[string], <i>optional</i>),
-		    <b>subjects</b> (Array[Subject]),
-		    <b>version</b> (string, (string)
-		}
-		<b>Subject</b>{
-		    <b>id</b> (string),
-		    <b>typingData</b> (Array[TypingData])
-		}
-		<b>TypingData</b>{
-		    <b>locus</b> (string),
-		    <b>typing</b> (Array[Typing])
-		}
-		<b>Typing</b>{
-		    <b>aligned</b> (number, <i>optional</i>),
-		    <b>gfe</b> (string),
-		    <b>imgthla</b> (string, <i>optional</i>),
-		    <b>structure</b> (Array[Structure], <i>optional</i>)
-		}
-		<b>Structure</b> {
-		    <b>accession</b> (integer),
-		    <b>rank</b> (integer),
-		    <b>sequence</b> (string),
-		    <b>term</b> (string) 
-		}
-	</pre>
-	</div>
-
-
-Here is the JSON that would be returned from posting the above JSON object to the sequence API:
 
 .. _POST /flowhml:
 
@@ -1125,7 +1091,7 @@ Here is an example of a JSON object that can be posted to the gfe API:
 	}
 
 
-The reponse from the API will either be a GFE JSON object or an error object. 
+The reponse from the API will either be a GFE JSON object or an `error object`_. 
 The GFE reponse object model is as follows:
 
 .. raw:: html
