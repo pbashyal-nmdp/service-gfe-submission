@@ -65,7 +65,7 @@ use GFE;
 
 my $o_gfe = GFE->new();
 
-our $VERSION = '1.1.1';
+our $VERSION = '1.0.7';
 
 prefix undef;
 
@@ -147,7 +147,7 @@ get '/download' => sub {
     ** Not the RESTful API - Refer to GFE_Submission::API **
 
 =cut
-get '/gfe_gui' => sub {
+get '/home' => sub {
 
 	my $url          = params->{'url'};
 	my $s_locus      = params->{'locus'};

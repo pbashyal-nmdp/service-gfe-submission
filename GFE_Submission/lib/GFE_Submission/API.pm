@@ -18,6 +18,17 @@ use GFE_Submission::Definitions;
 use Data::Dumper;
 use XML::DOM;
 
+Dancer::Plugin::Swagger->instance->{doc}->{info}{title}             = "Gene Feature Enumeration Service";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{description}       = 
+    join("<br>",
+    "The Gene Feature Enumeration (GFE) Submission service provides an API for converting raw sequence data to GFE. It provides both a RESTful API and a simple user interface for converting raw sequence data to GFE results. Sequences can be submitted one at a time or as a fasta file. This service uses <a href=\"https://github.com/nmdp-bioinformatics/service-feature\">nmdp-bioinformatics/service-feature</a> for encoding the raw sequence data and <a href=\"https://github.com/nmdp-bioinformatics/HSA\">nmdp-bioinformatics/HSA</a> for aligning the raw sequence data. The code is open source, and available on <a href=\"https://github.com/nmdp-bioinformatics/service-gfe-submission\">GitHub</a>.<br>",
+    "Go to <a href=\"http://service-gfe-submission.readthedocs.io\">service-gfe-submission.readthedocs.io</a> for more information"
+    );
+Dancer::Plugin::Swagger->instance->{doc}->{info}{version}           = "1.0.7";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{contact}{email}    = "mhalagan\@nmdp.org";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{license}{name}     = "GNU GENERAL PUBLIC LICENSE";
+Dancer::Plugin::Swagger->instance->{doc}->{info}{license}{url}      = "https://www.gnu.org/licenses/lgpl.html";
+
 
 =head2 getGfe API Call
 
@@ -26,13 +37,39 @@ use XML::DOM;
 swagger_path {
     description => 'Get Gene Feature Enumeration (GFE) from sequence and locus',
     parameters => [
-        {
-            name => 'GfeSubmission',
-            type => 'object',
-            schema => { '$ref' => "#/definitions/GfeSubmission" },
-            description => 'GFE Submission',
-            in => 'body',
-         }
+        {  
+            in => 'query',
+            name => 'locus',
+            type => 'string',
+            description => 'Valid HLA, KIR or ABO locus',
+            required => 'true'
+        },
+        {   name => 'sequence',
+            type => 'string',
+            description => 'Sequence data',
+            required => 'true',
+            in => 'query',
+        },
+        {   name => 'retry',
+            type => 'integer',
+            description => 'Number of retry requests to feature-service',
+            in => 'query',
+        },
+        {   name => 'feature_url',
+            type => 'string',
+            description => 'URL for the feature-service',
+            in => 'query',
+        },
+        {   name => 'structures',
+            type => 'boolean',
+            description => 'Flag for returning the sequence and accession number of each feature',
+            in => 'query',
+        },
+        {   name => 'verbose',
+            type => 'boolean',
+            description => 'Flag for running service in verbose',
+            in => 'query',
+        },
     ],
     responses => {
         404 => {
@@ -42,7 +79,7 @@ swagger_path {
 
         200 => {
             description => 'Gene Feature Enumeration (GFE)',
-            schema  => { '$ref' => "#/definitions/Gfe" },
+            schema  => { '$ref' => "#/definitions/Typing" },
         },
     },
 },
@@ -56,11 +93,10 @@ post '/gfe' => sub {
     my $b_structures = params->{'structures'};
 
     my $o_gfe = GFE->new();
-
-    $o_gfe->return_structure($b_structures) 
+    $o_gfe->return_structure($b_structures eq "true" || $b_structures eq "1" ? 1 : 0) 
         if(defined $b_structures && $b_structures =~ /\S/);
 
-    $o_gfe->verbose($b_verbose) 
+    $o_gfe->verbose($b_verbose eq "true" || $b_verbose eq "1" ? 1 : 0) 
         if(defined $b_verbose && $b_verbose =~ /\S/);
 
     if(defined $s_url || defined $n_retry){
@@ -86,15 +122,41 @@ post '/gfe' => sub {
 
 =cut
 swagger_path {
-    description => 'Get Gene Feature Enumeration (GFE) from sequence and locus',
+    description => 'Get sequence data from gene feature enumeration (GFE) annotation',
     parameters => [
-        {
-            name   => 'SequenceSubmission',
-            type   => 'object',
-            schema => { '$ref' => "#/definitions/SequenceSubmission" },
-            description => 'Sequence submission',
-            in => 'body',
-         }
+        {  
+            in => 'query',
+            name => 'locus',
+            type => 'string',
+            description => 'Valid HLA, KIR or ABO locus',
+            required => 'true'
+        },
+        {   name => 'gfe',
+            type => 'string',
+            description => 'GFE annotation',
+            required => 'true',
+            in => 'query',
+        },
+        {   name => 'retry',
+            type => 'integer',
+            description => 'Number of retry requests to feature-service',
+            in => 'query',
+        },
+        {   name => 'feature_url',
+            type => 'string',
+            description => 'URL for the feature-service',
+            in => 'query',
+        },
+        {   name => 'structures',
+            type => 'boolean',
+            description => 'Flag for returning the sequence and accession number of each feature',
+            in => 'query',
+        },
+        {   name => 'verbose',
+            type => 'boolean',
+            description => 'Flag for running service in verbose',
+            in => 'query',
+        },
     ],
     responses => {
         404 => {
@@ -117,11 +179,11 @@ post '/sequence' => sub {
     my $b_structures = params->{'structures'};
 
     my $o_gfe = GFE->new();
-
-    $o_gfe->return_structure($b_structures) 
+    
+    $o_gfe->return_structure($b_structures eq "true" || $b_structures eq "1" ? 1 : 0) 
         if(defined $b_structures && $b_structures =~ /\S/);
 
-    $o_gfe->verbose($b_verbose) 
+    $o_gfe->verbose($b_verbose eq "true" || $b_verbose eq "1" ? 1 : 0) 
         if(defined $b_verbose && $b_verbose =~ /\S/);
 
     if(defined $s_url || defined $n_retry){
@@ -150,12 +212,36 @@ swagger_path {
     description => 'Get Gene Feature Enumeration (GFE) from HML file',
     parameters => [
         {
-            name => 'HmlSubmission',
-            type => 'object',
-            schema => { '$ref' => "#/definitions/HmlSubmission" },
-            description => 'HML GFE Submission',
-            in => 'body',
-         }
+            name => 'file',
+            type => 'file',
+            description => 'HML file',
+            in => 'formData',
+        },
+        {   name => 'type',
+            type => 'string',
+            description => 'Option for returning HML or JSON',
+            in => 'query',
+        },
+        {   name => 'feature_url',
+            type => 'string',
+            description => 'URL for the feature-service',
+            in => 'query',
+        },
+        {   name => 'retry',
+            type => 'integer',
+            description => 'Number of retry requests to feature-service',
+            in => 'query',
+        },        
+        {   name => 'structures',
+            type => 'boolean',
+            description => 'Flag for returning the sequence and accession number of each feature',
+            in => 'query',
+        },
+        {   name => 'verbose',
+            type => 'boolean',
+            description => 'Flag for running service in verbose',
+            in => 'query',
+        }
     ],
     responses => {
         404 => {
@@ -188,11 +274,10 @@ post '/hml' => sub {
     }
 
     my $o_gfe = GFE->new();
-
-    $o_gfe->return_structure($b_structures) 
+    $o_gfe->return_structure($b_structures eq "true" || $b_structures eq "1" ? 1 : 0) 
         if(defined $b_structures && $b_structures =~ /\S/);
 
-    $o_gfe->verbose($b_verbose) 
+    $o_gfe->verbose($b_verbose eq "true" || $b_verbose eq "1" ? 1 : 0) 
         if(defined $b_verbose && $b_verbose =~ /\S/);
 
     if(defined $s_url || defined $n_retry){
@@ -235,16 +320,17 @@ post '/hml' => sub {
             my $s_locus = ${${$ra_typing->getElementsByTagName('typing-method')}[0]->getElementsByTagName('sbt-ngs')}[0]->[1]->{locus}->getValue;
 
             if(defined $h_subjects{$s_id}{$s_locus}){
-                ${$ra_typing->getElementsByTagName('allele-assignment')}[0]->setAttribute("gfe-url","http://gfe.b12x.org");
-                ${$ra_typing->getElementsByTagName('allele-assignment')}[0]->setAttribute("gfe-version",$s_version);
-
-
-                my $newGfeElement = $doc->createElement('glstring');
-                my $gfe_glstring  = $doc->createTextNode($h_subjects{$s_id}{$s_locus});
-                $newGfeElement->appendChild($gfe_glstring);
-
-                ${$ra_typing->getElementsByTagName('allele-assignment')}[0]->appendChild($newGfeElement);
-
+                my $newGfeElement = $doc->createElement('allele-assignment');
+                my $date          = strftime "%Y-%m-%d", localtime;
+                $newGfeElement->setAttribute("date",$date);
+                my $s_feature_url = $o_gfe->client->feature_url;
+                $newGfeElement->setAttribute("allele-db",$s_feature_url);
+                $newGfeElement->setAttribute("allele-version",$$rh_gfe{version});
+                my $newglElement = $doc->createElement('glstring');
+                my $gfe_glstring = $doc->createTextNode($h_subjects{$s_id}{$s_locus});
+                $newglElement->appendChild($gfe_glstring);
+                $newGfeElement->appendChild($newglElement);
+                $ra_typing->appendChild($newGfeElement);
             }
         }
     }
@@ -260,15 +346,39 @@ post '/hml' => sub {
 
 =cut
 swagger_path {
-    description => 'Get Gene Feature Enumeration (GFE) from HML file',
+    description => 'Get Gene Feature Enumeration (GFE) from HML file using nextflow',
     parameters => [
         {
-            name => 'HmlSubmission',
-            type => 'object',
-            schema => { '$ref' => "#/definitions/HmlSubmission" },
-            description => 'HML GFE Submission',
-            in => 'body',
-         }
+            name => 'file',
+            type => 'file',
+            description => 'HML file',
+            in => 'formData',
+        },
+        {   name => 'type',
+            type => 'string',
+            description => 'Option for returning HML or JSON',
+            in => 'query',
+        },
+        {   name => 'feature_url',
+            type => 'string',
+            description => 'URL for the feature-service',
+            in => 'query',
+        },
+        {   name => 'retry',
+            type => 'integer',
+            description => 'Number of retry requests to feature-service',
+            in => 'query',
+        },        
+        {   name => 'structures',
+            type => 'boolean',
+            description => 'Flag for returning the sequence and accession number of each feature',
+            in => 'query',
+        },
+        {   name => 'verbose',
+            type => 'boolean',
+            description => 'Flag for running service in verbose',
+            in => 'query',
+        }
     ],
     responses => {
         404 => {
@@ -289,7 +399,7 @@ post '/flowhml' => sub {
     my $b_verbose      = params->{'verbose'};
     my $b_structures   = params->{'structures'};
     my $s_input_file   = defined params->{'file'} ? request->upload('file') : undef;
-    my $s_content_type = defined params->{'type'} ? params->{'type'} : undef;
+    my $s_content_type = defined params->{'type'} ? params->{'type'}        : undef;
 
     if(defined $s_input_file && $s_input_file =~ /\S/){
         if(-e $s_input_file->filename){       
@@ -301,11 +411,10 @@ post '/flowhml' => sub {
     }
 
     my $o_gfe = GFE->new();
-
-    $o_gfe->return_structure($b_structures) 
+    $o_gfe->return_structure($b_structures eq "true" || $b_structures eq "1" ? 1 : 0) 
         if(defined $b_structures && $b_structures =~ /\S/);
 
-    $o_gfe->verbose($b_verbose) 
+    $o_gfe->verbose($b_verbose eq "true" || $b_verbose eq "1" ? 1 : 0) 
         if(defined $b_verbose && $b_verbose =~ /\S/);
 
     if(defined $s_url || defined $n_retry){
@@ -336,27 +445,28 @@ post '/flowhml' => sub {
     }
 
     my $parser = new XML::DOM::Parser;
-    my $doc    = $parser->parsefile ($s_input_file);
+    my $doc    = $parser->parsefile($s_input_file);
     my $root   = $doc->getDocumentElement();
 
     foreach my $ra_sample (sort @{$root->getElementsByTagName('sample')}){
 
         my $s_id = $ra_sample->getAttributes->{id}->getValue;
         next if !defined $h_subjects{$s_id};
+
         foreach my $ra_typing (sort @{$ra_sample->getElementsByTagName('typing')}){
-
             my $s_locus = ${${$ra_typing->getElementsByTagName('typing-method')}[0]->getElementsByTagName('sbt-ngs')}[0]->[1]->{locus}->getValue;
-
             if(defined $h_subjects{$s_id}{$s_locus}){
-                ${$ra_typing->getElementsByTagName('allele-assignment')}[0]->setAttribute("gfe-url","http://gfe.b12x.org");
-                ${$ra_typing->getElementsByTagName('allele-assignment')}[0]->setAttribute("gfe-version",$s_version);
-
-                my $newGfeElement = $doc->createElement('glstring');
-                my $gfe_glstring  = $doc->createTextNode($h_subjects{$s_id}{$s_locus});
-                $newGfeElement->appendChild($gfe_glstring);
-
-                ${$ra_typing->getElementsByTagName('allele-assignment')}[0]->appendChild($newGfeElement);
-
+                my $newGfeElement = $doc->createElement('allele-assignment');
+                my $date          = strftime "%Y-%m-%d", localtime;
+                $newGfeElement->setAttribute("date",$date);
+                my $s_feature_url = $o_gfe->client->feature_url;
+                $newGfeElement->setAttribute("allele-db",$s_feature_url);
+                $newGfeElement->setAttribute("allele-version",$$rh_gfe{version});
+                my $newglElement = $doc->createElement('glstring');
+                my $gfe_glstring = $doc->createTextNode($h_subjects{$s_id}{$s_locus});
+                $newglElement->appendChild($gfe_glstring);
+                $newGfeElement->appendChild($newglElement);
+                $ra_typing->appendChild($newGfeElement);
             }
         }
     }
@@ -376,12 +486,37 @@ swagger_path {
     description => 'Get Gene Feature Enumeration (GFE) from fasta file',
     parameters => [
         {
-            name => 'FastaSubmission',
-            type => 'object',
-            schema => { '$ref' => "#/definitions/FastaSubmission" },
-            description => 'GFE Submission from Fasta',
-            in => 'body',
-         }
+            name => 'locus',
+            type => 'string',
+            description => 'Valid HLA, KIR or ABO locus',
+            in => 'formData',
+         },
+         {
+            name => 'file',
+            type => 'file',
+            description => 'HML file',
+            in => 'formData',
+         },
+        {   name => 'retry',
+            type => 'integer',
+            description => 'Number of retry requests to feature-service',
+            in => 'query',
+        },
+        {   name => 'feature_url',
+            type => 'string',
+            description => 'URL for the feature-service',
+            in => 'query',
+        },
+        {   name => 'structures',
+            type => 'boolean',
+            description => 'Flag for returning the sequence and accession number of each feature',
+            in => 'query',
+        },
+        {   name => 'verbose',
+            type => 'boolean',
+            description => 'Flag for running service in verbose',
+            in => 'query',
+        }
     ],
     responses => {
         404 => {
@@ -403,7 +538,6 @@ post '/fasta' => sub {
     my $b_structures = params->{'structures'};
     my $s_input_file = request->upload('file');
 
-    
     if(defined $s_input_file && $s_input_file =~ /\S/){
         if(-e $s_input_file->filename){       
            $s_input_file = $s_input_file->filename;
@@ -414,10 +548,10 @@ post '/fasta' => sub {
     }
 
     my $o_gfe = GFE->new();
-    $o_gfe->return_structure($b_structures) 
+    $o_gfe->return_structure($b_structures eq "true" || $b_structures eq "1" ? 1 : 0) 
         if(defined $b_structures && $b_structures =~ /\S/);
 
-    $o_gfe->verbose($b_verbose) 
+    $o_gfe->verbose($b_verbose eq "true" || $b_verbose eq "1" ? 1 : 0) 
         if(defined $b_verbose && $b_verbose =~ /\S/);
 
     if(defined $s_url || defined $n_retry){

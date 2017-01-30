@@ -125,7 +125,6 @@ foreach my $s_typing (keys %h_seqs){
         my $n_rank = $$rh_struct{rank};
         my $s_seq  = $$rh_struct{sequence};
         my $n_accs = $$rh_struct{accession};
-
     }
     my $s_structure = join(",",map{
         my $s_term = $$_{term};

@@ -1,10 +1,12 @@
 # service-gfe-submission
 
-RESTful API and UI for getting GFE results from raw sequence data
+RESTful API for getting GFE results from raw sequence data
 
-[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)[![Coverage Status](https://coveralls.io/repos/github/nmdp-bioinformatics/service-gfe-submission/badge.svg?branch=master)](https://coveralls.io/github/nmdp-bioinformatics/service-gfe-submission?branch=master)[![](https://images.microbadger.com/badges/version/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own version badge on microbadger.com")[![](https://images.microbadger.com/badges/image/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own image badge on microbadger.com")[![License](https://img.shields.io/badge/License-GNU%20General%20Public%20License%20v3.0-blue.svg)]()
+[![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)[![Docs Status](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](http://service-gfe-submission.readthedocs.io/en/latest/index.html)[![Coverage Status](https://coveralls.io/repos/github/nmdp-bioinformatics/service-gfe-submission/badge.svg?branch=master)](https://coveralls.io/github/nmdp-bioinformatics/service-gfe-submission?branch=master)[![](https://images.microbadger.com/badges/version/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own version badge on microbadger.com")[![](https://images.microbadger.com/badges/image/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own image badge on microbadger.com")[![License](https://img.shields.io/badge/License-GNU%20General%20Public%20License%20v3.0-blue.svg)]()
 
-The Gene Feature Enumeration (GFE) Submission service provides an API for converting raw sequence data to GFE. It provides both a RESTful API and a simple user interface for converting raw sequence data to GFE results. Sequences can be submitted one at a time or as a fasta file. This service uses [nmdp-bioinformatics/service-feature](https://github.com/nmdp-bioinformatics/service-feature) for encoding the raw sequence data and [nmdp-bioinformatics/HSA](https://github.com/nmdp-bioinformatics/HSA) for aligning the raw sequence data. A public version of this service is available for use at [gfe.b12x.org](http://gfe.b12x.org). Further documentation and tutorials are available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html).
+##### Further documentation is available at [service-gfe-submission.readthedocs.io](http://service-gfe-submission.readthedocs.io/en/latest/index.html).
+
+The Gene Feature Enumeration (GFE) Submission service provides an API for converting raw sequence data to GFE. It provides both a RESTful API and a simple user interface for converting raw sequence data to GFE results. Sequences can be submitted one at a time or as a fasta file. This service uses [nmdp-bioinformatics/service-feature](https://github.com/nmdp-bioinformatics/service-feature) for encoding the raw sequence data and [nmdp-bioinformatics/HSA](https://github.com/nmdp-bioinformatics/HSA) for aligning the raw sequence data. A public version of this service is available for use at [gfe.b12x.org](http://gfe.b12x.org). 
 
 
 ## RESTful Calls
@@ -14,35 +16,47 @@ The Gene Feature Enumeration (GFE) Submission service provides an API for conver
 # Get GFE from sequence data - in body #
 curl --header "Content-type: application/json" --request POST  \
 --data '{"locus":"HLA-A","sequence":"TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG"}' \
-http://gfe.b12x.org/api/v1/gfe
+http://gfe.b12x.org/gfe
 
 # Sequence from GFE #
-curl --header "Content-type: application/json" --request POST
---data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}'
-http://gfe.b12x.org/api/v1/sequence
+curl --header "Content-type: application/json" --request POST \
+--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
+http://gfe.b12x.org/sequence
 
 # Get GFE from fasta file #
-curl -F "verbose=1" "locus=HLA-A" \
+curl -F "verbose=1" -F "locus=HLA-A" \
 -F "file=@GFE_Submission/public/downloads/FastaTest.fasta" \
-http://gfe.b12x.org/api/v1/fasta
+http://gfe.b12x.org/fasta
 
 # Get GFE from HML file #
 curl -F "verbose=1" \
 -F "file=@GFE_Submission/public/downloads/HmlTest.HML" \
-http://gfe.b12x.org/api/v1/hml
+http://gfe.b12x.org/hml
 
 # Get HML file with GFE from HML  #
 curl -F "verbose=1" -F "type=xml" \
 -F "file=@GFE_Submission/public/downloads/HmlTest.HML" \
-http://gfe.b12x.org/api/v1/hml
+http://gfe.b12x.org/hml
 
 # Get HML file with GFE from HML using nextflow #
-# Faster than /api/v1/hml but can not provide structures #
+# Faster than /hml but can not provide structures #
 curl -F "verbose=1" \
 -F "file=@GFE_Submission/public/downloads/HmlTest.HML" \
-http://gfe.b12x.org/api/v1/flowhml
+http://gfe.b12x.org/flowhml
 
 ```
+
+## Docker
+The easiest way to get the service running locally, is to pull an image containing the service from docker hub. Running the following command will pull the latest GFE service image from docker hub. The image on docker hub is built from the *Dockerfile* in the *docker* directory in the github repository. Every new commit to the *nmdp-bioinformatics/service-gfe-submission* repository triggers a new build of the docker image on docker hub.
+
+```bash
+docker pull nmdpbioinformatics/service-gfe-submission
+docker run -d --name service-gfe-submission -p 8080:5050 nmdpbioinformatics/service-gfe-submission
+```
+The *-d* flag runs the service in "detached-mode" in the background and *-p* specifies what ports to expose. Make sure the ports you expose are not already in use. If the docker container is successfuly executed then typing ``docker ps -a`` will show a new container labeled *service-gfe-submission* running. 
+
+[Click here](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission/) for more information on the publically available docker image. 
+
 
 ## Perl client example
 
@@ -154,20 +168,13 @@ plackup -E deployment  \     # Deploy
 -p 5050:8080 -a bin/app.pl      
 ```
 
-## Docker
-
-```bash
-docker pull nmdpbioinformatics/service-gfe-submission
-docker run -d --name service-gfe-submission -p 8080:5050 nmdpbioinformatics/service-gfe-submission
-```
-[Click here](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission/) for more information on the publically available docker image. 
 
 
 ### Required Software
 
  * [Git](http://git.org)
  * [clustalo](http://www.clustal.org/omega)
- * [hap1.0](https://github.com/nmdp-bioinformatics/HSA)
+ * [hap1.2](https://github.com/nmdp-bioinformatics/HSA)
  * [perl 5.18 or later](http://perl.org)
  * [nextflow](http://nextflow.io)
 
