@@ -74,8 +74,3 @@ Feature Service
 **TBD**
 
 
-GFE Service
---------------------
-**TBD**
-
-

@@ -20,8 +20,6 @@ The code is open source, and `available on GitHub`_.
    :caption: About GFE
 
    overview
-   hackathons
-
 
 .. toctree::
    :maxdepth: 2

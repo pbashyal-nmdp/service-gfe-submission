@@ -1,13 +1,11 @@
 RESTful API
 =========================
+.. note:: Each of the APIs described below can be tested out using the `Swagger API interface`_.
 
-One of the best ways to become familiar with each API is to test them out using the Swagger API interface.
-Below I'll walk through each API with specific examples. 
-
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
+The *structures* parameter is for returning each part of the GFE allele as a `structure object`_.
+By default it will always return the full structure, but you may want it to only return the GFE annotation.
+The *retry* parameter defines how many times you want the GFE service to retry a call to the feature service.
+The default is *six* and should only be changed for debugging purposes.
 
 Open an a issue on github with any suggested changes you have or any issues you notice with the service.
 
@@ -18,6 +16,7 @@ Open an a issue on github with any suggested changes you have or any issues you 
 * `POST /flowhml`_
 * `Error Response`_
 
+.. _Swagger API interface: http://gfe.b12x.org/doc/?url=/swagger.json
 
 .. _POST /gfe:
 
@@ -25,36 +24,23 @@ POST /gfe
 ----------
 .. tip:: I suggest always using the *verbose* parameter for more detailed documentation of any potentail errors.
 	
-Converting a single sequence to GFE can be done by doing a POST to the *gfe* API. 
-
-If you're looking to investigate the structure of a particular sequence then this API is what you should use. 
-If you have a large number of sequences you need to convert to GFE then refer to the `fasta`_ or `hml`_ APIs.
-
-The object model for the gfe API is as follows:
+Turning sequence data to GFE annotation can be done by using the gfe API. 
+If you have a large number of sequences you want to convert to GFE annotation then refer to the `fasta`_ or `hml`_ APIs.
+At the very minimum you only have to provide a sequence and a locus.
+Below are the input parameters for the gfe API:
 
 .. raw:: html
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>GfeSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>sequence</b> (string),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
-		}
+    <b>feature_url</b> (string, <i>optional</i>),
+    <b>locus</b> (string),
+    <b>retry</b> (integer, <i>optional</i>),
+    <b>sequence</b> (string),
+    <b>structures</b> (boolean, <i>optional</i>),
+    <b>verbose</b> (boolean, <i>optional</i>)
 	</pre>
 	</div>
-
-At the very minimum you only have you provide a sequence and a locus.
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
-Occasionally the feature service does not respond on the first request, therefore multiple requests may be needed for a sequence. 
-The default is *six* and should only be changed for debugging purposes.
-Please let us know if the feature service is failing to return accession numbers. 
 
 Here is an example of a JSON object that can be posted to the gfe API:
 
@@ -66,9 +52,8 @@ Here is an example of a JSON object that can be posted to the gfe API:
 	  "sequence": "TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG"
 	}
 
-
 The reponse from the API will either be a GFE JSON object or an `error object`_. 
-The reponse model for the gfe API is as follows:
+Here is the GFE object model:
 
 .. raw:: html
 
@@ -91,13 +76,13 @@ The reponse model for the gfe API is as follows:
 	</pre>
 	</div>
 
-If you pass the *verbose* parameter to the API then the *log* field will be populated with the details of the run.
+.. _structure object:
 The reponse will always contain a *fullgene* object, which contains the accession number for the full gene sequence.
 This accession number can be used to retrieve the sequence from the *feature-service*. 
-The *aligned* represents what percent of the submitted sequence was able to be aligned to the reference.
-If there is a large insertion or deletion in the submitted sequence, the *aligned* value should reflect that.
+The *aligned* number represents what percent of the submitted sequence was able to be aligned to the reference.
+If there is a large insertion or deletion in the submitted sequence, then the *aligned* value should reflect that.
 
-Here is the JSON that would be returned from posting the example JSON to the gfe API:
+Here is the JSON that would be returned from posting the above JSON to the gfe API:
 
 .. sourcecode:: js
 	:emphasize-lines: 9
@@ -244,33 +229,26 @@ You can generate the above JSON by running the following ``curl`` command:
 
 POST /sequence
 --------------------
-
-Converting a GFE allele back to its corresponding sequence can be done by using the sequence API.
-This API allows you to get the full sequence that's associated with the GFE allele. 
-When submitting a sequence, if the *aligned* value is less than 1 then you will not be able to get the complete sequence back from the GFE allele.
+Turning GFE annotations back to the full sequence can be done using the sequence API.
+When submitting a sequence, if the *aligned* value is less than 1 then you will not be able to get the complete sequence back from the GFE annotation.
 The *fullgene* accession number returned from the gfe API can be used to get back the full sequence from the feature service.
-
-The object model for the sequence API is as follows:
+Below are the input parameters for the sequence API:
 
 .. raw:: html
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>SequenceSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>gfe</b> (string),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
-		}
+	    <b>feature_url</b> (string, <i>optional</i>),
+	    <b>locus</b> (string),
+	    <b>retry</b> (integer, <i>optional</i>),
+	    <b>gfe</b> (string),
+	    <b>structures</b> (boolean, <i>optional</i>),
+	    <b>verbose</b> (boolean, <i>optional</i>)
 	</pre>
 	</div>
 
-At the very minimum you only have you provide a gfe and a locus. 
+At the very minimum you only have you provide a gfe annotation and a locus. 
 As with the gfe API, the structures of the GFE are returned by default.
-Set the *structures* parameter to 0 if you don't care about each feature in the GFE allele.
-
 Here is an example of a JSON object that can be posted to the sequence API:
 
 .. sourcecode:: js
@@ -304,7 +282,7 @@ The reponse model for the sequence API is as follows:
 	</pre>
 	</div>
 
-Here is the JSON that would be returned from posting the above example JSON to the sequence API:
+Here is the JSON that would be returned from posting the above JSON to the sequence API:
 
 .. sourcecode:: js
    	:emphasize-lines: 6
@@ -446,33 +424,23 @@ You can generate the above JSON by running the following ``curl`` command:
 
 POST /fasta
 --------------------
-
-Converting a single sequence to GFE can be done by doing a POST to the gfe API.
-The object model for the gfe API is as follows:
+Converting sequences in a fasta file to GFE annotation can be done using the fasta API.
+All of the sequences in the fasta file need to be from the same locus.
+Below are the input parameters for the fasta API:
 
 .. raw:: html
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>FastaSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>file</b> (file),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
-		}
+	    <b>feature_url</b> (string, <i>optional</i>),
+	    <b>locus</b> (string),
+	    <b>retry</b> (integer, <i>optional</i>),
+	    <b>file</b> (file),
+	    <b>structures</b> (boolean, <i>optional</i>),
+	    <b>verbose</b> (boolean, <i>optional</i>)
 	</pre>
 	</div>
 
-At the very minimum you only have you provide a gfe and a locus. 
-I suggest always running it in verbose, so you can see more detailed documentation of any potentail errors.
-The *structures* parameter is for returning each part of the GFE allele.
-By default it will always return the full structure, but you may want it to only return the GFE value if you are not concerned about each feature.
-For instance, if you submit a sequence to the gfe API without providing the *structures* parameter then it will return the accession, rank, sequence, and term for each feature.
-The *retry* parameter will set how many times you want the GFE service to retry a call to the feature service.
-Occasionally the feature service does not respond on the first request, therefore multiple may be needed for a sequence. 
-The default is 6 and should only be changed for debugging purposes.
 Here is an example of JSON that can be posted to the fasta API:
 
 .. sourcecode:: js
@@ -482,7 +450,6 @@ Here is an example of JSON that can be posted to the fasta API:
 	  "locus": "HLA-A",
 	  "verbose": 1
 	}
-
 
 The reponse from the API will either be a SubjectData object or an `error object`_. 
 The GFE reponse object model is as follows:
@@ -520,7 +487,8 @@ The GFE reponse object model is as follows:
 	</pre>
 	</div>
 
-Here is the JSON that would be returned from posting the above JSON to the sequence API:
+The *Subject* object id will be whatever the fasta headers are.
+Here is the JSON that would be returned from posting the above JSON to the fasta API:
 
 .. sourcecode:: js
 
@@ -1017,29 +985,29 @@ You can generate the above JSON by running the following ``curl`` command:
 
 .. code-block:: shell
 
-	curl --header "Content-type: application/JSON" --request POST \
-	--data '{"locus":"HLA-A","gfe":"HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0"}' \
-	http://gfe.b12x.org/gfe
+	curl -F "verbose=1" -F "locus=HLA-A" \
+	-F "file=@GFE_Submission/t/resources/fastatest1.fasta" \
+	http://gfe.b12x.org/fasta
 
 .. _hml:
 .. _POST /hml:
 
 POST /hml
 --------------------
-The object model for the hml API is as follows:
+Converting sequences in a HML file to GFE annotation can be done using the hml API.
+Below are the input parameters for the hml API:
 
 .. raw:: html
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-		<b>HmlSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>file</b> (file),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
-		}
+	    <b>feature_url</b> (string, <i>optional</i>),
+	    <b>locus</b> (string),
+	    <b>retry</b> (integer, <i>optional</i>),
+	    <b>file</b> (file),
+	    <b>type</b> (string, <i>optional</i>),
+	    <b>structures</b> (boolean, <i>optional</i>),
+	    <b>verbose</b> (boolean, <i>optional</i>)
 	</pre>
 	</div>
 
@@ -1049,75 +1017,33 @@ Here is an example of a JSON object that can be posted to the hml API:
 
 	{
 	  "file": "GFE_Submission/t/resources/hmltest1.HML",
+	  "type":"JSON",
 	  "verbose": 1
 	}
 
-
 The response from the hml API is either a `SubjectData object`_ or an `error object`_.
-
+The *Subject* object id will be the subject ids in the HML file. 
+The *type* parameter allows you to specify either JSON or HML output.
+The default for *type* is JSON.
+If you chose HML as the output then the GFE annotation will be included within *typing element* in the HML file as a new *allele-assignment*.
 
 .. _POST /flowhml:
 
 POST /flowhml
 --------------------
-
-Converting a single sequence to GFE can be done by doing a POST to the gfe API.
-The object model for the gfe API is as follows:
-
-.. raw:: html
-
-	<div style="font-family: monospace, serif;font-size:.9em;">
-	<pre>
-		<b>HmlSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>file</b> (file),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
-		}
-	</pre>
-	</div>
-
-
-Here is an example of a JSON object that can be posted to the gfe API:
-
-.. sourcecode:: js
-
-	{
-	  "gfe": "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0",
-	  "locus": "HLA-A",
-	  "verbose": 1
-	}
-
-
-The reponse from the API will either be a GFE JSON object or an `error object`_. 
-The GFE reponse object model is as follows:
-
-.. raw:: html
-
-	<div style="font-family: monospace, serif;font-size:.9em;">
-	<pre>
-		<b>SequenceSubmission</b>{
-		    <b>feature_url</b> (string, <i>optional</i>),
-		    <b>locus</b> (string),
-		    <b>retry</b> (integer, <i>optional</i>),
-		    <b>gfe</b> (string),
-		    <b>structures</b> (boolean, <i>optional</i>),
-		    <b>verbose</b> (boolean, <i>optional</i>)
-		}
-	</pre>
-	</div>
-
-Here is the JSON that would be returned from posting the above JSON object to the sequence API:
+Converting sequences in a HML file to GFE annotation can be done using the flowhml API.
+This API does the same as `hml`_ API but it runs significantly faster and the `structure object`_ for each feature will not be returned.
+The response from the flowhml API is either a `SubjectData object`_ or an `error object`_.
+The *Subject* object id will be the subject ids in the HML file. 
+The *type* parameter allows you to specify either JSON or HML output.
+The default for *type* is JSON.
+If you chose HML as the output then the GFE annotation will be included within *typing element* in the HML file as a new *allele-assignment*.
 
 .. _error object:
 .. _Error Response:
 
 Error Object
 --------------------
-
-Converting a single sequence to GFE can be done by doing a POST to the gfe API.
 The model for the error reponse is as follows:
 
 .. raw:: html

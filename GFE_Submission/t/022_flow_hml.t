@@ -33,7 +33,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 32;
+use Test::More tests => 20;
 use strict;
 use warnings;
 use Data::Dumper;
@@ -73,8 +73,8 @@ foreach my $ra_sample (sort @{$root->getElementsByTagName('sample')}){
     my $s_id = $ra_sample->getAttributes->{id}->getValue;
     foreach my $ra_typing (sort @{$ra_sample->getElementsByTagName('typing')}){
         my $s_locus = ${${$ra_typing->getElementsByTagName('typing-method')}[0]->getElementsByTagName('sbt-ngs')}[0]->[1]->{locus}->getValue;
-        foreach my $ra_glstring (sort @{${$ra_typing->getElementsByTagName('allele-assignment')}[0]->getElementsByTagName('glstring')}){
-            my $s_gfe = ${${$ra_typing->getElementsByTagName('allele-assignment')}[0]->getElementsByTagName('glstring')}[1]->[0]->[0]->toString;
+        foreach my $ra_glstring (sort @{${$ra_typing->getElementsByTagName('allele-assignment')}[1]->getElementsByTagName('glstring')}){
+            my $s_gfe = ${${$ra_typing->getElementsByTagName('allele-assignment')}[1]->getElementsByTagName('glstring')}[0]->[0]->[0]->toString;
             ok($s_gfe eq $h_expected_gfe{$s_id}{$s_locus},"GFE in HML is correct");
         }
     }

@@ -50,7 +50,7 @@ If the docker container is successfuly executed then typing ``docker ps -a`` wil
 
 Debugging
 ----------------------
-.. tip:: The JSON parsing tool **jq** can be useful 
+.. tip:: The JSON parsing tool **jq** can be useful for parsing through the JSON docker logs.
 
 If you want to stop and delete a currently running docker container, then run ``docker ps`` to find the container id and then run the following command.
 

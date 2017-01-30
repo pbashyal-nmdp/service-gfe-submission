@@ -188,7 +188,7 @@ sub getGfe{
     my $rh_file_check = $self->checkFile($s_fasta_file);
     return $rh_file_check if(defined $rh_file_check);
 
-    # Running java -jar hap1.0.jar -g locus -i fasta_file
+    # Running java -jar hap1.2.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->align();
 
     # Check the exit status of the annotation pipeline
@@ -332,7 +332,7 @@ sub getGfeFasta{
     # Pass input file to the annotation object
     $o_annotate->setFastaFile($s_locus,$s_input_file);
 
-    # Running java -jar hap1.1.jar -g locus -i fasta_file
+    # Running java -jar hap1.2.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->align();
 
     # Check the exit status of the annotation pipeline

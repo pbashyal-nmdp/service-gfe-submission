@@ -1,6 +1,6 @@
 # service-gfe-submission
 
-RESTful API and UI for getting GFE results from raw sequence data
+RESTful API for getting GFE results from raw sequence data
 
 [![Build Status](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission.svg?branch=master)](https://travis-ci.org/nmdp-bioinformatics/service-gfe-submission)[![Docs Status](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](http://service-gfe-submission.readthedocs.io/en/latest/index.html)[![Coverage Status](https://coveralls.io/repos/github/nmdp-bioinformatics/service-gfe-submission/badge.svg?branch=master)](https://coveralls.io/github/nmdp-bioinformatics/service-gfe-submission?branch=master)[![](https://images.microbadger.com/badges/version/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own version badge on microbadger.com")[![](https://images.microbadger.com/badges/image/nmdpbioinformatics/service-gfe-submission.svg)](https://microbadger.com/images/nmdpbioinformatics/service-gfe-submission "Get your own image badge on microbadger.com")[![License](https://img.shields.io/badge/License-GNU%20General%20Public%20License%20v3.0-blue.svg)]()
 
@@ -45,6 +45,18 @@ curl -F "verbose=1" \
 http://gfe.b12x.org/flowhml
 
 ```
+
+## Docker
+The easiest way to get the service running locally, is to pull an image containing the service from docker hub. Running the following command will pull the latest GFE service image from docker hub. The image on docker hub is built from the *Dockerfile* in the *docker* directory in the github repository. Every new commit to the *nmdp-bioinformatics/service-gfe-submission* repository triggers a new build of the docker image on docker hub.
+
+```bash
+docker pull nmdpbioinformatics/service-gfe-submission
+docker run -d --name service-gfe-submission -p 8080:5050 nmdpbioinformatics/service-gfe-submission
+```
+The *-d* flag runs the service in "detached-mode" in the background and *-p* specifies what ports to expose. Make sure the ports you expose are not already in use. If the docker container is successfuly executed then typing ``docker ps -a`` will show a new container labeled *service-gfe-submission* running. 
+
+[Click here](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission/) for more information on the publically available docker image. 
+
 
 ## Perl client example
 
@@ -156,13 +168,6 @@ plackup -E deployment  \     # Deploy
 -p 5050:8080 -a bin/app.pl      
 ```
 
-## Docker
-
-```bash
-docker pull nmdpbioinformatics/service-gfe-submission
-docker run -d --name service-gfe-submission -p 8080:5050 nmdpbioinformatics/service-gfe-submission
-```
-[Click here](https://hub.docker.com/r/nmdpbioinformatics/service-gfe-submission/) for more information on the publically available docker image. 
 
 
 ### Required Software
