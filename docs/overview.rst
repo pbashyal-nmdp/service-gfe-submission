@@ -64,13 +64,4 @@ In the example above all of the features for HLA-A were found in the sequence.
 If a sequence does not contain a particular feature, then the feature accession number will be zero. 
 The raw sequence is broken up into each of its features using the annotation pipeline.
 
-Annotation Pipeline
---------------------
-**TBD**
-
-
-Feature Service
-----------------
-**TBD**
-
 

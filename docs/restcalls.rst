@@ -6,8 +6,7 @@ The *structures* parameter is for returning each part of the GFE allele as a `st
 By default it will always return the full structure, but you may want it to only return the GFE annotation.
 The *retry* parameter defines how many times you want the GFE service to retry a call to the feature service.
 The default is *six* and should only be changed for debugging purposes.
-
-Open an a issue on github with any suggested changes you have or any issues you notice with the service.
+Open an a `issue on github`_ with any suggested changes you have or any issues you notice with the service.
 
 * `POST /gfe`_
 * `POST /sequence`_
@@ -17,7 +16,7 @@ Open an a issue on github with any suggested changes you have or any issues you 
 * `Error Response`_
 
 .. _Swagger API interface: http://gfe.b12x.org/doc/?url=/swagger.json
-
+.. _issue on github: https://github.com/nmdp-bioinformatics/service-gfe-submission/issues
 .. _POST /gfe:
 
 POST /gfe
@@ -33,12 +32,12 @@ Below are the input parameters for the gfe API:
 
 	<div style="font-family: monospace, serif;font-size:.9em;">
 	<pre>
-    <b>feature_url</b> (string, <i>optional</i>),
-    <b>locus</b> (string),
-    <b>retry</b> (integer, <i>optional</i>),
-    <b>sequence</b> (string),
-    <b>structures</b> (boolean, <i>optional</i>),
-    <b>verbose</b> (boolean, <i>optional</i>)
+	    <b>feature_url</b> (string, <i>optional</i>),
+	    <b>locus</b> (string),
+	    <b>retry</b> (integer, <i>optional</i>),
+	    <b>sequence</b> (string),
+	    <b>structures</b> (boolean, <i>optional</i>),
+	    <b>verbose</b> (boolean, <i>optional</i>)
 	</pre>
 	</div>
 
@@ -453,6 +452,7 @@ Here is an example of JSON that can be posted to the fasta API:
 
 The reponse from the API will either be a SubjectData object or an `error object`_. 
 The GFE reponse object model is as follows:
+
 .. _SubjectData object:
 
 .. raw:: html
