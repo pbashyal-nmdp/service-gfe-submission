@@ -112,7 +112,7 @@ around BUILDARGS=>sub
   my $args=shift; #other arguments passed in (if any).
 
   my %config_hash;
-  my @a_loci = ("HLA-A", "HLA-B", "HLA-C","HLA-DPB1","HLA-DQB1","HLA-DRB1","KIR3DL2","KIR3DL1","KIR2DS5","KIR2DL4","KIR3DL1","KIR2DL5A","KIR3DS1","KIR2DS2","KIR3DP1","KIR2DS4","KIR3DL3","KIR2DP1","KIR2DS1","KIR2DS3","KIR2DL5B"); 
+  my @a_loci = ("HLA-A", "HLA-B", "HLA-C","HLA-DPB1","HLA-DQB1","HLA-DRB1","KIR3DL2","KIR2DS5","KIR2DL4","KIR3DL1","KIR2DL5A","KIR3DS1","KIR2DS2","KIR3DP1","KIR2DS4","KIR3DL3","KIR2DP1","KIR2DS1","KIR2DS3","KIR2DL5B"); 
   # load structures
   foreach my $s_locus (@a_loci) {
     my $s_loc = $s_locus;
