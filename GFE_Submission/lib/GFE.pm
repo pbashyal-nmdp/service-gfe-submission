@@ -478,7 +478,7 @@ sub getGfeHml{
     # Pass input file to the annotation object
     $o_annotate->setHmlFile($s_input_file);
 
-    # Running java -jar hap1.1.jar -g locus -i fasta_file
+    # Running java -jar hap1.2.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->alignHml();
 
     # Check the exit status of the annotation pipeline

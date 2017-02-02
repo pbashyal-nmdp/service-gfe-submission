@@ -23,8 +23,6 @@
               <form id="gfeForm" enctype="multipart/form-data" action="<% gfe_url %>" method="GET">
                   <div class="center_div" style="width:80%;">
 
-
-
                     <div class="row" style="margin-top:0px;margin-bottom:10px;">
      
                       <div class="col-md-5" style="width:30%">
@@ -38,6 +36,19 @@
                                 <option>HLA-DQB1</option>
                                 <option>HLA-DPB1</option>
                                 <option>KIR3DL2</option>
+                                <option>KIR2DS5</option>
+                                <option>KIR2DL4</option>
+                                <option>KIR3DL1</option>
+                                <option>KIR2DL5A</option>
+                                <option>KIR3DS1</option>
+                                <option>KIR2DS2</option>
+                                <option>KIR3DP1</option>
+                                <option>KIR2DS4</option>
+                                <option>KIR3DL3</option>
+                                <option>KIR2DP1</option>
+                                <option>KIR2DS1</option>
+                                <option>KIR2DS3</option>
+                                <option>KIR2DL5B</option>
                             </select>
                         </div>
                       </div>
@@ -76,7 +87,6 @@
 
 
 <% IF Error.defined %>
-
 
     <div class="table-responsive" >
 
