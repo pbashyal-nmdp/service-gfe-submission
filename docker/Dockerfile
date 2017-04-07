@@ -25,6 +25,7 @@ EXPOSE 8080 5050
 WORKDIR /opt/service-gfe-submission/gfe_submission
 VOLUME /opt/service-gfe-submission/gfe_submission
 
+ENV NXF_OPTS '-Xms512M -Xmx2G'
 ENV PATH /opt:/opt/hap1.2:/opt/ngs-tools/bin:/opt/service-gfe-submission/gfe_submission/bin:$PATH
 
 CMD plackup -E deployment -s Starman --workers=10 -p 5050 -a /opt/service-gfe-submission/gfe_submission/bin/app.pl

@@ -501,12 +501,10 @@ paths:
         - description: 'Valid HLA, KIR or ABO locus'
           in: query
           name: locus
-          required: true
           type: string
         - description: Sequence data
           in: query
           name: sequence
-          required: true
           type: string
         - description: Number of retry requests to feature-service
           in: query
@@ -577,12 +575,10 @@ paths:
         - description: 'Valid HLA, KIR or ABO locus'
           in: query
           name: locus
-          required: true
           type: string
         - description: GFE annotation
           in: query
           name: gfe
-          required: true
           type: string
         - description: Number of retry requests to feature-service
           in: query

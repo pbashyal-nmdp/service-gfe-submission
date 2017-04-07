@@ -41,13 +41,11 @@ swagger_path {
             in => 'query',
             name => 'locus',
             type => 'string',
-            description => 'Valid HLA, KIR or ABO locus',
-            required => 'true'
+            description => 'Valid HLA, KIR or ABO locus'
         },
         {   name => 'sequence',
             type => 'string',
             description => 'Sequence data',
-            required => 'true',
             in => 'query',
         },
         {   name => 'retry',
@@ -129,12 +127,10 @@ swagger_path {
             name => 'locus',
             type => 'string',
             description => 'Valid HLA, KIR or ABO locus',
-            required => 'true'
         },
         {   name => 'gfe',
             type => 'string',
             description => 'GFE annotation',
-            required => 'true',
             in => 'query',
         },
         {   name => 'retry',
