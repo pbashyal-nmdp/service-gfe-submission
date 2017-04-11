@@ -12,11 +12,6 @@ env:
     - NXF_VER='0.22.4'
     - NXF_OPTS='-Xms512M -Xmx2G'
 
-cache:
-  directories:
-  - perl_modules
-  - $TRAVIS_BUILD_DIR/hap1.2
-
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
   - export RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1 HARNESS_OPTIONS=c HARNESS_TIMER=1
@@ -29,6 +24,7 @@ before_install:
   - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.2/clustalo
   - chmod a+x hap1.2/clustalo
   - cd GFE_Submission
+  - perl Makefile.PL
   - cpanm --quiet --notest --installdeps .
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls
   - cd ..
