@@ -25,7 +25,8 @@ before_install:
   - chmod a+x hap1.2/clustalo
   - cd GFE_Submission
   - perl Makefile.PL
-  - cpanm --quiet --notest --installdeps .
+  - cpanm --quiet --notest App::mymeta_requires
+  - mymeta-requires | cpanm --quiet --notest
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls
   - cd ..
   - mv -i GFE_Submission gfe_submission

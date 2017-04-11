@@ -17,10 +17,11 @@ RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && export PATH=/opt/hap1.2:/opt/ngs-tools/bin:/opt/service-gfe-submission/gfe_submission/bin:$PATH \
     && cd /opt && git clone https://github.com/nmdp-bioinformatics/service-gfe-submission \
     && cd service-gfe-submission && mv -i GFE_Submission gfe_submission && cd gfe_submission \
-    && curl -LO http://xrl.us/cpanm && perl cpanm --notest --installdeps . \
-    && perl Makefile.PL && make && make test && make install
+    && curl -LO http://xrl.us/cpanm && perl cpanm App::mymeta_requires --notest && perl Makefile.PL \
+    && mymeta-requires | perl cpanm --notest \
+    && make && make test && make install
 
-EXPOSE 8080 5050
+EXPOSE 5050
 
 WORKDIR /opt/service-gfe-submission/gfe_submission
 VOLUME /opt/service-gfe-submission/gfe_submission
