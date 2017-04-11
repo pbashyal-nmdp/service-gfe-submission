@@ -35,7 +35,7 @@ before_install:
   - cpanm --quiet --notest Plack::Handler::Starman
   - cpanm --quiet --notest Plack@1.0042
   - cpanm --quiet --notest Template@2.26
-  - cpanm --quiet --notest Getopt::Long@1.3142
+  - cpanm --quiet --notest Getopt::Long
   - cpanm --quiet --notest LWP::UserAgent@6.17
   - cpanm --quiet --notest Dancer::Plugin::Swagger@0.2.0
   - cpanm --quiet --notest Net::SSLeay@1.58
