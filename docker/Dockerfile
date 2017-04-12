@@ -17,9 +17,31 @@ RUN PERL_MM_USE_DEFAULT=1 apt-get update -q \
     && export PATH=/opt/hap1.2:/opt/ngs-tools/bin:/opt/service-gfe-submission/gfe_submission/bin:$PATH \
     && cd /opt && git clone https://github.com/nmdp-bioinformatics/service-gfe-submission \
     && cd service-gfe-submission && mv -i GFE_Submission gfe_submission && cd gfe_submission \
-    && curl -LO http://xrl.us/cpanm && perl cpanm App::mymeta_requires --notest && perl Makefile.PL \
-    && mymeta-requires | perl cpanm --notest \
-    && make && make test && make install
+    && curl -LO http://xrl.us/cpanm \
+    && perl cpanm --quiet --notest Test::More@1.302075 \
+    && perl cpanm --quiet --notest YAML@1.21 \
+    && perl cpanm --quiet --notest Moose@2.2004 \
+    && perl cpanm --quiet --notest Dancer@1.3202 \
+    && perl cpanm --quiet --notest JSON@2.90 \
+    && perl cpanm --quiet --notest Dancer::Plugin::Swagger@0.2.0 \
+    && perl cpanm --quiet --notest Log::Log4perl@1.48 \
+    && perl cpanm --quiet --notest JSON::Schema::AsType@0.1.0 \
+    && perl cpanm --quiet --notest Plack::Handler::Starman \
+    && perl cpanm --quiet --notest Plack@1.0042 \
+    && perl cpanm --quiet --notest Template@2.26 \
+    && perl cpanm --quiet --notest Getopt::Long \
+    && perl cpanm --quiet --notest LWP::UserAgent@6.17 \
+    && perl cpanm --quiet --notest Dancer::Plugin::Swagger@0.2.0 \
+    && perl cpanm --quiet --notest Net::SSLeay@1.58 \
+    && perl cpanm --quiet --notest JSON::Schema::AsType@0.1.0 \
+    && perl cpanm --quiet --notest IO::Socket::SSL@2.044 \
+    && perl cpanm --quiet --notest REST::Client@273 \
+    && perl cpanm --quiet --notest Math::Round@0.07 \
+    && perl cpanm --quiet --notest File::Spec@3.40 \
+    && perl cpanm --quiet --notest XML::DOM@1.46 \
+    && perl cpanm --quiet --notest Try::Tiny@0.28 \
+    && perl cpanm --quiet --notest --skip-satisfied --installdeps . \
+    && perl Makefile.PL && make && make test && make install
 
 EXPOSE 5050
 
