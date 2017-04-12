@@ -22,7 +22,7 @@ GFE_Submission - Service for getting a GFE from raw sequence data.
 
 =head1 LICENSE
 
-    Copyright (c) 2016 National Marrow Donor Program (NMDP)
+    Copyright (c) 2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -83,7 +83,7 @@ hook 'after' => sub {
 
 =cut
 get '/' => sub {
-    template 'index';
+    redirect '/doc';
 };
 
 =head2 about

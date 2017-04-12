@@ -12,11 +12,6 @@ env:
     - NXF_VER='0.22.4'
     - NXF_OPTS='-Xms512M -Xmx2G'
 
-cache:
-  directories:
-  - perl_modules
-  - $TRAVIS_BUILD_DIR/hap1.2
-
 before_install:
   - sudo apt-get install -qyy openjdk-7-jre-headless perl-doc wget curl build-essential git libssl-dev
   - export RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1 HARNESS_OPTIONS=c HARNESS_TIMER=1
@@ -29,7 +24,29 @@ before_install:
   - mv clustalo-1.2.3-Ubuntu-x86_64 hap1.2/clustalo
   - chmod a+x hap1.2/clustalo
   - cd GFE_Submission
-  - cpanm --quiet --notest --installdeps .
+  - cpanm --quiet --notest Test::More@1.302075
+  - cpanm --quiet --notest YAML@1.21
+  - cpanm --quiet --notest Moose@2.2004
+  - cpanm --quiet --notest Dancer@1.3202
+  - cpanm --quiet --notest JSON@2.90
+  - cpanm --quiet --notest Dancer::Plugin::Swagger@0.2.0
+  - cpanm --quiet --notest Log::Log4perl@1.48
+  - cpanm --quiet --notest JSON::Schema::AsType@0.1.0
+  - cpanm --quiet --notest Plack::Handler::Starman
+  - cpanm --quiet --notest Plack@1.0042
+  - cpanm --quiet --notest Template@2.26
+  - cpanm --quiet --notest Getopt::Long
+  - cpanm --quiet --notest LWP::UserAgent@6.17
+  - cpanm --quiet --notest Dancer::Plugin::Swagger@0.2.0
+  - cpanm --quiet --notest Net::SSLeay@1.58
+  - cpanm --quiet --notest JSON::Schema::AsType@0.1.0
+  - cpanm --quiet --notest IO::Socket::SSL@2.044
+  - cpanm --quiet --notest REST::Client@273
+  - cpanm --quiet --notest Math::Round@0.07
+  - cpanm --quiet --notest File::Spec@3.40
+  - cpanm --quiet --notest XML::DOM@1.46
+  - cpanm --quiet --notest Try::Tiny@0.28
+  - cpanm --quiet --notest --skip-satisfied --installdeps .
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls
   - cd ..
   - mv -i GFE_Submission gfe_submission
