@@ -52,8 +52,8 @@ hook before_template => sub {
        $tokens->{'login_url'}         = uri_for('/login');
        $tokens->{'logout_url'}        = uri_for('/logout');
        $tokens->{'upload_url'}        = uri_for('/upload');
-       $tokens->{'gfe_url'}           = uri_for('/gfe');
-       $tokens->{'ars_reduxfile_url'} = uri_for('/gfe');
+       $tokens->{'gfe_url'}           = uri_for('/home');
+       $tokens->{'ars_reduxfile_url'} = uri_for('/home');
 };
 
 dance;

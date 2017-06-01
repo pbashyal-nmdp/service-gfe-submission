@@ -15,7 +15,7 @@ Client.pm
 
 =head1 LICENSE
 
-    Copyright (c) 2016 National Marrow Donor Program (NMDP)
+    Copyright (c) 2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -72,6 +72,8 @@ has 'retry' => (
 sub getAccesion{
     
     my($self,$s_locus,$s_term,$n_rank,$s_seq) = @_;
+
+    return 0 if $s_seq eq "NULL" || !defined $s_seq;
 
     my $n_retry = 0;
     my $logger  = Log::Log4perl->get_logger();

@@ -1,0 +1,150 @@
+#!/usr/bin/env perl
+=head1 NAME
+
+    breakup-fasta
+
+=head1 SYNOPSIS
+    
+
+=head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
+    
+    Bioinformatics Scientist
+    3001 Broadway Stree NE
+    Minneapolis, MN 55413
+    ext. 8225
+
+=head1 DESCRIPTION
+
+
+=head1 CAVEATS
+
+
+=head1 LICENSE
+
+    Copyright (c) 2016 National Marrow Donor Program (NMDP)
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+ 
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+=head1 VERSIONS
+    
+    Version    Description              Date
+
+
+=head1 TODO
+    
+
+=head1 SUBROUTINES
+
+=cut
+use strict;    # always
+use warnings;  # or else
+use FindBin;
+use Data::Dumper;
+use vars qw($USAGE);
+BEGIN{
+
+    $| = 1;
+
+    $USAGE = 
+        qq{./breakup-fasta [--fasta] [--uri] [--verbose] [--help]
+            -f/--fasta      Fasta file
+            -u/--uri        URI of feature service
+            -l/--locus      HLA-Locus
+            -v/--verbose    Flag for running in verbose
+            -h/--help
+        };
+
+}   
+use Cwd;
+use Math::Round;
+my $n_id = getID();
+
+
+my %h_seqs;
+my $s_header;
+my $s_seq;
+while (<>) {
+    chomp;
+    if ($_ =~ />/) {
+        if ($s_seq) {    
+            $h_seqs{$s_header} = $s_seq;
+            my $s_out_file = $n_id.".txt";
+            open(my $fh,">",$s_out_file) or die "CANT OPEN FILE $! $0";
+            print $fh ">".$s_header."\n";
+            print $fh $s_seq."\n";
+            close $fh;
+            $n_id = getID();
+        }              
+        $s_header = $_;
+        $s_header =~ s/^>//; # remove ">"
+        $s_header =~ s/\s+$//; # remove trailing whitespace
+        if($s_header =~ m/ (\D{1,3}\d{0,1}\*\S+) /){
+            $s_header = "HLA-".$1;
+        }
+        $s_seq = ""; # clear out old sequence
+    }else {    
+        s/\s+//g; # remove whitespace
+        $s_seq .= $_; # add sequence
+    }
+}
+
+if ($s_seq) { # handle last sequence
+    my $s_out_file = $n_id.".txt";
+    open(my $fh,">",$s_out_file) or die "CANT OPEN FILE $! $0";
+    print $fh ">".$s_header."\n";
+    print $fh $s_seq."\n";
+    close $fh;
+}
+
+
+sub getID{
+    my $id = int(rand(10000));
+    my $s_out_file = $id.".txt";
+    if(!-e $s_out_file){
+        return $id;
+    }else{
+        return getID();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

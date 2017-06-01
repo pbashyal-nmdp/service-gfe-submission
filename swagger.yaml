@@ -2,6 +2,7 @@ definitions:
   Error:
     properties:
       Message:
+<<<<<<< HEAD
         type: string
       accession:
         type: string
@@ -69,12 +70,20 @@ definitions:
     properties:
       aligned:
         type: number
+=======
+        type: string
+      accession:
+        type: string
+      file:
+        type: string
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       gfe:
         type: string
       log:
         items:
           type: string
         type: array
+<<<<<<< HEAD
       structure:
         items:
           $ref: '#/definitions/Structure'
@@ -260,6 +269,132 @@ definitions:
     properties:
       id:
         type: string
+=======
+      rank:
+        type: integer
+      sequence:
+        type: string
+      term:
+        type: string
+      type:
+        type: string
+      version:
+        type: string
+    required:
+      - Message
+      - version
+    type: object
+  Sequence:
+    example:
+      sequence: >-
+        TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG
+      structure:
+        - accession: 1
+          locus: HLA-A
+          rank: 1
+          sequence: ACTGACTG
+          term: exon
+        - accession: 23
+          locus: HLA-A
+          rank: 2
+          sequence: ACTGACTG
+          term: exon
+      version: 1.0.0
+    properties:
+      log:
+        items:
+          type: string
+        type: array
+      sequence:
+        type: string
+      structure:
+        items:
+          $ref: '#/definitions/Structure'
+        type: array
+      version:
+        type: string
+    required:
+      - sequence
+      - version
+    type: object
+  Structure:
+    example:
+      accession: 1
+      locus: HLA-A
+      rank: 1
+      sequence: ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG
+      term: exon
+    properties:
+      accession:
+        type: integer
+      rank:
+        type: integer
+      sequence:
+        type: string
+      term:
+        type: string
+    required:
+      - term
+      - rank
+      - accession
+      - sequence
+    type: object
+  Subject:
+    example:
+      id: 012312A
+      typingData:
+        - locus: HLA-A
+          typing:
+            - gfe: HLA-Aw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'A*01:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+            - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'A*01:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+        - locus: HLA-B
+          typing:
+            - gfe: HLA-Bw2-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'B*04:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+            - gfe: HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1
+              imgthla: 'B*05:01:01:01'
+              structure:
+                - accession: 1
+                  rank: 1
+                  sequence: ACTGACTG
+                  term: exon
+                - accession: 23
+                  rank: 2
+                  sequence: ACTGACTG
+                  term: exon
+    properties:
+      id:
+        type: string
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       typingData:
         items:
           $ref: '#/definitions/TypingData'
@@ -430,7 +565,11 @@ definitions:
                       rank: 2
                       sequence: ACTGACTG
                       term: exon
+<<<<<<< HEAD
       version: 1.0.2
+=======
+      version: 1.0.7
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
     properties:
       log:
         items:
@@ -465,10 +604,22 @@ definitions:
     properties:
       aligned:
         type: number
+<<<<<<< HEAD
+=======
+      fullgene:
+        $ref: '#/definitions/Structure'
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       gfe:
         type: string
       imgthla:
         type: string
+<<<<<<< HEAD
+=======
+      log:
+        items:
+          type: string
+        type: array
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       structure:
         items:
           $ref: '#/definitions/Structure'
@@ -514,6 +665,7 @@ definitions:
       - locus
     type: object
 info:
+<<<<<<< HEAD
   description: 'Service for getting a GFE from raw sequence data. '
   title: GFE_Submission
   version: 0.0.0
@@ -528,12 +680,66 @@ paths:
           schema:
             $ref: '#/definitions/FastaSubmission'
           type: object
+=======
+  contact:
+    email: mhalagan@nmdp.org
+  description: >-
+    The Gene Feature Enumeration (GFE) Submission service provides an API for
+    converting raw sequence data to GFE. It provides both a RESTful API and a
+    simple user interface for converting raw sequence data to GFE results.
+    Sequences can be submitted one at a time or as a fasta file. This service
+    uses <a
+    href="https://github.com/nmdp-bioinformatics/service-feature">nmdp-bioinformatics/service-feature</a>
+    for encoding the raw sequence data and <a
+    href="https://github.com/nmdp-bioinformatics/HSA">nmdp-bioinformatics/HSA</a>
+    for aligning the raw sequence data. The code is open source, and available
+    on <a
+    href="https://github.com/nmdp-bioinformatics/service-gfe-submission">GitHub</a>.<br><br>Go
+    to <a
+    href="http://service-gfe-submission.readthedocs.io">service-gfe-submission.readthedocs.io</a>
+    for more information
+  license:
+    name: GNU GENERAL PUBLIC LICENSE
+    url: 'https://www.gnu.org/licenses/lgpl.html'
+  title: Gene Feature Enumeration Service
+  version: 1.0.7
+paths:
+  /fasta:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from fasta file
+      parameters:
+        - description: 'Valid HLA, KIR or ABO locus'
+          in: formData
+          name: locus
+          type: string
+        - description: HML file
+          in: formData
+          name: file
+          type: file
+        - description: Number of retry requests to feature-service
+          in: query
+          name: retry
+          type: integer
+        - description: URL for the feature-service
+          in: query
+          name: feature_url
+          type: string
+        - description: Flag for returning the sequence and accession number of each feature
+          in: query
+          name: structures
+          type: boolean
+        - description: Flag for running service in verbose
+          in: query
+          name: verbose
+          type: boolean
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       responses:
         '200':
           description: Gene Feature Enumeration (GFE) from fasta file
           schema:
             $ref: '#/definitions/SubjectData'
         '404':
+<<<<<<< HEAD
           description: Failed to generate GFE
           schema:
             $ref: '#/definitions/Error'
@@ -547,6 +753,39 @@ paths:
           schema:
             $ref: '#/definitions/HmlSubmission'
           type: object
+=======
+          description: Failed to generate GFE from fasta
+          schema:
+            $ref: '#/definitions/Error'
+  /flowhml:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from HML file using nextflow
+      parameters:
+        - description: HML file
+          in: formData
+          name: file
+          type: file
+        - description: Option for returning HML or JSON
+          in: query
+          name: type
+          type: string
+        - description: URL for the feature-service
+          in: query
+          name: feature_url
+          type: string
+        - description: Number of retry requests to feature-service
+          in: query
+          name: retry
+          type: integer
+        - description: Flag for returning the sequence and accession number of each feature
+          in: query
+          name: structures
+          type: boolean
+        - description: Flag for running service in verbose
+          in: query
+          name: verbose
+          type: boolean
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       responses:
         '200':
           description: Gene Feature Enumeration (GFE) from HML file
@@ -556,6 +795,7 @@ paths:
           description: Failed to generate GFE
           schema:
             $ref: '#/definitions/Error'
+<<<<<<< HEAD
   /api/v1/gfe:
     post:
       description: Get Gene Feature Enumeration (GFE) from sequence and locus
@@ -566,15 +806,50 @@ paths:
           schema:
             $ref: '#/definitions/GfeSubmission'
           type: object
+=======
+  /gfe:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from sequence and locus
+      parameters:
+        - description: 'Valid HLA, KIR or ABO locus'
+          in: query
+          name: locus
+          type: string
+        - description: Sequence data
+          in: query
+          name: sequence
+          type: string
+        - description: Number of retry requests to feature-service
+          in: query
+          name: retry
+          type: integer
+        - description: URL for the feature-service
+          in: query
+          name: feature_url
+          type: string
+        - description: Flag for returning the sequence and accession number of each feature
+          in: query
+          name: structures
+          type: boolean
+        - description: Flag for running service in verbose
+          in: query
+          name: verbose
+          type: boolean
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       responses:
         '200':
           description: Gene Feature Enumeration (GFE)
           schema:
+<<<<<<< HEAD
             $ref: '#/definitions/Gfe'
+=======
+            $ref: '#/definitions/Typing'
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
         '404':
           description: Failed to generate GFE
           schema:
             $ref: '#/definitions/Error'
+<<<<<<< HEAD
   /api/v1/hml:
     post:
       description: Get Gene Feature Enumeration (GFE) from HML file
@@ -585,6 +860,36 @@ paths:
           schema:
             $ref: '#/definitions/HmlSubmission'
           type: object
+=======
+  /hml:
+    post:
+      description: Get Gene Feature Enumeration (GFE) from HML file
+      parameters:
+        - description: HML file
+          in: formData
+          name: file
+          type: file
+        - description: Option for returning HML or JSON
+          in: query
+          name: type
+          type: string
+        - description: URL for the feature-service
+          in: query
+          name: feature_url
+          type: string
+        - description: Number of retry requests to feature-service
+          in: query
+          name: retry
+          type: integer
+        - description: Flag for returning the sequence and accession number of each feature
+          in: query
+          name: structures
+          type: boolean
+        - description: Flag for running service in verbose
+          in: query
+          name: verbose
+          type: boolean
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       responses:
         '200':
           description: Gene Feature Enumeration (GFE) from HML file
@@ -594,6 +899,7 @@ paths:
           description: Failed to generate GFE
           schema:
             $ref: '#/definitions/Error'
+<<<<<<< HEAD
   /api/v1/sequence:
     post:
       description: Get Gene Feature Enumeration (GFE) from sequence and locus
@@ -604,6 +910,36 @@ paths:
           schema:
             $ref: '#/definitions/SequenceSubmission'
           type: object
+=======
+  /sequence:
+    post:
+      description: Get sequence data from gene feature enumeration (GFE) annotation
+      parameters:
+        - description: 'Valid HLA, KIR or ABO locus'
+          in: query
+          name: locus
+          type: string
+        - description: GFE annotation
+          in: query
+          name: gfe
+          type: string
+        - description: Number of retry requests to feature-service
+          in: query
+          name: retry
+          type: integer
+        - description: URL for the feature-service
+          in: query
+          name: feature_url
+          type: string
+        - description: Flag for returning the sequence and accession number of each feature
+          in: query
+          name: structures
+          type: boolean
+        - description: Flag for running service in verbose
+          in: query
+          name: verbose
+          type: boolean
+>>>>>>> b4f136f041cc7d1f0a7491bc24be334ad81abcac
       responses:
         '200':
           description: Sequence

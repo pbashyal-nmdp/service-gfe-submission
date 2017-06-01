@@ -33,20 +33,42 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 =cut
-use Test::More tests => 84;
+use Test::More tests => 240;
 use strict;
 use warnings;
-
 use Data::Dumper;
 use Dancer::Test;
 use GFE_Submission;
 use Dancer::Plugin::Swagger;
 use GFE_Submission::Definitions;
 use GFE_Submission::API;
+use FindBin;
+
+
+my %config_hash;
+my @a_loci = ("HLA-A", "HLA-B", "HLA-C","HLA-DPB1","HLA-DQB1","HLA-DRB1","KIR3DL2","KIR3DL1","KIR2DS5","KIR2DL4","KIR2DL5A","KIR3DS1","KIR2DS2","KIR3DP1","KIR2DS4","KIR3DL3","KIR2DP1","KIR2DS1","KIR2DS3","KIR2DL5B"); 
+
+# load structures
+foreach my $s_locus (@a_loci) {
+    my $s_loc = $s_locus;
+    $s_loc =~ s/HLA-//g;
+    my $structure_file = "$FindBin::Bin/../lib/files/$s_loc.structure";
+    open(my $fh_struct,"<", $structure_file) or die "$!: $structure_file";
+    while(<$fh_struct>) {
+      chomp;
+      my ($term, $rank) = split /\t/;
+      push @{$config_hash{$s_locus}}, join ':', $term, $rank;
+    }
+    close $fh_struct;
+}
+
+my %h_gfe_size;
+foreach my $s_loc (@a_loci){
+    $h_gfe_size{$s_loc} = scalar @{$config_hash{$s_loc}};
+}
 
 my %h_valid_gfe;
 my %h_invalid_gfe;
-my %h_gfe_size = ("HLA-A" => 17,"HLA-B" => 14, "HLA-C" => 17, "HLA-DPB1" => 5, "HLA-DQB1" => 5, "HLA-DRB1" => 5, "KIR3DL2" => 20);
 foreach my $s_loc (keys %h_gfe_size){
     my $s_valid_gfe   = $s_loc."w".join("-",map(1, (1..$h_gfe_size{$s_loc})));
     my $s_invalid_gfe = $s_loc."w".join("-",map(0, (1..$h_gfe_size{$s_loc})));

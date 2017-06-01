@@ -5,7 +5,7 @@
 
 =head1 SYNOPSIS
 
-    Perl module for converting HLA and KIR sequences
+    Perl module for converting HLA, KIR and ABO sequences
     into gene feature enumeration (GFE) typings.
 
 =head1 AUTHOR     Mike Halagan <mhalagan@nmdp.org>
@@ -20,7 +20,7 @@
 
 =head1 LICENSE
 
-    Copyright (c) 2016 National Marrow Donor Program (NMDP)
+    Copyright (c) 2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -71,7 +71,7 @@ use GFE::Structures;
 use GFE::Annotate;
 use GFE::Client;
 
-our $VERSION = '1.1.1';
+our $VERSION = '1.0.7';
 
 has 'structures' => (
     is => 'ro',
@@ -172,6 +172,15 @@ sub getGfe{
     my $rh_check_loc = $self->checkLoc($s_locus);
     return $rh_check_loc if(defined $rh_check_loc);
 
+    # Get full gene accession number
+    my $n_fullgene   = $o_client->getAccesion($s_locus,"gene",1,uc $s_seq);
+    my $rh_fullgene  =  {
+                      term      => "gene",                  
+                      rank      => 1,
+                      accession => $n_fullgene,
+                      sequence  => uc $s_seq
+                    };
+
     # Make fasta file from sequence
     my $s_fasta_file = $o_annotate->makeFasta($s_locus,$s_seq);
 
@@ -179,7 +188,7 @@ sub getGfe{
     my $rh_file_check = $self->checkFile($s_fasta_file);
     return $rh_file_check if(defined $rh_file_check);
 
-    # Running java -jar hap1.0.jar -g locus -i fasta_file
+    # Running java -jar hap1.2.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->align();
 
     # Check the exit status of the annotation pipeline
@@ -256,13 +265,13 @@ sub getGfe{
     if($self->verbose){
         my $ra_log = $self->returnLog();
         $self->return_structure
-            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => $ra_log }
-            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version, log => $ra_log };
+            ? return {gfe => $s_gfe, locus => $s_locus,  fullgene => $rh_fullgene, aligned => $f_aligned, structure => \@a_structure, version => $self->version,log => $ra_log }
+            : return {gfe => $s_gfe, locus => $s_locus,  fullgene => $rh_fullgene, aligned => $f_aligned, version => $self->version, log => $ra_log };
     }else{
         system("rm $s_logfile") if (-e $s_logfile && $self->delete_logs);
         $self->return_structure
-            ? return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, structure => \@a_structure, version => $self->version }
-            : return {gfe => $s_gfe, locus => $s_locus,  aligned => $f_aligned, version => $self->version };
+            ? return {gfe => $s_gfe, locus => $s_locus, fullgene => $rh_fullgene, aligned => $f_aligned, structure => \@a_structure, version => $self->version }
+            : return {gfe => $s_gfe, locus => $s_locus, fullgene => $rh_fullgene, aligned => $f_aligned, version => $self->version };
     }
    
 }
@@ -323,7 +332,7 @@ sub getGfeFasta{
     # Pass input file to the annotation object
     $o_annotate->setFastaFile($s_locus,$s_input_file);
 
-    # Running java -jar hap1.1.jar -g locus -i fasta_file
+    # Running java -jar hap1.2.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->align();
 
     # Check the exit status of the annotation pipeline
@@ -469,7 +478,7 @@ sub getGfeHml{
     # Pass input file to the annotation object
     $o_annotate->setHmlFile($s_input_file);
 
-    # Running java -jar hap1.1.jar -g locus -i fasta_file
+    # Running java -jar hap1.2.jar -g locus -i fasta_file
     my $b_exit_status = $o_annotate->alignHml();
 
     # Check the exit status of the annotation pipeline
@@ -744,10 +753,6 @@ sub getSequence{
 
         # Get sequence from feature-service
         my $s_sequence = $o_client->getSequence($s_locus,$s_term,$n_rank,$n_accession);
-
-        # Return an error if the sequence is not defined
-        #my $rh_check_seq = $self->checkSeq($s_sequence,$s_locus);
-        #return $rh_check_seq if(defined $rh_check_seq && !defined $s_sequence);
 
         push @a_structure, {
               locus     => $s_locus, 

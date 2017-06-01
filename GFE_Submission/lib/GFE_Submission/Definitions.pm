@@ -16,7 +16,7 @@
 
 =head1 LICENSE
 
-    Copyright (c) 2016 National Marrow Donor Program (NMDP)
+    Copyright (c) 2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -44,86 +44,6 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::Plugin::Swagger;
 
-
-
-=head2 GfeSubmission
-
-
-=cut
-swagger_definition 'GfeSubmission' => {
-    type => 'object',
-    required   => [ 'locus','sequence'],
-    properties => {
-        locus      => { type => 'string'  },
-        retry      => { type => 'integer' },
-    	sequence   => { type => 'string'  },
-    	url        => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
-    },
-    example => {
-        locus   => 'HLA-A',
-        sequence => 'TCCCCAGACGCCGAGGATGGCCGTCATGGCGCCCCGAACCCTCCTCCTGCTACTCTCGGGGGCCCTGGCCCTGACCCAGACCTGGGCGGGTGAGTGCGGGGTCGGGAGGGAAACCGCCTCTGCGGGGAGAAGCAAGGGGCCCTCCTGGCGGGGGCGCAGGACCGGGGGAGCCGCGCCGGGACGAGGGTCGGGCAGGTCTCAGCCACTGCTCGCCCCCAGGCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCGCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGAGCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGGCCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCGGTGAGTGACCCCGGCCGGGGGCGCAGGTCAGGACCCCTCATCCCCCACGGACGGGCCAGGTCGCCCACAGTCTCCGGGTCCGAGATCCACCCCGAAGCCGCGGGACCCCGAGACCCTTGCCCCGGGAGAGGCCCAGGCGCCTTTACCCGGTTTCATTTTCAGTTTAGGCCAAAAATCCCCCCGGGTTGGTCGGGGCTGGGCGGGGCTCGGGGGACTGGGCTGACCGCGGGGTCGGGGCCAGGTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTACCGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGCGGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCTACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGATCGCCTGTAGATCTCCCGGGCTGGCCTCCCACAAGGAGGGGAGACAATTGGGACCAACACTAGAATATCACCCTCCCTCTGGTCCTGAGGGAGAGGAATCCTCCTGGGTTCCAGATCCTGTACCAGAGAGTGACTCTGAGGTTCCGCCCTGCTCTCTGACACAATTAAGGGATAAAATCTCTGAAGGAGTGACGGGAAGACGATCCCTCGAATACTGATGAGTGGTTCCCTTTGACACCGGCAGCAGCCTTGGGCCCGTGACTTTTCCTCTCAGGCCTTGTTCTCTGCTTCACACTCAATGTGTGTGGGGGTCTGAGTCCAGCACTTCTGAGTCCCTCAGCCTCCACTCAGGTCAGGACCAGAAGTCGCTGTTCCCTTCTCAGGGAATAGAAGATTATCCCAGGTGCCTGTGTCCAGGCTGGTGTCTGGGTTCTGTGCTCTCTTCCCCATCCCGGGTGTCCTGTCCATTCTCAAGATGGCCACATGCGTGCTGGTGGAGTGTCCCATGACAGATGCAAAATGCCTGAATTTTCTGACTCTTCCCGTCAGACCCCCCCAAGACACATATGACCCACCACCCCATCTCTGACCATGAGGCCACCCTGAGGTGCTGGGCCCTGGGCTTCTACCCTGCGGAGATCACACTGACCTGGCAGCGGGATGGGGAGGACCAGACCCAGGACACGGAGCTCGTGGAGACCAGGCCTGCAGGGGATGGAACCTTCCAGAAGTGGGCGGCTGTGGTGGTGCCTTCTGGAGAGGAGCAGAGATACACCTGCCATGTGCAGCATGAGGGTCTGCCCAAGCCCCTCACCCTGAGATGGGGTAAGGAGGGAGATGGGGGTGTCATGTCTCTTAGGGAAAGCAGGAGCCTCTCTGGAGACCTTTAGCAGGGTCAGGGCCCCTCACCTTCCCCTCTTTTCCCAGAGCTGTCTTCCCAGCCCACCATCCCCATCGTGGGCATCATTGCTGGCCTGGTTCTCCTTGGAGCTGTGATCACTGGAGCTGTGGTCGCTGCCGTGATGTGGAGGAGGAAGAGCTCAGGTGGAGAAGGGGTGAAGGGTGGGGTCTGAGATTTCTTGTCTCACTGAGGGTTCCAAGCCCCAGCTAGAAATGTGCCCTGTCTCATTACTGGGAAGCACCGTCCACAATCATGGGCCTACCCAGTCTGGGCCCCGTGTGCCAGCACTTACTCTTTTGTAAAGCACCTGTTAAAATGAAGGACAGATTTATCACCTTGATTACGGCGGTGATGGGACCTGATCCCAGCAGTCACAAGTCACAGGGGAAGGTCCCTGAGGACAGACCTCAGGAGGGCTATTGGTCCAGGACCCACACCTGCTTTCTTCATGTTTCCTGATCCCGCCCTGGGTCTGCAGTCACACATTTCTGGAAACTTCTCTGGGGTCCAAGACTAGGAGGTTCCTCTAGGACCTTAAGGCCCTGGCTCCTTTCTGGTATCTCACAGGACATTTTCTTCTCACAGATAGAAAAGGAGGGAGTTACACTCAGGCTGCAAGTAAGTATGAAGGAGGCTGATGCCTGAGGTCCTTGGGATATTGTGTTTGGGAGCCCATGGGGGAGCTCACCCACCTCACAATTCCTCCTCTAGCCACATCTTCTGTGGGATCTGACCAGGTTCTGTTTTTGTTCTACCCCAGGCAGTGACAGTGCCCAGGGCTCTGATGTGTCCCTCACAGCTTGTAAAGGTGAGAGCTTGGAGGACCTAATGTGTGTTGGGTGTTGGGCGGAACAGTGGACACAGCTGTGCTATGGGGTTTCTTTGCATTGGATGTATTGAGCATGCGATGGGCTGTTTAAGGTGTGACCCCTCACTGTGATGGATATGAATTTGTTCATGAATATTTTTTTCTATAGTGTGAGACAGCTGCCTTGTGTGGGACTGAG',
-    }
-};
-
-
-=head2 SequenceSubmission
-
-
-=cut
-swagger_definition 'SequenceSubmission' => {
-    type => 'object',
-    required   => [ 'gfe','locus'],
-    properties => {
-        locus      => { type => 'string'  },
-        gfe        => { type => 'string'  },
-        retry      => { type => 'integer' },
-        url        => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
-    },
-    example => {
-        locus   => 'HLA-A',
-        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-0',
-        verbose => 1
-    }
-};
-
-
-=head2 FastaSubmission
-
-
-=cut
-swagger_definition 'FastaSubmission' => {
-    type => 'object',
-    required   => [ 'locus','file'],
-    properties => {
-        locus      => { type => 'string'  },
-        retry      => { type => 'integer' },
-        file       => { type => 'file'  },
-        url        => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
-    }
-};
-
-=head2 HmlSubmission
-
-
-=cut
-swagger_definition 'HmlSubmission' => {
-    type => 'object',
-    required   => ['file'],
-    properties => {
-        retry      => { type => 'integer' },
-        file       => { type => 'file'  },
-        url        => { type => 'string'  },
-        type       => { type => 'string'  },
-        verbose    => { type => 'boolean' },
-        structures => { type => 'boolean' }
-    }
-};
 
 =head2 Sequence
 
@@ -175,9 +95,9 @@ swagger_definition 'Structure' => {
     type => 'object',
     required   => [ 'term','rank','accession','sequence' ],
     properties => {
-        term => { type => 'string' },
-        sequence => { type => 'string' },
-        rank => { type => 'integer' },
+        term      => { type => 'string' },
+        sequence  => { type => 'string' },
+        rank      => { type => 'integer' },
         accession => { type => 'integer' },
     },
     example => {
@@ -213,7 +133,7 @@ swagger_definition 'SubjectData' => {
             "2016/11/15 17:37:16 INFO> Annotate.pm:167 GFE::Annotate::setInputFile   - Input file:      t/resources/HmlTest.HML",
             "2016/11/15 17:37:16 INFO> Annotate.pm:185 GFE::Annotate::alignment_file - Alignment file:  t/resources/HmlTest_reformat.csv"
             ],
-        version   => '1.0.2',
+        version   => '1.0.7',
         subjects  => [
             {
                 id          => '111111',
@@ -661,50 +581,12 @@ swagger_definition 'Typing' => {
         gfe       => { type => 'string' },
         imgthla   => { type => 'string' },
         aligned   => { type => 'number' },
+        fullgene  => { '$ref' => "#/definitions/Structure" },
         structure => { type => 'array',
             items => {'$ref' => "#/definitions/Structure" }
         },
-    },
-    example => {
-        gfe     => 'HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1',
-        version => '1.0.0',
-        aligned => .95,
-        locus   => "HLA-A",
-        imgthla => "A*01:01:01:01",
-        structure  => [
-        {
-            term   => 'exon',
-            rank   => 1,
-            accession => 1,
-            sequence => "ACTGACTG",
-         },
-         {  
-            term   => 'exon',
-            rank   => 2,
-            accession => 23,
-            sequence => "ACTGACTG"
-          }
-        ]
-    }
-};
-
-
-=head2 Gfe
-
-
-=cut
-swagger_definition 'Gfe' => {
-    type => 'object',
-    required   => [ 'gfe','version' ],
-    properties => {
-        gfe       => { type => 'string' },
-        aligned   => { type => 'number' },
-        version   => { type => 'string' },
         log       => { type => 'array',
            items  => { type => 'string' }
-        },
-        structure => { type => 'array',
-            items => {'$ref' => "#/definitions/Structure" }
         },
     },
     example => {
